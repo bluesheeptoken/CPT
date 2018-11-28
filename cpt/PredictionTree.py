@@ -14,16 +14,13 @@ class PredictionTree():
     def get_child(self, element):
         if self.has_child(element):
             return self.children[element]
-        else:
-            return None
 
     def retrieve_path_from_root(self):
         def loop(cursor, sequence):
-            if cursor.item == None:
+            if cursor.item is None:
                 return sequence
-            else:
-                sequence.append(cursor.item)
-                return loop(cursor.parent, sequence)
+            sequence.append(cursor.item)
+            return loop(cursor.parent, sequence)
         return loop(self, [])[::-1]
 
     def __repr__(self):
