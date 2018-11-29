@@ -25,3 +25,11 @@ class PredictionTree():
 
     def __repr__(self):
         return "{{'item': {}, 'children': {}}}".format(self.item, list(self.children.values()))
+
+    def __eq__(self, other):
+        """Overrides the default implementation"""
+        if isinstance(other, PredictionTree):
+            if len(other.children) == len(self.children):
+                return self.item == other.item \
+                       and all(x == y for x, y in zip(self.children, other.children))
+        return NotImplemented

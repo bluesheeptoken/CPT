@@ -77,4 +77,4 @@ class Cpt():
         return scores
 
     def __repr__(self):
-        return ""
+        return self.root.__repr__()
