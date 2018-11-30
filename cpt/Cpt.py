@@ -21,7 +21,7 @@ class Cpt():
             for element in sequence[self.sequence_splitter:]:
 
 
-                # adding to the Prediction Tree
+                # Adding to the Prediction Tree
                 if not cursornode.has_child(element):
                     cursornode.add_child(element)
 
@@ -34,8 +34,10 @@ class Cpt():
 
                 self.inverted_index[element].add(id_seq)
 
+                # Adding element to alphabet
                 self.alphabet.add(element)
 
+            # Add the last node in the lookup_table
             self.lookup_table[id_seq] = cursornode
 
             cursornode = self.root
@@ -61,8 +63,8 @@ class Cpt():
     def predict(self, target_sequence):
         level = 0
 
-        scores = {}
-        while not scores and level < self.max_level:
+        score = {}
+        while not score and level < self.max_level:
             generated_sequences = list(combinations(target_sequence, len(target_sequence) - level))
 
             for sequence in generated_sequences:
@@ -71,10 +73,10 @@ class Cpt():
                 consequent_sequences = list(map(lambda x: utilities.find_consequent(sequence, x),
                                                 map(self.retrieve_sequence, similar_sequences)))
 
-                scores = utilities.sum_dictionnaries(scores, self.get_score(consequent_sequences))
+                score = utilities.sum_dictionnaries(score, self.get_score(consequent_sequences))
             level += 1
 
-        return scores
+        return sorted(score.keys(), key=lambda x: (score[x], x))
 
     def __repr__(self):
         return self.root.__repr__()
