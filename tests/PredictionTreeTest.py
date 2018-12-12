@@ -41,7 +41,9 @@ class PredictionTreeTest(unittest.TestCase):
     def test_equal(self):
         tree_1 = PredictionTree('A')
         tree_1.add_child('B')
+        tree_1.add_child('C')
         tree_2 = PredictionTree('A')
+        tree_2.add_child('C')
         tree_2.add_child('B')
         self.assertEqual(tree_1, tree_2)
 
