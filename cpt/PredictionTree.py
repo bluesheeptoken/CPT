@@ -12,8 +12,7 @@ class PredictionTree():
         return True
 
     def get_child(self, element):
-        if self.has_child(element):
-            return self.children[element]
+        return self.children.get(element, None)
 
     def retrieve_path_from_root(self):
         def loop(cursor, sequence):
