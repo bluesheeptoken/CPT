@@ -14,6 +14,7 @@ is the subsequence of Y starting after the last item in
 common with S until the end of Y
 """
 def find_consequent(target_sequence, similar_sequence):
-    last_index = \
-        max([rindex(element, similar_sequence) for element in target_sequence])
-    return similar_sequence[last_index+1:]
+    for i in reversed(range(len(similar_sequence))):
+        if similar_sequence[i] in target_sequence:
+            return similar_sequence[i+1:]
+    return []
