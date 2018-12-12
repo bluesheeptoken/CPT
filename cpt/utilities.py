@@ -1,9 +1,3 @@
-def rindex(element, elements):
-    for i in range(len(elements) - 1, -1, -1):
-        if elements[i] == element:
-            return i
-
-
 def sum_dictionnaries(dict1, dict2):
     return {k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)}
 
