@@ -27,8 +27,6 @@ class PredictionTree():
         return "{{'item': {}, 'children': {}}}".format(self.item, list(self.children.values()))
 
     def __eq__(self, other):
-        if isinstance(other, PredictionTree):
-            if len(self.children) == len(other.children):
-                return self.item == other.item and \
-                       all(x == y for x, y in zip(self.children.values(), other.children.values()))
-        return False
+        return isinstance(other, PredictionTree) \
+            and self.item == other.item \
+            and self.children == other.children
