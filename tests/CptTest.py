@@ -49,12 +49,23 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.lookup_table, cpt.lookup_table)
         self.assertEqual(self.cpt.root, cpt.root)
 
+    def test_predict(self):
+        # GIVEN
+        target_sequence = ['A', 'B']
+        expected = ['D', 'C']
+
+        # WHEN
+        actual = self.cpt.predict(target_sequence, 2)
+
+        # THEN
+        self.assertEqual(actual, expected)
+
     def test_retrieve_sequence(self):
         # GIVEN
         expected = [0, 1, 2]
 
         # WHEN
-        actual = self.cpt.retrieve_sequence(0)
+        actual = self.cpt._retrieve_sequence(0)
 
         # THEN
         self.assertEqual(expected, actual)
@@ -67,21 +78,10 @@ class CptTest(unittest.TestCase):
         sequence_not_in_alphabet = [5]
 
         # WHEN
-        actual_not_empty = self.cpt.find_similar_sequences(sequence_in_alphabet)
-        actual_empty = self.cpt.find_similar_sequences(sequence_not_in_alphabet)
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet)
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet)
 
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)
         self.assertEqual(expected_empty, actual_empty)
-
-    def test_predict(self):
-        # GIVEN
-        target_sequence = ['A', 'B']
-        expected = ['D', 'C']
-
-        # WHEN
-        actual = self.cpt.predict(target_sequence, 2)
-
-        # THEN
-        self.assertEqual(actual, expected)

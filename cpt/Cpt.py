@@ -43,13 +43,6 @@ class Cpt():
 
         return True
 
-    def retrieve_sequence(self, id_seq):
-        return self.lookup_table[id_seq].retrieve_path_from_root()
-
-    def find_similar_sequences(self, sequence):
-        head, *queue = map(lambda x: self.inverted_index.get(x, set()), sequence)
-        return reduce(lambda x, y: x & y, queue, head)
-
     def predict(self, target_sequence, number_predictions=5):
         level = 0
         target_int_sequence = self.alphabet_inverter.elements_to_ints(target_sequence)
@@ -63,10 +56,10 @@ class Cpt():
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
-                similar_sequences = self.find_similar_sequences(sequence)
+                similar_sequences = self._find_similar_sequences(sequence)
 
                 consequent_sequences = list(map(lambda x: utilities.find_consequent(sequence, x),
-                                                map(self.retrieve_sequence, similar_sequences)))
+                                                map(self._retrieve_sequence, similar_sequences)))
 
                 score.update(consequent_sequences)
 
@@ -75,6 +68,13 @@ class Cpt():
         return self.alphabet_inverter.ints_to_elements(
             score.best_n_predictions(number_predictions)
             )
+
+    def _retrieve_sequence(self, id_seq):
+        return self.lookup_table[id_seq].retrieve_path_from_root()
+
+    def _find_similar_sequences(self, sequence):
+        head, *queue = map(lambda x: self.inverted_index.get(x, set()), sequence)
+        return reduce(lambda x, y: x & y, queue, head)
 
     def __repr__(self):
         return self.root.__repr__()
