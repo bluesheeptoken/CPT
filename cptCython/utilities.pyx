@@ -1,10 +1,25 @@
+# distutils: language = c++
+
+from cython.operator cimport dereference, preincrement
 from libcpp.map cimport map
 from libcpp.string cimport string
 
-cdef map[string, int] sum_dictionnaries(map[string, int] dict1, map[string, int] dict2):
-    cdef map[string, int] answer
-    return answer
-    # return {k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)}
+def sum_dictionnaries(map[string, int] dict1, map[string, int] dict2):
+    cdef:
+        map[string, int].iterator it1, it2
+        string k
+        int v
+    it2 = dict2.begin()
+    while it2 != dict2.end():
+        k = dereference(it2).first
+        v = dereference(it2).second
+        it1 = dict1.find(k)
+        if it1 != dict1.end():
+            dereference(it1).second += v
+        else:
+            dict1[k] = v
+        preincrement(it2)
+    return dict1
 
 def find_consequent(target_sequence, similar_sequence):
     """
