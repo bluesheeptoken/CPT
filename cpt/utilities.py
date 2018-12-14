@@ -1,6 +1,3 @@
-def sum_dictionnaries(dict1, dict2):
-    return {k: dict1.get(k, 0) + dict2.get(k, 0) for k in set(dict1) | set(dict2)}
-
 def find_consequent(target_sequence, similar_sequence):
     """
     The consequent of a sequence Y with respect to a sequence S

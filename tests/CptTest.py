@@ -65,7 +65,7 @@ class CptTest(unittest.TestCase):
         expected = [0, 1, 2]
 
         # WHEN
-        actual = self.cpt._retrieve_sequence(0)
+        actual = self.cpt._retrieve_sequence(0) #pylint: disable=protected-access
 
         # THEN
         self.assertEqual(expected, actual)
@@ -78,8 +78,8 @@ class CptTest(unittest.TestCase):
         sequence_not_in_alphabet = [5]
 
         # WHEN
-        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet)
-        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet)
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet) #pylint: disable=protected-access
 
 
         # THEN
