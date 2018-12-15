@@ -8,57 +8,64 @@ class CptTest(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.cpt = Cpt()
-        cls.cpt.root.add_child('A')
-        cls.cpt.root.get_child('A').add_child('B')
-        cls.cpt.root.get_child('A').get_child('B').add_child('C')
-        cls.cpt.root.get_child('A').get_child('B').add_child('D')
+        cls.cpt.root.add_child(0)
+        cls.cpt.root.get_child(0).add_child(1)
+        cls.cpt.root.get_child(0).get_child(1).add_child(2)
+        cls.cpt.root.get_child(0).get_child(1).add_child(3)
 
-        cls.cpt.root.add_child('B')
-        cls.cpt.root.get_child('B').add_child('C')
-        cls.cpt.root.get_child('B').add_child('D')
-        cls.cpt.root.get_child('B').get_child('D').add_child('E')
+        cls.cpt.root.add_child(1)
+        cls.cpt.root.get_child(1).add_child(2)
+        cls.cpt.root.get_child(1).add_child(3)
+        cls.cpt.root.get_child(1).get_child(3).add_child(4)
         cls.sequences = [['A', 'B', 'C'],
                          ['A', 'B'],
                          ['A', 'B', 'D'],
                          ['B', 'C'],
                          ['B', 'D', 'E']]
 
-        cls.cpt.inverted_index = {'A': {0, 1, 2},
-                                  'B': {0, 1, 2, 3, 4},
-                                  'C': {0, 3},
-                                  'D': {2, 4},
-                                  'E': {4}}
+        cls.cpt.inverted_index = [{0, 1, 2},
+                                  {0, 1, 2, 3, 4},
+                                  {0, 3},
+                                  {2, 4},
+                                  {4}]
 
-        cls.cpt.lookup_table = {0: cls.cpt.root.get_child('A').get_child('B').get_child('C'),
-                                1: cls.cpt.root.get_child('A').get_child('B'),
-                                2: cls.cpt.root.get_child('A').get_child('B').get_child('D'),
-                                3: cls.cpt.root.get_child('B').get_child('C'),
-                                4: cls.cpt.root.get_child('B').get_child('D').get_child('E')}
+        cls.cpt.alphabet.alphabet_length = 5
+        cls.cpt.alphabet.symbol_to_index = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
+        cls.cpt.alphabet.index_to_symbol = ['A', 'B', 'C', 'D', 'E']
 
-        cls.cpt.alphabet = {'A', 'B', 'C', 'D', 'E'}
+        cls.cpt.lookup_table = [cls.cpt.root.get_child(0).get_child(1).get_child(2),
+                                cls.cpt.root.get_child(0).get_child(1),
+                                cls.cpt.root.get_child(0).get_child(1).get_child(3),
+                                cls.cpt.root.get_child(1).get_child(2),
+                                cls.cpt.root.get_child(1).get_child(3).get_child(4)]
 
     def test_train(self):
+        # GIVEN
         cpt = Cpt()
         cpt.train(self.sequences)
 
-        # Check inverted index
+        # THEN
         self.assertEqual(self.cpt.inverted_index, cpt.inverted_index)
-
-        # Check tree
+        self.assertEqual(self.cpt.lookup_table, cpt.lookup_table)
         self.assertEqual(self.cpt.root, cpt.root)
 
-        # Check lookup_table
-        self.assertEqual(self.cpt.lookup_table, cpt.lookup_table)
+    def test_predict(self):
+        # GIVEN
+        target_sequence = ['A', 'B']
+        expected = ['D', 'C']
 
-        # Check alphabet
-        self.assertEqual(self.cpt.alphabet, cpt.alphabet)
+        # WHEN
+        actual = self.cpt.predict(target_sequence, 2)
+
+        # THEN
+        self.assertEqual(actual, expected)
 
     def test_retrieve_sequence(self):
         # GIVEN
-        expected = ['A', 'B', 'C']
+        expected = [0, 1, 2]
 
         # WHEN
-        actual = self.cpt.retrieve_sequence(0)
+        actual = self.cpt._retrieve_sequence(0) #pylint: disable=protected-access
 
         # THEN
         self.assertEqual(expected, actual)
@@ -66,37 +73,15 @@ class CptTest(unittest.TestCase):
     def test_find_similar_sequences(self):
         # GIVEN
         expected_not_empty = {0, 1, 2}
-        sequence_in_alphabet = ['A']
+        sequence_in_alphabet = [0]
         expected_empty = set()
-        sequence_not_in_alphabet = ['F']
+        sequence_not_in_alphabet = [5]
 
         # WHEN
-        actual_not_empty = self.cpt.find_similar_sequences(sequence_in_alphabet)
-        actual_empty = self.cpt.find_similar_sequences(sequence_not_in_alphabet)
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet) #pylint: disable=protected-access
 
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)
         self.assertEqual(expected_empty, actual_empty)
-
-    def test_get_score(self):
-        # GIVEN
-        consequent_sequence = ['B', 'B', 'C']
-        expected = {'B': 2, 'C': 1}
-
-        # WHEN
-        actual = self.cpt.get_score(consequent_sequence)
-
-        # THEN
-        self.assertEqual(actual, expected)
-
-    def test_predict(self):
-        # GIVEN
-        target_sequence = ['A', 'B']
-        expected = ['C', 'D']
-
-        # WHEN
-        actual = self.cpt.predict(target_sequence)
-
-        # THEN
-        self.assertEqual(actual, expected)
