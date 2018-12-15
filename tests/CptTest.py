@@ -23,21 +23,21 @@ class CptTest(unittest.TestCase):
                          ['B', 'C'],
                          ['B', 'D', 'E']]
 
-        cls.cpt.inverted_index = {0: {0, 1, 2},
-                                  1: {0, 1, 2, 3, 4},
-                                  2: {0, 3},
-                                  3: {2, 4},
-                                  4: {4}}
+        cls.cpt.inverted_index = [{0, 1, 2},
+                                  {0, 1, 2, 3, 4},
+                                  {0, 3},
+                                  {2, 4},
+                                  {4}]
 
-        cls.cpt.alphabet_inverter.alphabet_length = 5
-        cls.cpt.alphabet_inverter.alphabet_to_ints = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
-        cls.cpt.alphabet_inverter.int_to_element = ['A', 'B', 'C', 'D', 'E']
+        cls.cpt.alphabet.alphabet_length = 5
+        cls.cpt.alphabet.symbol_to_index = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
+        cls.cpt.alphabet.index_to_symbol = ['A', 'B', 'C', 'D', 'E']
 
-        cls.cpt.lookup_table = {0: cls.cpt.root.get_child(0).get_child(1).get_child(2),
-                                1: cls.cpt.root.get_child(0).get_child(1),
-                                2: cls.cpt.root.get_child(0).get_child(1).get_child(3),
-                                3: cls.cpt.root.get_child(1).get_child(2),
-                                4: cls.cpt.root.get_child(1).get_child(3).get_child(4)}
+        cls.cpt.lookup_table = [cls.cpt.root.get_child(0).get_child(1).get_child(2),
+                                cls.cpt.root.get_child(0).get_child(1),
+                                cls.cpt.root.get_child(0).get_child(1).get_child(3),
+                                cls.cpt.root.get_child(1).get_child(2),
+                                cls.cpt.root.get_child(1).get_child(3).get_child(4)]
 
     def test_train(self):
         # GIVEN
