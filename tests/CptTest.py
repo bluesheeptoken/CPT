@@ -53,12 +53,17 @@ class CptTest(unittest.TestCase):
         # GIVEN
         target_sequence = ['A', 'B']
         expected = ['D', 'C']
+        target_sequence_with_unknown_symbol = ['F']
+        expected_unknown_symbol = ['E', 'D'] # After noise reduction of F
 
         # WHEN
         actual = self.cpt.predict(target_sequence, 2)
+        actual_unknown_symbol = self.cpt.predict(target_sequence_with_unknown_symbol, 2)
 
         # THEN
         self.assertEqual(actual, expected)
+        self.assertEqual(actual_unknown_symbol, expected_unknown_symbol)
+        self.assertEqual(self.cpt.alphabet.alphabet_length, 5)
 
     def test_retrieve_sequence(self):
         # GIVEN
@@ -80,7 +85,6 @@ class CptTest(unittest.TestCase):
         # WHEN
         actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access
         actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet) #pylint: disable=protected-access
-
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)
