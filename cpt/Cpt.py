@@ -20,7 +20,7 @@ class Cpt():
 
         for id_seq, sequence in enumerate(sequences):
 
-            indexes_sequence = self.alphabet.symbols_to_indexes(sequence)
+            indexes_sequence = self.alphabet.add_symbols(sequence)
 
             for index in indexes_sequence[self.sequence_splitter:]:
 
@@ -45,8 +45,8 @@ class Cpt():
 
     def predict(self, target_sequence, number_predictions=5):
         level = 0
-        target_indexes_sequence = self.alphabet.symbols_to_indexes(target_sequence)
-        score = Scorer(self.alphabet.alphabet_length)
+        target_indexes_sequence = self.alphabet.get_indexes(target_sequence)
+        score = Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
 
@@ -65,7 +65,7 @@ class Cpt():
 
             level += 1
 
-        return self.alphabet.indexes_to_symbols(
+        return self.alphabet.get_symbols(
             score.best_n_predictions(number_predictions)
             )
 
