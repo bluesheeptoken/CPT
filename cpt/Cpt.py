@@ -16,17 +16,13 @@ class Cpt():
         self.alphabet = Alphabet()
 
     def train(self, sequences):
-        cursornode = self.root
 
         for id_seq, sequence in enumerate(sequences):
-
+            current = self.root
             for index in map(self.alphabet.add_symbol, sequence[self.sequence_splitter:]):
 
                 # Adding to the Prediction Tree
-                if not cursornode.has_child(index):
-                    cursornode.add_child(index)
-
-                cursornode = cursornode.get_child(index)
+                current = current.add_child(index)
 
                 # Adding to the Inverted Index
                 if not index < len(self.inverted_index):
@@ -35,11 +31,7 @@ class Cpt():
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
-            self.lookup_table.append(cursornode)
-
-            cursornode = self.root
-
-        return True
+            self.lookup_table.append(current)
 
     def predict(self, target_sequence, number_predictions=5):
         level = 0
