@@ -11,7 +11,9 @@ class ScorerTest(unittest.TestCase):
         expected = [2, 0, 1]
 
         # WHEN
-        scorer.update([[0], [0, 2]])
+        scorer.update(0)
+        scorer.update(0)
+        scorer.update(2)
 
         # THEN
         self.assertEqual(scorer.scoring, expected)
@@ -20,10 +22,12 @@ class ScorerTest(unittest.TestCase):
         scorer = Scorer(3)
         self.assertFalse(scorer.predictable())
 
-        scorer.update([[0]])
+        scorer.update(0)
         self.assertTrue(scorer.predictable())
 
     def test_find_similar_sequences(self):
         scorer = Scorer(3)
-        scorer.update([[0], [0, 2]])
+        scorer.update(0)
+        scorer.update(0)
+        scorer.update(2)
         self.assertEqual(scorer.best_n_predictions(1), [0])
