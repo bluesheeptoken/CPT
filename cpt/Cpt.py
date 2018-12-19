@@ -54,13 +54,10 @@ class Cpt():
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
-                similar_sequences = self._find_similar_sequences(sequence)
-
-                consequent_sequences = list(map(lambda x: utilities.find_consequent(sequence, x),
-                                                map(self._retrieve_sequence, similar_sequences)))
-
-                score.update(consequent_sequences)
-
+                for similar_sequence_id in self._find_similar_sequences(sequence):
+                    for consequent_symbol_index in \
+                    utilities.generate_consequent(sequence, self.lookup_table[similar_sequence_id]):
+                        score.update(consequent_symbol_index)
             level += 1
 
         return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
