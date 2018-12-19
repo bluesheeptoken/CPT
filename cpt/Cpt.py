@@ -20,9 +20,7 @@ class Cpt():
 
         for id_seq, sequence in enumerate(sequences):
 
-            indexes_sequence = self.alphabet.add_symbols(sequence)
-
-            for index in indexes_sequence[self.sequence_splitter:]:
+            for index in map(self.alphabet.add_symbol, sequence[self.sequence_splitter:]):
 
                 # Adding to the Prediction Tree
                 if not cursornode.has_child(index):
@@ -45,7 +43,7 @@ class Cpt():
 
     def predict(self, target_sequence, number_predictions=5):
         level = 0
-        target_indexes_sequence = self.alphabet.get_indexes(target_sequence)
+        target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
@@ -65,9 +63,7 @@ class Cpt():
 
             level += 1
 
-        return self.alphabet.get_symbols(
-            score.best_n_predictions(number_predictions)
-            )
+        return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
 
     def _retrieve_sequence(self, id_seq):
         return self.lookup_table[id_seq].retrieve_path_from_root()
