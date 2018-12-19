@@ -65,9 +65,6 @@ class Cpt():
 
         return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
 
-    def _retrieve_sequence(self, id_seq):
-        return self.lookup_table[id_seq].retrieve_path_from_root()
-
     def _find_similar_sequences(self, sequence):
 
         def _get_invert_index(index):
