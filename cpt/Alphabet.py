@@ -1,28 +1,24 @@
 class Alphabet():
     def __init__(self):
-        self.alphabet_length = 0
-        self.symbol_to_index = {}
-        self.index_to_symbol = []
+        self.length = 0
+        self.indexes = {}
+        self.symbols = []
 
-    def symbols_to_indexes(self, symbols):
-        return [self._get_index(symbol) for symbol in symbols]
+    def get_symbol(self, index):
+        if 0 <= index < self.length:
+            return self.symbols[index]
+        return None
 
-    def indexes_to_symbols(self, ints):
-        return [self._get_symbol(i) for i in ints]
+    def get_index(self, symbol):
+        return self.indexes.get(symbol)
 
-    def _add_symbol(self, symbol):
-        self.index_to_symbol.append(symbol)
-        self.symbol_to_index[symbol] = self.alphabet_length
-        self.alphabet_length += 1
-
-    def _get_index(self, symbol):
-        if symbol not in self.symbol_to_index.keys():
-            self._add_symbol(symbol)
-        return self.symbol_to_index[symbol]
-
-    def _get_symbol(self, index):
-        return self.index_to_symbol[index]
+    def add_symbol(self, symbol):
+        index = self.indexes.setdefault(symbol, self.length)
+        if index == self.length:
+            self.symbols.append(symbol)
+            self.length += 1
+        return index
 
     def __repr__(self):
-        return "{{alphabet_length: {}, symbol_to_index: {}, index_to_symbol: {}}}"\
-                .format(self.alphabet_length, self.symbol_to_index, self.index_to_symbol)
+        return "{{length: {}, indexes: {}, symbols: {}}}"\
+                .format(self.length, self.indexes, self.symbols)

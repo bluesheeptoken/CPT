@@ -29,9 +29,9 @@ class CptTest(unittest.TestCase):
                                   {2, 4},
                                   {4}]
 
-        cls.cpt.alphabet.alphabet_length = 5
-        cls.cpt.alphabet.symbol_to_index = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
-        cls.cpt.alphabet.index_to_symbol = ['A', 'B', 'C', 'D', 'E']
+        cls.cpt.alphabet.length = 5
+        cls.cpt.alphabet.indexes = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
+        cls.cpt.alphabet.symbols = ['A', 'B', 'C', 'D', 'E']
 
         cls.cpt.lookup_table = [cls.cpt.root.get_child(0).get_child(1).get_child(2),
                                 cls.cpt.root.get_child(0).get_child(1),
@@ -75,7 +75,7 @@ class CptTest(unittest.TestCase):
         expected_not_empty = {0, 1, 2}
         sequence_in_alphabet = [0]
         expected_empty = set()
-        sequence_not_in_alphabet = [5]
+        sequence_not_in_alphabet = [None]
 
         # WHEN
         actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access
