@@ -33,11 +33,13 @@ class CptTest(unittest.TestCase):
         cls.cpt.alphabet.indexes = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
         cls.cpt.alphabet.symbols = ['A', 'B', 'C', 'D', 'E']
 
-        cls.cpt.lookup_table = [cls.cpt.root.get_child(0).get_child(1).get_child(2),
-                                cls.cpt.root.get_child(0).get_child(1),
-                                cls.cpt.root.get_child(0).get_child(1).get_child(3),
-                                cls.cpt.root.get_child(1).get_child(2),
-                                cls.cpt.root.get_child(1).get_child(3).get_child(4)]
+        cls.cpt.lookup_table = [
+            cls.cpt.root.get_child(0).get_child(1).get_child(2),
+            cls.cpt.root.get_child(0).get_child(1),
+            cls.cpt.root.get_child(0).get_child(1).get_child(3),
+            cls.cpt.root.get_child(1).get_child(2),
+            cls.cpt.root.get_child(1).get_child(3).get_child(4)
+        ]
 
     def test_train(self):
         # GIVEN
@@ -68,9 +70,9 @@ class CptTest(unittest.TestCase):
         sequence_not_in_alphabet = [None]
 
         # WHEN
-        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access
-        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet) #pylint: disable=protected-access
-
+        # pylint: disable=protected-access
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet)
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet)
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)

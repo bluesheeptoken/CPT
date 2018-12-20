@@ -2,6 +2,7 @@ import unittest
 
 from cpt.PredictionTree import PredictionTree
 
+
 class PredictionTreeTest(unittest.TestCase):
 
     def setUp(self):
@@ -45,11 +46,13 @@ class PredictionTreeTest(unittest.TestCase):
         self.assertEqual(self.root.add_child('A'), self.root.children['A'])
 
     def test_add_unknown_child(self):
-        self.assertEqual(PredictionTree('C', self.root), self.root.add_child('C'))
+        self.assertEqual(PredictionTree('C', self.root),
+                         self.root.add_child('C'))
         self.assertEqual(len(self.root.children), 3)
 
     def test_generate_path_to_root(self):
-        self.assertEqual(list(self.node_abc.generate_path_to_root()), ['C', 'B', 'A'])
+        self.assertEqual(list(self.node_abc.generate_path_to_root()),
+                         ['C', 'B', 'A'])
 
     def test_equal(self):
         tree_1 = PredictionTree()
