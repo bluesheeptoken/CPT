@@ -1,5 +1,6 @@
 import heapq
 
+
 class Scorer():
     def __init__(self, alphabet_length):
         self.alphabet_length = alphabet_length

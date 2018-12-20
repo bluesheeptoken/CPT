@@ -2,6 +2,7 @@ import unittest
 
 from cpt.Alphabet import Alphabet
 
+
 class AlphabetTest(unittest.TestCase):
 
     def setUp(self):
@@ -12,7 +13,7 @@ class AlphabetTest(unittest.TestCase):
 
     def test_setup(self):
         self.assertEqual(self.alphabet.length, 3)
-        self.assertEqual(self.alphabet.indexes, {'C':0, 'P':1, 'T':2})
+        self.assertEqual(self.alphabet.indexes, {'C': 0, 'P': 1, 'T': 2})
         self.assertEqual(self.alphabet.symbols, ['C', 'P', 'T'])
 
     def test_get_known_symbol(self):

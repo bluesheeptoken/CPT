@@ -6,12 +6,13 @@ from cpt.PredictionTree import PredictionTree
 from cpt.Alphabet import Alphabet
 from cpt.Scorer import Scorer
 
+
 class Cpt():
-    def __init__(self, sequence_splitter=None, max_level=1):
+    def __init__(self, split_length=0, max_level=1):
         self.root = PredictionTree()
         self.inverted_index = []
         self.lookup_table = []
-        self.sequence_splitter = -sequence_splitter if sequence_splitter is not None else None #pylint: disable=invalid-unary-operand-type
+        self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
 
@@ -19,7 +20,8 @@ class Cpt():
 
         for id_seq, sequence in enumerate(sequences):
             current = self.root
-            for index in map(self.alphabet.add_symbol, sequence[self.sequence_splitter:]):
+            for index in map(self.alphabet.add_symbol,
+                             sequence[self.split_index:]):
 
                 # Adding to the Prediction Tree
                 current = current.add_child(index)
@@ -48,7 +50,7 @@ class Cpt():
             for sequence in generated_sequences:
                 for similar_sequence_id in self._find_similar_sequences(sequence):
                     for consequent_symbol_index in \
-                    utilities.generate_consequent(sequence, self.lookup_table[similar_sequence_id]):
+                        utilities.generate_consequent(sequence, self.lookup_table[similar_sequence_id]):
                         score.update(consequent_symbol_index)
             level += 1
 
@@ -66,12 +68,3 @@ class Cpt():
 
     def __repr__(self):
         return self.root.__repr__()
-
-    def __equal__(self, other):
-        return isinstance(other, Cpt) \
-            and self.root == other.root \
-            and self.inverted_index == other.inverted_index \
-            and self.lookup_table == other.lookup_table \
-            and self.sequence_splitter == other.sequence_splitter \
-            and self.max_level == other.max_level \
-            and self.alphabet == other.alphabet

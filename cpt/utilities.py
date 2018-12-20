@@ -1,4 +1,5 @@
-import itertools
+from itertools import takewhile
+
 
 def generate_consequent(target_sequence, similar_sequence_end_node):
     """
@@ -6,6 +7,6 @@ def generate_consequent(target_sequence, similar_sequence_end_node):
     is the subsequence of Y starting after the last item in
     common with S until the end of Y
     """
-    return itertools.takewhile(lambda i: i not in target_sequence,
-                               similar_sequence_end_node.generate_path_to_root())
+    return takewhile(lambda i: i not in target_sequence,
+                     similar_sequence_end_node.generate_path_to_root())
     # order is reversed, but it has no impact on the scoring
