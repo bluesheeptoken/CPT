@@ -8,10 +8,8 @@ class Scorer():
     def predictable(self):
         return any(self.scoring)
 
-    def update(self, consequent_sequences):
-        for sequence in consequent_sequences:
-            for element in sequence:
-                self.scoring[element] += 1
+    def update(self, consequent_element):
+        self.scoring[consequent_element] += 1
 
     def best_n_predictions(self, number_predictions):
         return heapq.nlargest(number_predictions,

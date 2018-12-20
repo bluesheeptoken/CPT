@@ -60,16 +60,6 @@ class CptTest(unittest.TestCase):
         # THEN
         self.assertEqual(actual, expected)
 
-    def test_retrieve_sequence(self):
-        # GIVEN
-        expected = [0, 1, 2]
-
-        # WHEN
-        actual = self.cpt._retrieve_sequence(0) #pylint: disable=protected-access
-
-        # THEN
-        self.assertEqual(expected, actual)
-
     def test_find_similar_sequences(self):
         # GIVEN
         expected_not_empty = {0, 1, 2}
