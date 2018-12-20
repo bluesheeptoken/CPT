@@ -68,12 +68,3 @@ class Cpt():
 
     def __repr__(self):
         return self.root.__repr__()
-
-    def __equal__(self, other):
-        return isinstance(other, Cpt) \
-            and self.root == other.root \
-            and self.inverted_index == other.inverted_index \
-            and self.lookup_table == other.lookup_table \
-            and self.split_index == other.split_index \
-            and self.max_level == other.max_level \
-            and self.alphabet == other.alphabet
