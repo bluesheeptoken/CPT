@@ -75,7 +75,7 @@ class CptTest(unittest.TestCase):
         expected_not_empty = {0, 1, 2}
         sequence_in_alphabet = [0]
         expected_empty = set()
-        sequence_not_in_alphabet = [5]
+        sequence_not_in_alphabet = [None]
 
         # WHEN
         actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet) #pylint: disable=protected-access

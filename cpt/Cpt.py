@@ -71,7 +71,7 @@ class Cpt():
     def _find_similar_sequences(self, sequence):
 
         def _get_invert_index(index):
-            if index < len(self.inverted_index):
+            if index is not None:
                 return self.inverted_index[index]
             return set()
 
