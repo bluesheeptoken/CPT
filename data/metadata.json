@@ -1,0 +1,22 @@
+{
+  "full_fifa": {
+    "alphabet_length": 14278, 
+    "number_sequences": 637051, 
+    "sequence_avg_length": 41
+  }, 
+  "full_santander": {
+    "alphabet_length": 12198, 
+    "number_sequences": 956645, 
+    "sequence_avg_length": 14
+  }, 
+  "partial_fifa": {
+    "alphabet_length": 3380, 
+    "number_sequences": 31602, 
+    "sequence_avg_length": 31
+  }, 
+  "partial_santander": {
+    "alphabet_length": 115, 
+    "number_sequences": 51, 
+    "sequence_avg_length": 17
+  }
+}
