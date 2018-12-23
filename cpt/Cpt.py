@@ -35,7 +35,10 @@ class Cpt():
             # Add the last node in the lookup_table
             self.lookup_table.append(current)
 
-    def predict(self, target_sequence, number_predictions=5):
+    def predict(self, sequences, number_predictions=5):
+        return list(map(lambda seq: self.predict_seq(seq, number_predictions), sequences))
+
+    def predict_seq(self, target_sequence, number_predictions=5):
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
@@ -50,7 +53,8 @@ class Cpt():
             for sequence in generated_sequences:
                 for similar_sequence_id in self._find_similar_sequences(sequence):
                     for consequent_symbol_index in \
-                        utilities.generate_consequent(sequence, self.lookup_table[similar_sequence_id]):
+                        utilities.generate_consequent(sequence,
+                                                      self.lookup_table[similar_sequence_id]):
                         score.update(consequent_symbol_index)
             level += 1
 
