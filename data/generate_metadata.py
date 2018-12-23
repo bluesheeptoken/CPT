@@ -13,10 +13,10 @@ def generate_metadata(data):
     number_sequences = 0
     alphabet = set()
     for sequence in data:
-        sum_length_sequence += len(sequence)
         number_sequences += 1
         for symbol in sequence:
             alphabet.add(symbol)
+            sum_length_sequence += 1
     return {"alphabet_length": len(alphabet),
             "sequence_avg_length": sum_length_sequence / number_sequences,
             "number_sequences": number_sequences}
