@@ -15,8 +15,9 @@ pylint profiling.py
 pycodestyle profiling.py
 ```
 
-## Source
+## Sources
 http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
+http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
 
 ## Data
 To download data, you will need to install lfs git extension
