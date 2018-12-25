@@ -21,9 +21,13 @@ http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
 http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
 
 ## Data
+### Download files
 To download data, you will need to install lfs git extension
 
 ## Profiling
+### Add metadata to metadata.json
+You should run `python generate_metadata.py <data_path> <datasetname>` from the data directory
+
 ### Run profiling
 To run the profiling, you need to run the command `python profiling/profiling.py <mode> <data_path> <profile_path>`
 
