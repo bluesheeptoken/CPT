@@ -1,4 +1,5 @@
 import json
+import sys
 
 
 def load_dat_file(path):
@@ -23,26 +24,24 @@ def generate_metadata(data):
 
 
 def main():
-    with open('partial_santander_product_recommandation.json') as file:
-        partial_santander = json.load(file)
+    data_path, dataset_name = sys.argv[1:]  # pylint: disable=unbalanced-tuple-unpacking
 
-    with open('full_santander_product_recommandation.json') as file:
-        full_santander = json.load(file)
+    with open(data_path) as file:
+        if data_path.endswith('.json'):
+            data = list(json.load(file).values())
+        else:
+            data = [[int(x) for x in l.rstrip().split()]
+                    for l in file.readlines()]
 
-    partial_fifa = load_dat_file('FIFA.dat')
+    with open('metadata.json') as file:
+        try:
+            metadata = json.load(file)
+        except ValueError:  # Handle empty file
+            metadata = {}
 
-    full_fifa = load_dat_file('FIFA_large.dat')
+    metadata[dataset_name] = generate_metadata(data)
 
-    metadata = {"partial_santander":
-                generate_metadata(partial_santander.values()),
-                "full_santander":
-                generate_metadata(full_santander.values()),
-                "partial_fifa":
-                generate_metadata(partial_fifa),
-                "full_fifa":
-                generate_metadata(full_fifa)}
-
-    with open('metadata.json', 'w') as file:
+    with open('metadata.json', 'w+') as file:
         file.write(json.dumps(metadata, indent=2, sort_keys=True))
 
 
