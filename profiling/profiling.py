@@ -1,16 +1,21 @@
 import cProfile
 import json
 import sys
-from cpt.Cpt import Cpt
+import os
+# Add cpt to python path
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from cpt.Cpt import Cpt  # pylint: disable=wrong-import-position
 
 
 def main():
     mode, data_path, output_path = sys.argv[1:]  # pylint: disable=unbalanced-tuple-unpacking
 
-    with open(data_path) as file:
-        if data_path.endswith('.json'):
+    if data_path.endswith('.json'):
+        with open(data_path) as file:
             data = list(json.load(file).values())
-        else:
+    else:
+        with open(data_path) as file:
             data = [[int(x) for x in l.rstrip().split()]
                     for l in file.readlines()]
 
