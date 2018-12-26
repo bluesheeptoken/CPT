@@ -1,3 +1,4 @@
+import argparse
 import cProfile
 import json
 import sys
@@ -9,23 +10,30 @@ from cpt.Cpt import Cpt  # pylint: disable=wrong-import-position
 
 
 def main():
-    mode, data_path, output_path = sys.argv[1:]  # pylint: disable=unbalanced-tuple-unpacking
+    parser = argparse.ArgumentParser(description='Profile code for train or predict with cpt')
+    parser.add_argument('--mode', type=str, choices=['train', 'predict'], dest='mode',
+                        help='mode should be either train or predict')
+    parser.add_argument('--data_path', dest='data_path', help='the data path file')
+    parser.add_argument('--profile_path', dest='profile_path',
+                        help='the output path file for the profile')
 
-    if data_path.endswith('.json'):
-        with open(data_path) as file:
+    args = parser.parse_args()
+
+    if args.data_path.endswith('.json'):
+        with open(args.data_path) as file:
             data = list(json.load(file).values())
     else:
-        with open(data_path) as file:
-            data = [[int(x) for x in l.rstrip().split()]
-                    for l in file.readlines()]
+        with open(args.data_path) as file:
+            data = map(lambda l: [int(x) for x in l.rstrip().split()],
+                       file.readlines())
 
     cpt = Cpt()
 
-    if mode == 'predict':
-        *data, = map(lambda sequence: sequence[-10:], data)
+    if args.mode == 'predict':
+        data = [sequence[-10:] for sequence in data]
         cpt.train(data)
 
-    cProfile.runctx('cpt.{}(data)'.format(mode), None, locals(), output_path)
+    cProfile.runctx('cpt.{}(data)'.format(args.mode), None, locals(), args.profile_path)
 
 
 if __name__ == '__main__':
