@@ -25,9 +25,9 @@ To download data, you will need to install lfs git extension
 
 ## Profiling
 ### Run profiling
-To run the profiling, you need to run the command `python profiling/profiling.py --mode <mode> --data_path <data_path> --profile_path <profile_path>`
+To run the profiling, you need to run the command `python profiling/profiling.py <mode> <data_path> <profile_path>`
 
-For instance, `python profiling/profiling.py --mode train --data_path data/FIFA.dat --profile_path profiling/sample_profiling.profile`
+For instance, `python profiling/profiling.py train data/FIFA.dat profiling/sample_profiling.profile`
 
 The mode should be either train or predict
 

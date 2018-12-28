@@ -11,10 +11,10 @@ from cpt.Cpt import Cpt  # pylint: disable=wrong-import-position
 
 def main():
     parser = argparse.ArgumentParser(description='Profile code for train or predict with cpt')
-    parser.add_argument('--mode', type=str, choices=['train', 'predict'], dest='mode',
+    parser.add_argument(choices=['train', 'predict'], dest='mode',
                         help='mode should be either train or predict')
-    parser.add_argument('--data_path', dest='data_path', help='the data path file')
-    parser.add_argument('--profile_path', dest='profile_path',
+    parser.add_argument(dest='data_path', help='the data path file')
+    parser.add_argument(dest='profile_path',
                         help='the output path file for the profile')
 
     args = parser.parse_args()
