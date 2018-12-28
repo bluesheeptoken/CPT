@@ -1,9 +1,11 @@
 # CPT
 
 ## Tests
-```
-python -m unittest discover -p "*Test.py"
-```
+### Run tests
+The tests can be run with pytest, just use `pytest`
+
+### Generate coverage
+To generate coverage, you should use the coverage python module
 
 ## Linter
 ```
