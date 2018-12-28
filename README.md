@@ -28,7 +28,7 @@ To download data, you will need to install lfs git extension
 ### Add metadata to metadata.json
 You should run `python generate_metadata.py <data_path> <datasetname>` from the data directory
 
-For instance, `python generate_metadata.py FIFA.dat new_name_test`
+For instance, `python generate_metadata.py FIFA.dat partial_fifa`
 
 ### Run profiling
 To run the profiling, you need to run the command `python profiling/profiling.py <mode> <data_path> <profile_path>`

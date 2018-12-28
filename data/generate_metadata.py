@@ -3,13 +3,6 @@ import json
 import sys
 
 
-def load_dat_file(path):
-    with open(path, 'r') as file:
-        sequences = [map(int, l.rstrip().split())
-                     for l in file.readlines()]
-    return sequences
-
-
 def generate_metadata(data):
     sum_length_sequence = 0
     number_sequences = 0
@@ -36,8 +29,8 @@ def main():
         if args.data_path.endswith('.json'):
             data = list(json.load(file).values())
         else:
-            data = [[int(x) for x in l.rstrip().split()]
-                    for l in file.readlines()]
+            data = map(lambda l: map(int, l.rstrip().split()),
+                       file.readlines())
 
     with open('metadata.json') as file:
         try:
