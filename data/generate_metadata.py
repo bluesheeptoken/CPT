@@ -1,3 +1,4 @@
+import argparse
 import json
 import sys
 
@@ -24,10 +25,15 @@ def generate_metadata(data):
 
 
 def main():
-    data_path, dataset_name = sys.argv[1:]  # pylint: disable=unbalanced-tuple-unpacking
+    parser = argparse.ArgumentParser(description='Generate metadata for datasets')
+    parser.add_argument(dest='data_path', help='the data path file')
+    parser.add_argument(dest='dataset_name',
+                        help='the dataset name to store in the metadata json')
 
-    with open(data_path) as file:
-        if data_path.endswith('.json'):
+    args = parser.parse_args()
+
+    with open(args.data_path) as file:
+        if args.data_path.endswith('.json'):
             data = list(json.load(file).values())
         else:
             data = [[int(x) for x in l.rstrip().split()]
@@ -39,7 +45,7 @@ def main():
         except ValueError:  # Handle empty file
             metadata = {}
 
-    metadata[dataset_name] = generate_metadata(data)
+    metadata[args.dataset_name] = generate_metadata(data)
 
     with open('metadata.json', 'w+') as file:
         file.write(json.dumps(metadata, indent=2, sort_keys=True))
