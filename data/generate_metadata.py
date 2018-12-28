@@ -1,11 +1,5 @@
+import argparse
 import json
-
-
-def load_dat_file(path):
-    with open(path, 'r') as file:
-        sequences = [map(int, l.rstrip().split())
-                     for l in file.readlines()]
-    return sequences
 
 
 def generate_metadata(data):
@@ -23,26 +17,29 @@ def generate_metadata(data):
 
 
 def main():
-    with open('partial_santander_product_recommandation.json') as file:
-        partial_santander = json.load(file)
+    parser = argparse.ArgumentParser(description='Generate metadata for datasets')
+    parser.add_argument(dest='data_path', help='the data path file')
+    parser.add_argument(dest='dataset_name',
+                        help='the dataset name to store in the metadata json')
 
-    with open('full_santander_product_recommandation.json') as file:
-        full_santander = json.load(file)
+    args = parser.parse_args()
 
-    partial_fifa = load_dat_file('FIFA.dat')
+    with open(args.data_path) as file:
+        if args.data_path.endswith('.json'):
+            data = list(json.load(file).values())
+        else:
+            data = map(lambda l: map(int, l.rstrip().split()),
+                       file.readlines())
 
-    full_fifa = load_dat_file('FIFA_large.dat')
+    with open('metadata.json') as file:
+        try:
+            metadata = json.load(file)
+        except ValueError:  # Handle empty file
+            metadata = {}
 
-    metadata = {"partial_santander":
-                generate_metadata(partial_santander.values()),
-                "full_santander":
-                generate_metadata(full_santander.values()),
-                "partial_fifa":
-                generate_metadata(partial_fifa),
-                "full_fifa":
-                generate_metadata(full_fifa)}
+    metadata[args.dataset_name] = generate_metadata(data)
 
-    with open('metadata.json', 'w') as file:
+    with open('metadata.json', 'w+') as file:
         file.write(json.dumps(metadata, indent=2, sort_keys=True))
 
 
