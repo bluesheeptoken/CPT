@@ -1,6 +1,5 @@
 import argparse
 import json
-import sys
 
 
 def generate_metadata(data):
