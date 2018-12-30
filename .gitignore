@@ -109,3 +109,4 @@ venv.bak/
 
 # Cython reports
 reports
+*.html
