@@ -7,6 +7,10 @@ The tests can be run with pytest, just use `pytest`
 ### Generate coverage
 To generate coverage, you should use the coverage python module
 
+For the python code you can use `pytest --cov=cpt tests`
+
+And for the cython code `pytest --cov=cptCython testsCython`
+
 ## Linter
 ```
 pylint cpt
