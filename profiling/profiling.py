@@ -6,7 +6,7 @@ import os
 # Add cpt to python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from cpt.Cpt import Cpt
+from cpt.Cpt import Cpt  # pylint: disable=wrong-import-position
 
 
 def main(mode, data_path, profile_path):
@@ -29,14 +29,15 @@ def main(mode, data_path, profile_path):
 
 
 if __name__ == '__main__':
-    
-    parser = argparse.ArgumentParser(description='Profile code for train or predict with cpt')
+
+    parser = argparse.ArgumentParser(  # pylint: disable=invalid-name
+        description='Profile code for train or predict with cpt')
     parser.add_argument(choices=['train', 'predict'], dest='mode',
                         help='mode should be either train or predict')
     parser.add_argument(dest='data_path', help='the data path file')
     parser.add_argument(dest='profile_path',
                         help='the output path file for the profile')
 
-    args = parser.parse_args()
+    args = parser.parse_args()  # pylint: disable=invalid-name
 
     main(args.mode, args.data_path, args.profile_path)
