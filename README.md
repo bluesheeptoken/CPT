@@ -2,7 +2,9 @@
 
 ## Tests
 ### Run tests
-The tests can be run with pytest, just use `pytest`
+Pytest is used for tests
+
+`make test`
 
 ### Generate coverage
 To generate coverage, you should use the coverage python module
@@ -10,14 +12,9 @@ To generate coverage, you should use the coverage python module
 For the python code you can use `pytest --cov=cpt tests`
 
 ## Linter
-```
-pylint cpt
-pycodestyle cpt
-pylint tests
-pycodestyle tests
-pylint profiling
-pycodestyle profiling
-```
+pycodestyle and pylint are used for linter
+
+`make lint`
 
 ## Sources
 http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
@@ -45,3 +42,6 @@ The train profiles should be made with the full datasets, the predict profiles s
 
 ### Read stats
 To read stats you need to use the [pstats](https://docs.python.org/3/library/profile.html) module in python. `python -m pstats <profile_path>`
+
+## Before pushing
+Make sure you ran `make test` and `make lint` before pushing
