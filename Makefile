@@ -1,9 +1,9 @@
 BUILD_DIR=build
-SRC_DIR=cptCython
-TEST_DIR=testsCython
+SRC_DIR=cpt
+TEST_DIR=tests
 REPORTS_DIR=reports
 
-build: cptCython/*.pyx
+build: cpt/*.pyx
 	python3 setup.py build_ext --inplace
 	mkdir -p ${REPORTS_DIR}
 	mv ${SRC_DIR}/*.html ${REPORTS_DIR}
