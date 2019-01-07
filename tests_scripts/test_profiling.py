@@ -17,7 +17,7 @@ class ProfilingTest(unittest.TestCase):
             data.write(b'0 1 2 3 4 5 6')
             data.flush()
             with tempfile.NamedTemporaryFile() as file:
-                profiling.main('train', data.name, file.name)
+                profiling.profile('train', data.name, file.name)
                 profile = pstats.Stats(file.name)
                 # Train should call add_child if everything goes well
                 self.assertTrue(check_called_method(profile, 'add_child'))
@@ -27,6 +27,6 @@ class ProfilingTest(unittest.TestCase):
             json.dump({'id': list('abcdefghijkl')}, data)
             data.flush()
             with tempfile.NamedTemporaryFile() as file:
-                profiling.main('predict', data.name, file.name)
+                profiling.profile('predict', data.name, file.name)
                 profile = pstats.Stats(file.name)
                 self.assertTrue(check_called_method(profile, '_find_similar_sequences'))

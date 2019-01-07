@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')
 from cpt.Cpt import Cpt  # pylint: disable=wrong-import-position
 
 
-def main(mode, data_path, profile_path):
+def profile(mode, data_path, profile_path):
 
     if data_path.endswith('.json'):
         with open(data_path) as file:
@@ -40,4 +40,4 @@ if __name__ == '__main__':
 
     args = parser.parse_args()  # pylint: disable=invalid-name
 
-    main(args.mode, args.data_path, args.profile_path)
+    profile(args.mode, args.data_path, args.profile_path)
