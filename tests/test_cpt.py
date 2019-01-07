@@ -1,6 +1,6 @@
 import unittest
 
-from cpt.Cpt import Cpt
+from cpt.Cpt import Cpt  # pylint: disable=no-name-in-module
 
 
 class CptTest(unittest.TestCase):

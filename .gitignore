@@ -5,6 +5,7 @@ __pycache__/
 
 # C extensions
 *.so
+*.c
 
 # Distribution / packaging
 .Python
@@ -105,3 +106,10 @@ venv.bak/
 
 # Pycharm
 .idea
+
+# Cython reports
+reports
+*.html
+
+# Profiling stuff
+*.profile
