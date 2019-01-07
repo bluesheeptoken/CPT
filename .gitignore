@@ -110,3 +110,6 @@ venv.bak/
 # Cython reports
 reports
 *.html
+
+# Profiling stuff
+*.profile
