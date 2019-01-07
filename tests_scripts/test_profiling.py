@@ -7,7 +7,7 @@ from profiling import profiling
 
 
 def check_called_method(profile, method_name):
-    return [x for x in profile.strip_dirs().stats.keys() if x[2] == method_name]
+    return any(map(lambda x: x[2] == method_name, profile.strip_dirs().stats.keys()))
 
 
 class ProfilingTest(unittest.TestCase):
@@ -15,7 +15,7 @@ class ProfilingTest(unittest.TestCase):
     def test_train_dat(self):
         with tempfile.NamedTemporaryFile() as data:
             data.write(b'0 1 2 3 4 5 6')
-            data.read()  # The file is empty if I do not use any data method
+            data.flush()
             with tempfile.NamedTemporaryFile() as file:
                 profiling.main('train', data.name, file.name)
                 profile = pstats.Stats(file.name)
@@ -25,7 +25,7 @@ class ProfilingTest(unittest.TestCase):
     def test_predict_json(self):
         with tempfile.NamedTemporaryFile('r+', suffix='.json') as data:
             json.dump({'id': list('abcdefghijkl')}, data)
-            data.read()  # The file is empty if I do not use any data method
+            data.flush()
             with tempfile.NamedTemporaryFile() as file:
                 profiling.main('predict', data.name, file.name)
                 profile = pstats.Stats(file.name)
