@@ -15,4 +15,4 @@ class Scorer():
     def best_n_predictions(self, number_predictions):
         return heapq.nlargest(number_predictions,
                               range(self.alphabet_length),
-                              key=lambda i: (self.scoring[i], i))
+                              key=lambda i: self.scoring[i])

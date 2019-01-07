@@ -54,7 +54,7 @@ class CptTest(unittest.TestCase):
     def test_predict(self):
         # GIVEN
         target_sequence = [['A', 'B']]
-        expected = [['D', 'C']]
+        expected = [['C', 'D']]
 
         # WHEN
         actual = self.cpt.predict(target_sequence, 2)
