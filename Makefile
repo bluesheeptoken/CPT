@@ -30,6 +30,6 @@ lint:
 	pylint tests_scripts
 	pycodestyle tests_scripts
 
-test:
+test: build
 	pytest
 	pytest tests_scripts
