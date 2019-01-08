@@ -1,10 +1,11 @@
-class Alphabet():
-    def __init__(self):
+cdef class Alphabet:
+
+    def __cinit__(self):
         self.length = 0
         self.indexes = {}
         self.symbols = []
 
-    def get_symbol(self, index):
+    def get_symbol(self, int index):
         if 0 <= index < self.length:
             return self.symbols[index]
         return None
@@ -13,7 +14,7 @@ class Alphabet():
         return self.indexes.get(symbol)
 
     def add_symbol(self, symbol):
-        index = self.indexes.setdefault(symbol, self.length)
+        cdef int index = self.indexes.setdefault(symbol, self.length)
         if index == self.length:
             self.symbols.append(symbol)
             self.length += 1

@@ -3,7 +3,7 @@ from itertools import combinations
 
 from cpt cimport utilities
 from cpt.PredictionTree import PredictionTree
-from cpt.Alphabet import Alphabet
+from cpt cimport alphabet
 from cpt.Scorer import Scorer
 
 
@@ -14,7 +14,8 @@ class Cpt():
         self.lookup_table = []
         self.split_index = -split_length
         self.max_level = max_level
-        self.alphabet = Alphabet()
+        cdef alphabet.Alphabet a = alphabet.Alphabet()
+        self.alphabet = a
 
     def train(self, sequences):
 
