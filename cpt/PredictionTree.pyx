@@ -12,9 +12,11 @@ class PredictionTree():
 
     def generate_path_to_root(self):
         current = self
+        ans = []
         while current.incoming_transition is not None:
-            yield current.incoming_transition
+            ans.append(current.incoming_transition)
             current = current.parent
+        return ans
 
     def __repr__(self):
         return "{{'incoming_transition': {}, 'children': {}}}"\
