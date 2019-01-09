@@ -55,8 +55,7 @@ class Cpt():
                 for similar_sequence_id in self._find_similar_sequences(sequence):
                     for consequent_symbol_index in \
                         utilities.generate_consequent(sequence,
-                                                      self.lookup_table[similar_sequence_id] \
-                                                      .generate_path_to_root()):
+                                                      self.lookup_table[similar_sequence_id]):
                         score.update(consequent_symbol_index)
             level += 1
 
