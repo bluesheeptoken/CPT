@@ -1,9 +1,9 @@
 from functools import reduce
 from itertools import combinations
 
-from cpt import utilities
+from cpt cimport utilities
 from cpt.PredictionTree import PredictionTree
-from cpt.Alphabet import Alphabet
+from cpt cimport alphabet
 from cpt.Scorer import Scorer
 
 
@@ -14,7 +14,8 @@ class Cpt():
         self.lookup_table = []
         self.split_index = -split_length
         self.max_level = max_level
-        self.alphabet = Alphabet()
+        cdef alphabet.Alphabet a = alphabet.Alphabet()
+        self.alphabet = a
 
     def train(self, sequences):
 
@@ -54,7 +55,8 @@ class Cpt():
                 for similar_sequence_id in self._find_similar_sequences(sequence):
                     for consequent_symbol_index in \
                         utilities.generate_consequent(sequence,
-                                                      self.lookup_table[similar_sequence_id]):
+                                                      self.lookup_table[similar_sequence_id] \
+                                                      .generate_path_to_root()):
                         score.update(consequent_symbol_index)
             level += 1
 

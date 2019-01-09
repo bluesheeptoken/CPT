@@ -1,6 +1,6 @@
 import unittest
 
-from cpt.Alphabet import Alphabet
+from cpt.alphabet import Alphabet
 
 
 class AlphabetTest(unittest.TestCase):
