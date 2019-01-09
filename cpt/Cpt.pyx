@@ -4,7 +4,7 @@ from itertools import combinations
 from cpt cimport utilities
 from cpt.PredictionTree import PredictionTree
 from cpt cimport alphabet
-from cpt.Scorer import Scorer
+from cpt.scorer cimport Scorer
 
 
 class Cpt():

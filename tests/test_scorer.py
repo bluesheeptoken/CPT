@@ -1,6 +1,6 @@
 import unittest
 
-from cpt.Scorer import Scorer
+from cpt.scorer import Scorer
 
 
 class ScorerTest(unittest.TestCase):
