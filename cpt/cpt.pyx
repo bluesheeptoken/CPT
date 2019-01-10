@@ -7,15 +7,14 @@ from cpt.alphabet cimport Alphabet
 from cpt.scorer cimport Scorer
 
 
-class Cpt():
-    def __init__(self, split_length=0, max_level=1):
+cdef class Cpt:
+    def __cinit__(self, split_length=0, max_level=1):
         self.root = PredictionTree()
         self.inverted_index = []
         self.lookup_table = []
         self.split_index = -split_length
         self.max_level = max_level
-        cdef Alphabet a = Alphabet()
-        self.alphabet = a
+        self.alphabet = Alphabet()
 
     def train(self, sequences):
 
