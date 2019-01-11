@@ -2,7 +2,7 @@ from functools import reduce
 from itertools import combinations
 
 from cpt.utilities cimport generate_consequent
-from cpt.prediction_tree import PredictionTree
+from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.scorer cimport Scorer
 
