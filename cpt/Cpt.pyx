@@ -2,14 +2,14 @@ from functools import reduce
 from itertools import combinations
 
 from cpt cimport utilities
-from cpt.PredictionTree import PredictionTree
+from cpt import prediction_tree
 from cpt cimport alphabet
-from cpt.scorer cimport Scorer
+from cpt cimport scorer
 
 
 class Cpt():
     def __init__(self, split_length=0, max_level=1):
-        self.root = PredictionTree()
+        self.root = prediction_tree.PredictionTree()
         self.inverted_index = []
         self.lookup_table = []
         self.split_index = -split_length
@@ -42,7 +42,7 @@ class Cpt():
     def predict_seq(self, target_sequence, number_predictions=5):
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
-        score = Scorer(self.alphabet.length)
+        score = scorer.Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
 
@@ -55,8 +55,7 @@ class Cpt():
                 for similar_sequence_id in self._find_similar_sequences(sequence):
                     for consequent_symbol_index in \
                         utilities.generate_consequent(sequence,
-                                                      self.lookup_table[similar_sequence_id] \
-                                                      .generate_path_to_root()):
+                                                      self.lookup_table[similar_sequence_id]):
                         score.update(consequent_symbol_index)
             level += 1
 
