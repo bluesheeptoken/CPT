@@ -1,9 +1,9 @@
 from cpython.object cimport Py_EQ, Py_NE
-from cpt.alphabet cimport NOT_A_LETTER
+from cpt.alphabet cimport NOT_AN_INDEX
 
 
 cdef class PredictionTree:
-    def __cinit__(self, incoming_transition=NOT_A_LETTER, parent=None):
+    def __cinit__(self, incoming_transition=NOT_AN_INDEX, parent=None):
         self.children = {}
         self.incoming_transition = incoming_transition
         self.parent = parent
@@ -17,7 +17,7 @@ cdef class PredictionTree:
     def generate_path_to_root(self):
         current = self
         ans = []
-        while current.incoming_transition != NOT_A_LETTER:
+        while current.incoming_transition != NOT_AN_INDEX:
             ans.append(current.incoming_transition)
             current = current.parent
         return ans

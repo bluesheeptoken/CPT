@@ -1,4 +1,4 @@
-from cpt.alphabet cimport NOT_A_LETTER
+from cpt.alphabet cimport NOT_AN_INDEX
 
 
 cdef list generate_consequent(tuple target_sequence, PredictionTree end_node):
@@ -9,7 +9,7 @@ cdef list generate_consequent(tuple target_sequence, PredictionTree end_node):
     """
     consequent_sequence = []
     cdef int next_transition = end_node.incoming_transition
-    while next_transition != NOT_A_LETTER and next_transition not in target_sequence:
+    while next_transition != NOT_AN_INDEX and next_transition not in target_sequence:
         consequent_sequence.append(next_transition)
         end_node = end_node.parent
         next_transition = end_node.incoming_transition

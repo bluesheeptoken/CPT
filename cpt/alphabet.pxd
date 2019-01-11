@@ -1,5 +1,5 @@
 cdef enum:
-    NOT_A_LETTER = -1
+    NOT_AN_INDEX = -1
 
 cdef class Alphabet:
     cdef public int length
