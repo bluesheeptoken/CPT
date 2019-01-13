@@ -5,6 +5,7 @@ from cpt.utilities cimport generate_consequent
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.scorer cimport Scorer
+from cpt.bitset cimport BitSet
 
 
 cdef class Cpt:
@@ -15,8 +16,11 @@ cdef class Cpt:
         self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
+        self.number_train_sequences
 
     def train(self, sequences):
+
+        self.number_train_sequences = len(sequences)
 
         for id_seq, sequence in enumerate(sequences):
             current = self.root
@@ -28,7 +32,7 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < len(self.inverted_index):
-                    self.inverted_index.append(set())
+                    self.inverted_index.append(BitSet(self.number_train_sequences))
 
                 self.inverted_index[index].add(id_seq)
 
@@ -62,13 +66,15 @@ cdef class Cpt:
 
     def _find_similar_sequences(self, sequence):
 
-        def _get_invert_index(index):
-            if index is not None:
-                return self.inverted_index[index]
-            return set()
+        if not sequence or -1 in sequence:
+            return []
+        else:
+            bitset_temp = self.inverted_index[sequence[0]].copy()
 
-        head, *queue = map(_get_invert_index, sequence)
-        return reduce(lambda x, y: x & y, queue, head)
+        for i in range(1, len(sequence)):
+            bitset_temp.inter(self.inverted_index[sequence[i]])
+
+        return bitset_temp.get_ints()
 
     def __repr__(self):
         return self.root.__repr__()
