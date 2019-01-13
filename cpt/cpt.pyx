@@ -1,3 +1,5 @@
+# distutils: language = c++
+from libcpp.vector cimport vector
 from functools import reduce
 from itertools import combinations
 
@@ -42,10 +44,12 @@ cdef class Cpt:
     def predict(self, sequences, number_predictions=5):
         return list(map(lambda seq: self.predict_seq(seq, number_predictions), sequences))
 
-    def predict_seq(self, target_sequence, number_predictions=5):
+    cdef predict_seq(self, target_sequence, number_predictions=5):
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
+
+        cdef vector[bint] vector
 
         while not score.predictable() and level < self.max_level:
 
@@ -55,26 +59,31 @@ cdef class Cpt:
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
-                for similar_sequence_id in self._find_similar_sequences(sequence):
-                    for consequent_symbol_index in \
-                        generate_consequent(sequence,
-                                            self.lookup_table[similar_sequence_id]):
-                        score.update(consequent_symbol_index)
+                similar_sequences = self._find_similar_sequences(sequence)
+
+                vector = similar_sequences.vector
+
+                for similar_sequence_id in range(vector.size()):
+                    if vector[similar_sequence_id]:
+                        for consequent_symbol_index in \
+                            generate_consequent(sequence,
+                                                self.lookup_table[similar_sequence_id]):
+                            score.update(consequent_symbol_index)
             level += 1
 
         return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
 
-    def _find_similar_sequences(self, sequence):
+    cpdef _find_similar_sequences(self, sequence):
 
         if not sequence or NOT_AN_INDEX in sequence:
-            return []
+            return BitSet(0)
 
         bitset_temp = self.inverted_index[sequence[0]].copy()
 
         for i in range(1, len(sequence)):
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
-        return bitset_temp.get_ints()
+        return bitset_temp
 
     def __repr__(self):
         return self.root.__repr__()

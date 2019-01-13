@@ -9,3 +9,6 @@ cdef class Cpt:
     cdef public int split_index
     cdef public int max_level
     cdef public Alphabet alphabet
+
+    cdef predict_seq(self, target_sequence, number_predictions=*)
+    cpdef _find_similar_sequences(self, sequence)

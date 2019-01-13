@@ -96,8 +96,8 @@ class CptTest(unittest.TestCase):
 
         # WHEN
         # pylint: disable=protected-access
-        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet)
-        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet)
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet).get_ints()
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet).get_ints()
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)
