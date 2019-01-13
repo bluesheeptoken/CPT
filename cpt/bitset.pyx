@@ -20,8 +20,7 @@ cdef class BitSet:
 
     cpdef BitSet copy(self):
         cdef BitSet new_bitset = BitSet(self.vector.size())
-        for i in range(self.vector.size()):
-            new_bitset.vector[i] = self.vector[i]
+        new_bitset.vector.assign(self.vector.begin(), self.vector.end())
         return new_bitset
 
     def get_ints(self):

@@ -20,6 +20,9 @@ class BitSetTest(unittest.TestCase):
     def test_copy(self):
         bitset_copy = self.bitset_1.copy()
         self.assertEqual(bitset_copy.get_ints(), [0, 4])
+        bitset_copy.add(2)
+        self.assertEqual(bitset_copy.get_ints(), [0, 2, 4])
+        self.assertEqual(self.bitset_1.get_ints(), [0, 4])
 
     def test_inter(self):
         bitset = self.bitset_1.copy()
