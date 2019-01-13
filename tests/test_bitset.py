@@ -14,10 +14,8 @@ class BitSetTest(unittest.TestCase):
         self.bitset_2.add(5)
 
     def test_setup(self):
-        ints_bitset_1 = [x for x in range(len(self.bitset_1.vector)) if self.bitset_1.vector[x]]
-        self.assertEqual(ints_bitset_1, [0, 4])
-        ints_bitset_2 = [x for x in range(len(self.bitset_2.vector)) if self.bitset_2.vector[x]]
-        self.assertEqual(ints_bitset_2, [0, 5])
+        self.assertEqual(self.bitset_1.get_ints(), [0, 4])
+        self.assertEqual(self.bitset_2.get_ints(), [0, 5])
 
     def test_inter(self):
         self.bitset_1.inter(self.bitset_2)

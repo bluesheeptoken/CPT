@@ -17,3 +17,12 @@ cdef class BitSet:
     cpdef void add(self, int element):
         if 0 <= element < self.vector.size():
             self.vector[element] = True
+
+    cpdef BitSet copy(self):
+        cdef BitSet new_bitset = BitSet(self.vector.size())
+        for i in range(self.vector.size()):
+            new_bitset.vector[i] = self.vector[i]
+        return new_bitset
+
+    def get_ints(self):
+        return [x for x in range(self.vector.size()) if self.vector[x]]
