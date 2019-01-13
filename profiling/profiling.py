@@ -16,8 +16,8 @@ def profile(mode, data_path, profile_path):
             data = list(json.load(file).values())
     else:
         with open(data_path) as file:
-            data = map(lambda l: [int(x) for x in l.rstrip().split()],
-                       file.readlines())
+            data = list(map(lambda l: [int(x) for x in l.rstrip().split()],
+                       file.readlines()))
 
     cpt = Cpt()
 
