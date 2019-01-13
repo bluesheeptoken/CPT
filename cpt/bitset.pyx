@@ -1,11 +1,12 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp cimport bool
 
 
 cdef class BitSet:
 
     def __cinit__(self, int size):
-        self.vector = vector[bint](size)
+        self.vector = vector[bool](size)
 
     cpdef void inter(self, BitSet other) except *:
         cdef int i

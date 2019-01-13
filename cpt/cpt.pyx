@@ -1,5 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
+from libcpp cimport bool
 from functools import reduce
 from itertools import combinations
 
@@ -49,7 +50,7 @@ cdef class Cpt:
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
 
-        cdef vector[bint] vector
+        cdef vector[bool] vector
 
         while not score.predictable() and level < self.max_level:
 
