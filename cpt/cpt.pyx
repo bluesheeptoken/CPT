@@ -4,6 +4,7 @@ from itertools import combinations
 from cpt.utilities cimport generate_consequent
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
+from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
 from cpt.bitset cimport BitSet
 
@@ -65,10 +66,10 @@ cdef class Cpt:
 
     def _find_similar_sequences(self, sequence):
 
-        if not sequence or -1 in sequence:
+        if not sequence or NOT_AN_INDEX in sequence:
             return []
-        else:
-            bitset_temp = self.inverted_index[sequence[0]].copy()
+
+        bitset_temp = self.inverted_index[sequence[0]].copy()
 
         for i in range(1, len(sequence)):
             bitset_temp.inter(self.inverted_index[sequence[i]])
