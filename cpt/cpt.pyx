@@ -78,7 +78,7 @@ cdef class Cpt:
 
         if not sequence or NOT_AN_INDEX in sequence:
             return BitSet(0)
-
+        cdef BitSet bitset_temp
         bitset_temp = self.inverted_index[sequence[0]].copy()
 
         for i in range(1, len(sequence)):
