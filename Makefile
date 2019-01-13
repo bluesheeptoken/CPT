@@ -20,14 +20,15 @@ clean:
 	rm -f ${SRC_DIR}/*.c
 	rm -f ${SRC_DIR}/*.so
 	rm -f ${SRC_DIR}/*.h
+	rm -f ${SRC_DIR}/*.cpp
 	rm -rf ${REPORTS_DIR}
 	rm -rf ${COVERAGE_DIR}
 
 lint:
 	pylint ${TEST_DIR}
 	pycodestyle ${TEST_DIR}
-	pylint profiling
-	pycodestyle profiling --ignore=E402
+	pylint profiling/profiling.py
+	pycodestyle profiling/profiling.py --ignore=E402
 	pylint tests_scripts
 	pycodestyle tests_scripts
 

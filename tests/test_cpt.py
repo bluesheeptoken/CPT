@@ -1,6 +1,7 @@
 import unittest
 
 from cpt.cpt import Cpt  # pylint: disable=no-name-in-module
+from cpt.bitset import BitSet
 
 
 class CptTest(unittest.TestCase):
@@ -23,11 +24,34 @@ class CptTest(unittest.TestCase):
                          ['B', 'C'],
                          ['B', 'D', 'E']]
 
-        cls.cpt.inverted_index = [{0, 1, 2},
-                                  {0, 1, 2, 3, 4},
-                                  {0, 3},
-                                  {2, 4},
-                                  {4}]
+        bitset0 = BitSet(5)
+        bitset0.add(0)
+        bitset0.add(1)
+        bitset0.add(2)
+
+        bitset1 = BitSet(5)
+        bitset1.add(0)
+        bitset1.add(1)
+        bitset1.add(2)
+        bitset1.add(3)
+        bitset1.add(4)
+
+        bitset2 = BitSet(5)
+        bitset2.add(0)
+        bitset2.add(3)
+
+        bitset3 = BitSet(5)
+        bitset3.add(2)
+        bitset3.add(4)
+
+        bitset4 = BitSet(5)
+        bitset4.add(4)
+
+        cls.cpt.inverted_index = [bitset0,
+                                  bitset1,
+                                  bitset2,
+                                  bitset3,
+                                  bitset4]
 
         cls.cpt.alphabet.length = 5
         cls.cpt.alphabet.indexes = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
@@ -47,7 +71,8 @@ class CptTest(unittest.TestCase):
         cpt.train(self.sequences)
 
         # THEN
-        self.assertEqual(self.cpt.inverted_index, cpt.inverted_index)
+        self.assertEqual(list(map(lambda x: x.get_ints(), self.cpt.inverted_index)),
+                         list(map(lambda x: x.get_ints(), cpt.inverted_index)))
         self.assertEqual(self.cpt.lookup_table, cpt.lookup_table)
         self.assertEqual(self.cpt.root, cpt.root)
 
@@ -64,15 +89,15 @@ class CptTest(unittest.TestCase):
 
     def test_find_similar_sequences(self):
         # GIVEN
-        expected_not_empty = {0, 1, 2}
+        expected_not_empty = [0, 1, 2]
         sequence_in_alphabet = [0]
-        expected_empty = set()
-        sequence_not_in_alphabet = [None]
+        expected_empty = []
+        sequence_not_in_alphabet = [-1]
 
         # WHEN
         # pylint: disable=protected-access
-        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet)
-        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet)
+        actual_not_empty = self.cpt._find_similar_sequences(sequence_in_alphabet).get_ints()
+        actual_empty = self.cpt._find_similar_sequences(sequence_not_in_alphabet).get_ints()
 
         # THEN
         self.assertEqual(expected_not_empty, actual_not_empty)
