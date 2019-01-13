@@ -16,11 +16,10 @@ cdef class Cpt:
         self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
-        self.number_train_sequences
 
     def train(self, sequences):
 
-        self.number_train_sequences = len(sequences)
+        number_train_sequences = len(sequences)
 
         for id_seq, sequence in enumerate(sequences):
             current = self.root
@@ -32,7 +31,7 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < len(self.inverted_index):
-                    self.inverted_index.append(BitSet(self.number_train_sequences))
+                    self.inverted_index.append(BitSet(number_train_sequences))
 
                 self.inverted_index[index].add(id_seq)
 

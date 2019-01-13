@@ -9,4 +9,3 @@ cdef class Cpt:
     cdef public int split_index
     cdef public int max_level
     cdef public Alphabet alphabet
-    cdef int number_train_sequences
