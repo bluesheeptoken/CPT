@@ -20,6 +20,7 @@ clean:
 	rm -f ${SRC_DIR}/*.c
 	rm -f ${SRC_DIR}/*.so
 	rm -f ${SRC_DIR}/*.h
+	rm -f ${SRC_DIR}/*.cpp
 	rm -rf ${REPORTS_DIR}
 	rm -rf ${COVERAGE_DIR}
 
