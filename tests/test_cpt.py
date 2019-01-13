@@ -71,8 +71,8 @@ class CptTest(unittest.TestCase):
         cpt.train(self.sequences)
 
         # THEN
-        self.assertEqual(list(map(lambda x: x.get_ints(), self.cpt.inverted_index)), \
-            list(map(lambda x: x.get_ints(), cpt.inverted_index)))
+        self.assertEqual(list(map(lambda x: x.get_ints(), self.cpt.inverted_index)),
+                         list(map(lambda x: x.get_ints(), cpt.inverted_index)))
         self.assertEqual(self.cpt.lookup_table, cpt.lookup_table)
         self.assertEqual(self.cpt.root, cpt.root)
 

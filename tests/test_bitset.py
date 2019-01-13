@@ -19,5 +19,4 @@ class BitSetTest(unittest.TestCase):
 
     def test_inter(self):
         self.bitset_1.inter(self.bitset_2)
-        ints_bitset_inter = [x for x in range(len(self.bitset_1.vector)) if self.bitset_1.vector[x]]
-        self.assertEqual(ints_bitset_inter, [0])
+        self.assertEqual(self.bitset_1.get_ints(), [0])

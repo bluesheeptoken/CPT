@@ -27,8 +27,8 @@ clean:
 lint:
 	pylint ${TEST_DIR}
 	pycodestyle ${TEST_DIR}
-	pylint profiling
-	pycodestyle profiling --ignore=E402
+	pylint profiling/profiling.py
+	pycodestyle profiling/profiling.py --ignore=E402
 	pylint tests_scripts
 	pycodestyle tests_scripts
 

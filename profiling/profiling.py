@@ -17,7 +17,7 @@ def profile(mode, data_path, profile_path):
     else:
         with open(data_path) as file:
             data = list(map(lambda l: [int(x) for x in l.rstrip().split()],
-                       file.readlines()))
+                            file.readlines()))
 
     cpt = Cpt()
 
