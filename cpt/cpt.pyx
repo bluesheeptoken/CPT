@@ -72,7 +72,7 @@ cdef class Cpt:
                         end_node = self.lookup_table[similar_sequence_id]
                         next_transition = end_node.incoming_transition
 
-                        while next_transition != NOT_AN_INDEX and next_transition not in sequence:
+                        while next_transition not in sequence:
                             score.update(next_transition)
                             end_node = end_node.parent
                             next_transition = end_node.incoming_transition
