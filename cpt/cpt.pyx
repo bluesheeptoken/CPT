@@ -52,7 +52,7 @@ cdef class Cpt:
         cdef Scorer score
 
         level = 0
-        target_indexes_sequence = map(self.alphabet.get_index, target_sequence)
+        target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
@@ -81,7 +81,6 @@ cdef class Cpt:
         return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
 
     cpdef _find_similar_sequences(self, sequence):
-
         if not sequence or NOT_AN_INDEX in sequence:
             return BitSet(0)
         cdef BitSet bitset_temp

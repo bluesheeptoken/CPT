@@ -26,7 +26,7 @@ class AlphabetTest(unittest.TestCase):
         self.assertEqual(self.alphabet.get_index('P'), 1)
 
     def test_get_unknown_index(self):
-        self.assertIsNone(self.alphabet.get_index('X'))
+        self.assertEqual(self.alphabet.get_index('X'), -1)
 
     def test_add_known_symbol(self):
         self.assertEqual(self.alphabet.add_symbol('P'), 1)
