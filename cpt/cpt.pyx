@@ -4,7 +4,6 @@ from libcpp cimport bool
 from functools import reduce
 from itertools import combinations
 
-from cpt.utilities cimport generate_consequent
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
@@ -46,17 +45,21 @@ cdef class Cpt:
         return list(map(lambda seq: self.predict_seq(seq, number_predictions), sequences))
 
     cdef predict_seq(self, target_sequence, number_predictions=5):
-        level = 0
-        target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
-        score = Scorer(self.alphabet.length)
-
         cdef vector[bool] vector
+        cdef PredictionTree end_node
+        cdef int next_transition, level
+        cdef tuple sequence
+        cdef Scorer score
+
+        level = 0
+        target_indexes_sequence = map(self.alphabet.get_index, target_sequence)
+        score = Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
 
             # Remove noise
             generated_sequences = \
-                list(combinations(target_indexes_sequence, len(target_indexes_sequence) - level))
+                combinations(target_indexes_sequence, len(target_sequence) - level)
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
@@ -66,10 +69,13 @@ cdef class Cpt:
 
                 for similar_sequence_id in range(vector.size()):
                     if vector[similar_sequence_id]:
-                        for consequent_symbol_index in \
-                            generate_consequent(sequence,
-                                                self.lookup_table[similar_sequence_id]):
-                            score.update(consequent_symbol_index)
+                        end_node = self.lookup_table[similar_sequence_id]
+                        next_transition = end_node.incoming_transition
+
+                        while next_transition != NOT_AN_INDEX and next_transition not in sequence:
+                            score.update(next_transition)
+                            end_node = end_node.parent
+                            next_transition = end_node.incoming_transition
             level += 1
 
         return list(map(self.alphabet.get_symbol, score.best_n_predictions(number_predictions)))
