@@ -11,7 +11,7 @@ cdef class Alphabet:
         return None
 
     def get_index(self, symbol):
-        return self.indexes.get(symbol)
+        return self.indexes.get(symbol, NOT_AN_INDEX)
 
     def add_symbol(self, symbol):
         cdef int index = self.indexes.setdefault(symbol, self.length)

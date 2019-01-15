@@ -8,7 +8,8 @@ class CptTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.cpt = Cpt()
+        cls.cpt = Cpt(max_level=3)
+
         cls.cpt.root.add_child(0)
         cls.cpt.root.get_child(0).add_child(1)
         cls.cpt.root.get_child(0).get_child(1).add_child(2)
@@ -77,15 +78,9 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.root, cpt.root)
 
     def test_predict(self):
-        # GIVEN
-        target_sequence = [['A', 'B']]
-        expected = [['C', 'D']]
-
-        # WHEN
-        actual = self.cpt.predict(target_sequence, 2)
-
-        # THEN
-        self.assertEqual(actual, expected)
+        # First sequence does not have noise, second has
+        self.assertEqual(self.cpt.predict([['A', 'B'], ['A', 'B', 'G', 'G']], 2),
+                         [['C', 'D'], ['C', 'D']])
 
     def test_find_similar_sequences(self):
         # GIVEN
