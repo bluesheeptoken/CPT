@@ -50,7 +50,7 @@ cdef class Cpt:
         cdef int next_transition, level, elt
         cdef tuple sequence
         cdef Scorer score
-        cdef BitSet bitseq
+        cdef BitSet bitseq = BitSet(0)
 
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
@@ -64,7 +64,7 @@ cdef class Cpt:
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
-                bitseq = BitSet(self.alphabet.length)
+                bitseq.vector.assign(self.alphabet.length, 0)
                 for elt in sequence:
                     bitseq.add(elt)
                 similar_sequences = self._find_similar_sequences(sequence)
