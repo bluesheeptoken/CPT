@@ -47,9 +47,10 @@ cdef class Cpt:
     cdef predict_seq(self, target_sequence, number_predictions=5):
         cdef vector[bool] vector
         cdef PredictionTree end_node
-        cdef int next_transition, level
+        cdef int next_transition, level, elt
         cdef tuple sequence
         cdef Scorer score
+        cdef BitSet bitseq
 
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
@@ -63,6 +64,9 @@ cdef class Cpt:
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
+                bitseq = BitSet(self.alphabet.length)
+                for elt in sequence:
+                    bitseq.add(elt)
                 similar_sequences = self._find_similar_sequences(sequence)
 
                 vector = similar_sequences.vector
@@ -72,7 +76,7 @@ cdef class Cpt:
                         end_node = self.lookup_table[similar_sequence_id]
                         next_transition = end_node.incoming_transition
 
-                        while next_transition not in sequence:
+                        while not bitseq.vector[next_transition]:
                             score.update(next_transition)
                             end_node = end_node.parent
                             next_transition = end_node.incoming_transition
