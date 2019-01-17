@@ -19,5 +19,5 @@ cdef class Scorer:
             return self.scoring[i]
 
         return heapq.nlargest(number_predictions,
-                              [x for x in range(self.scoring.size()) if self.scoring[x] != 0],
+                              (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
                               key=get_score)
