@@ -1,3 +1,6 @@
+# distutils: language = c++
+from libcpp.vector cimport vector
+
+
 cdef class Scorer:
-    cdef public int alphabet_length
-    cdef public list scoring
+    cdef public vector[int] scoring

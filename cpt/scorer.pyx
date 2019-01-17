@@ -1,10 +1,11 @@
+# distutils: language = c++
+from libcpp.vector cimport vector
 import heapq
 
 
 cdef class Scorer:
-    def __cinit__(self, alphabet_length):
-        self.alphabet_length = alphabet_length
-        self.scoring = [0] * alphabet_length
+    def __cinit__(self, int alphabet_length):
+        self.scoring = vector[int](alphabet_length)
 
     def predictable(self):
         return any(self.scoring)
@@ -18,5 +19,5 @@ cdef class Scorer:
             return self.scoring[i]
 
         return heapq.nlargest(number_predictions,
-                              range(self.alphabet_length),
+                              (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
                               key=get_score)
