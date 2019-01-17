@@ -41,10 +41,10 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.append(current)
 
-    def predict(self, sequences, number_predictions=1):
+    def predict(self, list sequences, int number_predictions=1):
         return [self.predict_seq(seq, number_predictions) for seq in sequences]
 
-    cdef predict_seq(self, target_sequence, number_predictions=1):
+    cdef predict_seq(self, list target_sequence, int number_predictions=1):
         cdef vector[bool] vector
         cdef PredictionTree end_node
         cdef int next_transition, level, elt

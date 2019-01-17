@@ -18,7 +18,7 @@ cdef class Scorer:
     cpdef void update(self, int consequent_element):
         self.scoring[consequent_element] += 1
 
-    def get_best_predictions(self, number_predictions):
+    def get_best_predictions(self, int number_predictions):
 
         return heapq.nlargest(number_predictions,
                               (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
