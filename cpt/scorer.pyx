@@ -2,6 +2,8 @@
 from libcpp.vector cimport vector
 import heapq
 
+from cpt.alphabet cimport NOT_AN_INDEX
+
 
 cdef class Scorer:
     def __cinit__(self, int alphabet_length):
@@ -18,6 +20,11 @@ cdef class Scorer:
         def get_score(int i):
             return self.scoring[i]
 
-        return heapq.nlargest(number_predictions,
-                              (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
-                              key=get_score)
+        if number_predictions > 1:
+            return heapq.nlargest(number_predictions,
+                                  (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
+                                  key=get_score)
+        else:
+            return max((x for x in range(self.scoring.size()) if self.scoring[x] != 0),
+                       key=get_score,
+                       default=NOT_AN_INDEX)

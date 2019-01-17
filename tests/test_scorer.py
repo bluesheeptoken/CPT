@@ -25,9 +25,9 @@ class ScorerTest(unittest.TestCase):
         scorer.update(0)
         self.assertTrue(scorer.predictable())
 
-    def test_find_similar_sequences(self):
+    def test_best_n_predictions(self):
         scorer = Scorer(3)
         scorer.update(0)
         scorer.update(0)
         scorer.update(2)
-        self.assertEqual(scorer.best_n_predictions(1), [0])
+        self.assertEqual(scorer.best_n_predictions(1), 0)
