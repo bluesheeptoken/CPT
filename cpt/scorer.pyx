@@ -15,16 +15,20 @@ cdef class Scorer:
     def update(self, int consequent_element):
         self.scoring[consequent_element] += 1
 
-    def best_n_predictions(self, number_predictions):
+    def get_best_predictions(self, number_predictions):
 
         def get_score(int i):
             return self.scoring[i]
 
-        if number_predictions > 1:
-            return heapq.nlargest(number_predictions,
-                                  (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
-                                  key=get_score)
-        else:
-            return max((x for x in range(self.scoring.size()) if self.scoring[x] != 0),
-                       key=get_score,
-                       default=NOT_AN_INDEX)
+        return heapq.nlargest(number_predictions,
+                              (x for x in range(self.scoring.size()) if self.scoring[x] != 0),
+                              key=get_score)
+
+    def get_best_prediction(self):
+
+        def get_score(int i):
+            return self.scoring[i]
+
+        return max((x for x in range(self.scoring.size()) if self.scoring[x] != 0),
+                   key=get_score,
+                   default=NOT_AN_INDEX)

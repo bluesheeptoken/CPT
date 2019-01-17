@@ -82,12 +82,10 @@ cdef class Cpt:
                             next_transition = end_node.incoming_transition
             level += 1
 
-        # If best_n_predictions returns an int
         if number_predictions == 1:
-            self.alphabet.get_symbol(score.best_n_predictions(number_predictions))
-        # If best_n_predictions returns a a list
+            return self.alphabet.get_symbol(score.get_best_prediction())
         else:
-            return [self.alphabet.get_symbol(x) for x in score.best_n_predictions(number_predictions)]
+            return [self.alphabet.get_symbol(x) for x in score.get_best_predictions(number_predictions)]
 
     cpdef _find_similar_sequences(self, sequence):
         if not sequence or NOT_AN_INDEX in sequence:
