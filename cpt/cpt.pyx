@@ -42,7 +42,7 @@ cdef class Cpt:
             self.lookup_table.append(current)
 
     def predict(self, sequences, number_predictions=1):
-        return list(map(lambda seq: self.predict_seq(seq, number_predictions), sequences))
+        return [self.predict_seq(seq, number_predictions) for seq in sequences]
 
     cdef predict_seq(self, target_sequence, number_predictions=1):
         cdef vector[bool] vector
