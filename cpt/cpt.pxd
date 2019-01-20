@@ -1,5 +1,6 @@
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
+from cpt.bitset cimport BitSet
 
 
 cdef class Cpt:
@@ -11,4 +12,4 @@ cdef class Cpt:
     cdef public Alphabet alphabet
 
     cdef predict_seq(self, list target_sequence, int number_predictions=*)
-    cpdef _find_similar_sequences(self, sequence)
+    cpdef BitSet _find_similar_sequences(self, sequence)

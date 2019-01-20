@@ -87,12 +87,14 @@ cdef class Cpt:
         else:
             return [self.alphabet.get_symbol(x) for x in score.get_best_predictions(number_predictions)]
 
-    cpdef _find_similar_sequences(self, sequence):
+    cpdef BitSet _find_similar_sequences(self, sequence):
         if not sequence or NOT_AN_INDEX in sequence:
             return BitSet(0)
-        cdef BitSet bitset_temp
-        bitset_temp = self.inverted_index[sequence[0]].copy()
 
+        cdef BitSet bitset_temp
+        cdef int i
+
+        bitset_temp = self.inverted_index[sequence[0]].copy()
         for i in range(1, len(sequence)):
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
