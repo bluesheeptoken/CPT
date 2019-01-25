@@ -8,7 +8,7 @@ from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
-from cpt.bitset cimport BitSet
+from cpt.py_bitset cimport BitSet
 
 
 cdef class Cpt:

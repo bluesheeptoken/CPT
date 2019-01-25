@@ -1,7 +1,7 @@
 import unittest
 
 from cpt.cpt import Cpt  # pylint: disable=no-name-in-module
-from cpt.bitset import BitSet
+from cpt.py_bitset import BitSet
 
 
 class CptTest(unittest.TestCase):

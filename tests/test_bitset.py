@@ -1,6 +1,6 @@
 import unittest
 
-from cpt.bitset import BitSet
+from cpt.py_bitset import BitSet
 
 
 class BitSetTest(unittest.TestCase):
