@@ -38,4 +38,3 @@ class ScorerTest(unittest.TestCase):
         scorer.update(0)
         scorer.update(2)
         self.assertEqual(scorer.get_best_predictions(2), [0, 2])
-
