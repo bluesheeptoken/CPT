@@ -1,10 +1,17 @@
 # distutils: language = c++
-from libcpp.vector cimport vector
+
 from libcpp cimport bool
+cdef extern from "cpp_sources/Bitset.cpp":
+    pass
 
 
-cdef class BitSet:
-    cdef public vector[bool] vector
-    cpdef void inter(self, BitSet other) except *
-    cpdef void add(self, int element)
-    cpdef BitSet copy(self)
+cdef extern from "cpp_sources/Bitset.hpp":
+    cdef cppclass Bitset:
+        Bitset()
+        Bitset(size_t) except +
+        Bitset(Bitset&) except +
+        size_t size()
+        bool operator[](size_t)
+        void add(size_t)
+        Bitset& inter(Bitset&)
+        void clear()
