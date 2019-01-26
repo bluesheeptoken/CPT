@@ -14,7 +14,7 @@ from cpt.py_bitset cimport Bitset
 cdef class Cpt:
     def __cinit__(self, split_length=0, max_level=1):
         self.root = PredictionTree()
-        self.inverted_index= vector[Bitset]()
+        self.inverted_index = vector[Bitset]()
         self.lookup_table = []
         self.split_index = -split_length
         self.max_level = max_level
