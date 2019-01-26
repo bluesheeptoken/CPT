@@ -11,7 +11,12 @@ public:
     Scorer(std::size_t size);
 
     int get_score(std::size_t index) const;
+
     void update(std::size_t index);
+
+    bool predictable();
+
+    int get_best_prediction();
 
 private:
     std::vector<int> m_data;

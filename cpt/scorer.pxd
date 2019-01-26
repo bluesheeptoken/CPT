@@ -1,8 +1,16 @@
 # distutils: language = c++
-from libcpp.vector cimport vector
+
+from libcpp cimport bool
+cdef extern from "cpp_sources/Scorer.cpp":
+    pass
 
 
-cdef class Scorer:
-    cdef public vector[int] scoring
-    cdef int get_score(self, int i)
-    cpdef void update(self, int consequent_element)
+cdef extern from "cpp_sources/Scorer.hpp":
+    cdef cppclass Scorer:
+        Scorer()
+        Scorer(size_t)
+
+        int get_score(size_t) const
+        void update(size_t)
+        bool predictable()
+        int get_best_prediction()

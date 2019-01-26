@@ -83,10 +83,7 @@ cdef class Cpt:
                             next_transition = end_node.incoming_transition
             level += 1
 
-        if number_predictions == 1:
-            return self.alphabet.get_symbol(score.get_best_prediction())
-        else:
-            return [self.alphabet.get_symbol(x) for x in score.get_best_predictions(number_predictions)]
+        return self.alphabet.get_symbol(score.get_best_prediction())
 
     cdef Bitset _find_similar_sequences(self, sequence):
         if not sequence or NOT_AN_INDEX in sequence:
