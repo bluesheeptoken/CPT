@@ -7,7 +7,7 @@ cdef extern from "cpp_sources/Bitset.cpp":
 
 cdef extern from "cpp_sources/Bitset.hpp":
     cdef cppclass Bitset:
-        Bitset()
+        Bitset() except +
         Bitset(size_t) except +
         Bitset(Bitset&) except +
         size_t size()
