@@ -7,13 +7,15 @@
 class Bitset
 {
 public:
+    Bitset();
     Bitset(std::size_t size);
+    Bitset(const Bitset&);
 
     std::size_t size() const;
 
     bool operator[](std::size_t index) const;
     void add(std::size_t index);
-    
+
     Bitset& inter(const Bitset& other);
 
     void clear();

@@ -1,8 +1,15 @@
-#include "bitset.hpp"
+#include "Bitset.hpp"
 #include <algorithm>
+
+Bitset::Bitset()
+{}
 
 Bitset::Bitset(std::size_t size)
 : m_data(size/8 + (size%8 != 0)), m_size(size)
+{}
+
+Bitset::Bitset(const Bitset& other)
+: m_data(other.m_data), m_size(other.m_size)
 {}
 
 std::size_t Bitset::size() const
@@ -14,6 +21,7 @@ bool Bitset::operator[](std::size_t index) const
 {
     return m_data[index/8] >> index%8 & 1;
 }
+
 void Bitset::add(std::size_t index)
 {
     m_data[index/8] |= 1 << index%8;
