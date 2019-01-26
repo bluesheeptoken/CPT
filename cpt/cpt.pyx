@@ -8,13 +8,13 @@ from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
-from cpt.py_bitset cimport BitSet
+from cpt.py_bitset cimport Bitset
 
 
 cdef class Cpt:
     def __cinit__(self, split_length=0, max_level=1):
         self.root = PredictionTree()
-        self.inverted_index = []
+        self.inverted_index= vector[Bitset]()
         self.lookup_table = []
         self.split_index = -split_length
         self.max_level = max_level
@@ -33,8 +33,8 @@ cdef class Cpt:
                 current = current.add_child(index)
 
                 # Adding to the Inverted Index
-                if not index < len(self.inverted_index):
-                    self.inverted_index.append(BitSet(number_train_sequences))
+                if not index < self.inverted_index.size():
+                    self.inverted_index.push_back(Bitset(number_train_sequences))
 
                 self.inverted_index[index].add(id_seq)
 
@@ -50,7 +50,8 @@ cdef class Cpt:
         cdef int next_transition, level, elt
         cdef tuple sequence
         cdef Scorer score
-        cdef BitSet bitseq = BitSet(0)
+        cdef Bitset bitseq = Bitset(self.alphabet.length)
+
 
         level = 0
         target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
@@ -64,19 +65,19 @@ cdef class Cpt:
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
-                bitseq.vector.assign(self.alphabet.length, 0)
+
+                bitseq.clear()
                 for elt in sequence:
-                    bitseq.add(elt)
+                    if elt != NOT_AN_INDEX:
+                        bitseq.add(elt)
                 similar_sequences = self._find_similar_sequences(sequence)
 
-                vector = similar_sequences.vector
-
-                for similar_sequence_id in range(vector.size()):
-                    if vector[similar_sequence_id]:
+                for similar_sequence_id in range(similar_sequences.size()):
+                    if similar_sequences[similar_sequence_id]:
                         end_node = self.lookup_table[similar_sequence_id]
                         next_transition = end_node.incoming_transition
 
-                        while not bitseq.vector[next_transition]:
+                        while not bitseq[next_transition]:
                             score.update(next_transition)
                             end_node = end_node.parent
                             next_transition = end_node.incoming_transition
@@ -87,14 +88,14 @@ cdef class Cpt:
         else:
             return [self.alphabet.get_symbol(x) for x in score.get_best_predictions(number_predictions)]
 
-    cpdef BitSet _find_similar_sequences(self, sequence):
+    cdef Bitset _find_similar_sequences(self, sequence):
         if not sequence or NOT_AN_INDEX in sequence:
-            return BitSet(0)
+            return Bitset(self.alphabet.length)
 
-        cdef BitSet bitset_temp
+        cdef Bitset bitset_temp
         cdef int i
 
-        bitset_temp = self.inverted_index[sequence[0]].copy()
+        bitset_temp = Bitset(self.inverted_index[sequence[0]])
         for i in range(1, len(sequence)):
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
