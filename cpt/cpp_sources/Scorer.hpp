@@ -13,7 +13,7 @@ public:
 
     void update(std::size_t index);
 
-    bool predictable();
+    bool predictable() const;
 
     int get_best_prediction() const;
 
