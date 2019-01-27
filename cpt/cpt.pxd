@@ -12,5 +12,5 @@ cdef class Cpt:
     cdef public int max_level
     cdef public Alphabet alphabet
 
-    cdef predict_seq(self, list target_sequence, int number_predictions=*)
+    cdef predict_seq(self, list target_sequence)
     cdef Bitset _find_similar_sequences(self, sequence)

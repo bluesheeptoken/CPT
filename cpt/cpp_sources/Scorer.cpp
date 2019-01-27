@@ -18,7 +18,7 @@ void Scorer::update(std::size_t index)
     m_data[index]++;
 }
 
-bool Scorer::predictable() const
+bool Scorer::predictable()
 {
     for(std::vector<int>::iterator it = m_data.begin(); it != m_data.end(); ++it)
         if(0 < *it)
