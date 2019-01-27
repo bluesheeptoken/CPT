@@ -1,7 +1,6 @@
 #ifndef CPT_SCORER_HPP
 #define CPT_SCORER_HPP
 
-#include <cstdint>
 #include <vector>
 
 class Scorer
@@ -14,9 +13,9 @@ public:
 
     void update(std::size_t index);
 
-    bool predictable();
+    bool predictable() const;
 
-    int get_best_prediction();
+    int get_best_prediction() const;
 
 private:
     std::vector<int> m_data;

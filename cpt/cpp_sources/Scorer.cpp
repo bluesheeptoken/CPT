@@ -18,7 +18,7 @@ void Scorer::update(std::size_t index)
     m_data[index]++;
 }
 
-bool Scorer::predictable()
+bool Scorer::predictable() const
 {
     for(std::vector<int>::iterator it = m_data.begin(); it != m_data.end(); ++it)
         if(0 < *it)
@@ -26,7 +26,7 @@ bool Scorer::predictable()
     return false;
 }
 
-int Scorer::get_best_prediction()
+int Scorer::get_best_prediction() const
 {
-    return std::max_element(m_data.begin(), m_data.end()) - m_data.begin();
+    return std::distance(m_data.begin(), std::max_element(m_data.begin(), m_data.end()));
 }

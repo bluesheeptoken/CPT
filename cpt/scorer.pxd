@@ -10,7 +10,7 @@ cdef extern from "cpp_sources/Scorer.hpp":
         Scorer()
         Scorer(size_t)
 
-        int get_score(size_t) const
+        int get_score(size_t)
         void update(size_t)
         bool predictable()
         int get_best_prediction()
