@@ -41,10 +41,10 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.append(current)
 
-    def predict(self, list sequences, int number_predictions=1):
-        return [self.predict_seq(seq, number_predictions) for seq in sequences]
+    def predict(self, list sequences):
+        return [self.predict_seq(seq) for seq in sequences]
 
-    cdef predict_seq(self, list target_sequence, int number_predictions=1):
+    cdef predict_seq(self, list target_sequence):
         cdef vector[bool] vector
         cdef PredictionTree end_node
         cdef int next_transition, level, elt
@@ -83,10 +83,7 @@ cdef class Cpt:
                             next_transition = end_node.incoming_transition
             level += 1
 
-        if number_predictions == 1:
-            return self.alphabet.get_symbol(score.get_best_prediction())
-        else:
-            return [self.alphabet.get_symbol(x) for x in score.get_best_predictions(number_predictions)]
+        return self.alphabet.get_symbol(score.get_best_prediction())
 
     cdef Bitset _find_similar_sequences(self, sequence):
         if not sequence or NOT_AN_INDEX in sequence:
