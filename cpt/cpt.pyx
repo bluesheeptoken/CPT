@@ -1,7 +1,6 @@
 # distutils: language = c++
 from libcpp.vector cimport vector
 from libcpp cimport bool
-from functools import reduce
 from itertools import combinations
 
 from cpt.prediction_tree cimport PredictionTree
