@@ -7,10 +7,10 @@ cdef extern from "cpp_sources/Scorer.cpp":
 
 cdef extern from "cpp_sources/Scorer.hpp":
     cdef cppclass Scorer:
-        Scorer()
-        Scorer(size_t)
+        Scorer() nogil
+        Scorer(size_t) nogil
 
-        int get_score(size_t)
-        void update(size_t)
-        bool predictable()
-        int get_best_prediction()
+        int get_score(size_t) nogil
+        void update(size_t) nogil
+        bool predictable() nogil
+        int get_best_prediction() nogil

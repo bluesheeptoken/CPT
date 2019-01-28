@@ -1,6 +1,6 @@
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
-from cpt.py_bitset cimport Bitset
+from cpt.bitset cimport Bitset
 from libcpp.vector cimport vector
 
 
