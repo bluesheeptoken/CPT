@@ -7,7 +7,7 @@ from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
-from cpt.py_bitset cimport Bitset
+from cpt.bitset cimport Bitset
 
 
 cdef class Cpt:
@@ -44,7 +44,6 @@ cdef class Cpt:
         return [self.predict_seq(seq) for seq in sequences]
 
     cdef predict_seq(self, list target_sequence):
-        cdef vector[bool] vector
         cdef PredictionTree end_node
         cdef int next_transition, level, elt
         cdef tuple sequence
