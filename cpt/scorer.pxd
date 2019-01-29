@@ -7,8 +7,8 @@ cdef extern from "cpp_sources/Scorer.cpp":
 
 cdef extern from "cpp_sources/Scorer.hpp":
     cdef cppclass Scorer:
-        Scorer() nogil
-        Scorer(size_t) nogil
+        Scorer() nogil except +
+        Scorer(size_t) nogil except +
 
         int get_score(size_t) nogil
         void update(size_t) nogil
