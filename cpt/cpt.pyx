@@ -12,9 +12,9 @@ from cython.operator cimport dereference as deref
 
 cdef class Cpt:
     def __cinit__(self, split_length=0, max_level=1):
-        self.root = PredictionTree()
+        self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
-        self.lookup_table = vector[PredictionTree]()
+        self.lookup_table = vector[size_t]()
         self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
@@ -22,14 +22,14 @@ cdef class Cpt:
     def train(self, sequences):
 
         number_train_sequences = len(sequences)
-        cdef PredictionTree current
+        cdef size_t current
         for id_seq, sequence in enumerate(sequences):
-            current = self.root
+            current = self.tree.getRoot()
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_index:]):
 
                 # Adding to the Prediction Tree
-                current = deref(current.addChild(index))
+                current = self.tree.addChild(current, index)
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
@@ -44,7 +44,7 @@ cdef class Cpt:
         return [self.predict_seq(seq) for seq in sequences]
 
     cdef predict_seq(self, list target_sequence):
-        cdef PredictionTree end_node
+        cdef size_t end_node
         cdef int next_transition, level, elt
         cdef tuple sequence
         cdef Scorer score
@@ -73,15 +73,15 @@ cdef class Cpt:
                 for similar_sequence_id in range(similar_sequences.size()):
                     if similar_sequences[similar_sequence_id]:
                         end_node = self.lookup_table[similar_sequence_id]
-                        print(end_node.m_incomingTransition)
-                        next_transition = end_node.m_incomingTransition
+                        print(self.tree.getTransition(end_node))
+                        next_transition = self.tree.getTransition(end_node)
 
                         while not bitseq[next_transition]:
                             score.update(next_transition)
                             print('ok')
-                            end_node = deref(end_node.m_parent) # This is here
+                            end_node = self.tree.getParent(end_node) # This is here
                             print('after deref')
-                            next_transition = end_node.m_incomingTransition
+                            next_transition = self.tree.getTransition(end_node)
             level += 1
 
         return self.alphabet.get_symbol(score.get_best_prediction())

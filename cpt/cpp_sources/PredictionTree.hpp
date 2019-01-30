@@ -8,15 +8,21 @@ class PredictionTree
 {
 public:
     PredictionTree();
-    PredictionTree(const int incomingTransition, PredictionTree* parent);
 
-    PredictionTree* addChild(const int element);
+    std::size_t getRoot() const { return 0; }
 
-    int m_incomingTransition;
-    PredictionTree* m_parent;
+    std::size_t addChild(std::size_t parent, int transition);
+
+    int getTransition(std::size_t node) const { return m_incoming[node]; }
+
+    std::size_t getParent(std::size_t node) const { return m_parent[node]; }
 
 private:
-    std::map<int, PredictionTree> m_children;
+    std::size_t m_nextNode;
+
+    std::vector<int> m_incoming;
+    std::vector<int> m_parent;
+    std::vector<std::map<int, std::size_t>> m_children;
 };
 
 #endif
