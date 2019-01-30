@@ -8,13 +8,13 @@ from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
-
+from cython.operator cimport dereference as deref
 
 cdef class Cpt:
     def __cinit__(self, split_length=0, max_level=1):
         self.root = PredictionTree()
         self.inverted_index = vector[Bitset]()
-        self.lookup_table = []
+        self.lookup_table = vector[PredictionTree]()
         self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
@@ -22,14 +22,14 @@ cdef class Cpt:
     def train(self, sequences):
 
         number_train_sequences = len(sequences)
-
+        cdef PredictionTree current
         for id_seq, sequence in enumerate(sequences):
             current = self.root
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_index:]):
 
                 # Adding to the Prediction Tree
-                current = current.add_child(index)
+                current = deref(current.addChild(index))
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
@@ -38,7 +38,7 @@ cdef class Cpt:
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
-            self.lookup_table.append(current)
+            self.lookup_table.push_back(current)
 
     def predict(self, list sequences):
         return [self.predict_seq(seq) for seq in sequences]
@@ -73,12 +73,15 @@ cdef class Cpt:
                 for similar_sequence_id in range(similar_sequences.size()):
                     if similar_sequences[similar_sequence_id]:
                         end_node = self.lookup_table[similar_sequence_id]
-                        next_transition = end_node.incoming_transition
+                        print(end_node.m_incomingTransition)
+                        next_transition = end_node.m_incomingTransition
 
                         while not bitseq[next_transition]:
                             score.update(next_transition)
-                            end_node = end_node.parent
-                            next_transition = end_node.incoming_transition
+                            print('ok')
+                            end_node = deref(end_node.m_parent) # This is here
+                            print('after deref')
+                            next_transition = end_node.m_incomingTransition
             level += 1
 
         return self.alphabet.get_symbol(score.get_best_prediction())
@@ -95,6 +98,3 @@ cdef class Cpt:
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
         return bitset_temp
-
-    def __repr__(self):
-        return self.root.__repr__()
