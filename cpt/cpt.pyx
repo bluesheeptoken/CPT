@@ -73,14 +73,11 @@ cdef class Cpt:
                 for similar_sequence_id in range(similar_sequences.size()):
                     if similar_sequences[similar_sequence_id]:
                         end_node = self.lookup_table[similar_sequence_id]
-                        print(self.tree.getTransition(end_node))
                         next_transition = self.tree.getTransition(end_node)
 
                         while not bitseq[next_transition]:
                             score.update(next_transition)
-                            print('ok')
-                            end_node = self.tree.getParent(end_node) # This is here
-                            print('after deref')
+                            end_node = self.tree.getParent(end_node)
                             next_transition = self.tree.getTransition(end_node)
             level += 1
 
