@@ -3,7 +3,7 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 from itertools import combinations
 
-from cpt.prediction_tree cimport PredictionTree
+from cpt.prediction_tree cimport PredictionTree, ROOT
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
@@ -24,7 +24,7 @@ cdef class Cpt:
         number_train_sequences = len(sequences)
         cdef size_t current
         for id_seq, sequence in enumerate(sequences):
-            current = self.tree.getRoot()
+            current = ROOT
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_index:]):
 

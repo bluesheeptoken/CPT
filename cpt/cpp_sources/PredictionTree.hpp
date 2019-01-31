@@ -9,7 +9,6 @@ class PredictionTree
 public:
     PredictionTree();
 
-    std::size_t getRoot() const { return 0; }
 
     std::size_t addChild(std::size_t parent, int transition);
 
