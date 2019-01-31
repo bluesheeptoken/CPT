@@ -8,7 +8,6 @@ from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
-from cython.operator cimport dereference as deref
 
 
 cdef class Cpt:
