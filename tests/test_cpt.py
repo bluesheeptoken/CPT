@@ -19,13 +19,6 @@ class CptTest(unittest.TestCase):
         cls.cpt.train(cls.sequences)
 
     def test_train(self):
-        self.assertEqual(self.cpt.lookup_table, [
-            self.cpt.root.get_child(0).get_child(1).get_child(2),
-            self.cpt.root.get_child(0).get_child(1),
-            self.cpt.root.get_child(0).get_child(1).get_child(3),
-            self.cpt.root.get_child(1).get_child(2),
-            self.cpt.root.get_child(1).get_child(3).get_child(4)
-        ])
         alphabet = Alphabet()
         alphabet.length = 5
         alphabet.indexes = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}

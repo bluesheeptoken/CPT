@@ -19,8 +19,8 @@ class ProfilingTest(unittest.TestCase):
             with tempfile.NamedTemporaryFile() as file:
                 profiling.profile('train', data.name, file.name)
                 profile = pstats.Stats(file.name)
-                # Train should call add_child if everything goes well
-                self.assertTrue(check_called_method(profile, 'add_child'))
+                # Train should call add_symbol if everything goes well
+                self.assertTrue(check_called_method(profile, 'add_symbol'))
 
     def test_predict_json(self):
         with tempfile.NamedTemporaryFile('r+', suffix='.json') as data:

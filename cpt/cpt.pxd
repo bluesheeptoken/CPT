@@ -5,9 +5,9 @@ from libcpp.vector cimport vector
 
 
 cdef class Cpt:
-    cdef public PredictionTree root
+    cdef PredictionTree tree
     cdef vector[Bitset] inverted_index
-    cdef public list lookup_table
+    cdef vector[size_t] lookup_table
     cdef public int split_index
     cdef public int max_level
     cdef public Alphabet alphabet
