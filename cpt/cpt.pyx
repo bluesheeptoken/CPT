@@ -91,7 +91,7 @@ cdef class Cpt:
             return Bitset(self.alphabet.length)
 
         cdef Bitset bitset_temp
-        cdef int i
+        cdef size_t i
 
         bitset_temp = Bitset(self.inverted_index[sequence[0]])
         for i in range(1, sequence.size()):
