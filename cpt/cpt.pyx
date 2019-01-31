@@ -3,7 +3,7 @@ from libcpp.vector cimport vector
 from libcpp cimport bool
 from itertools import combinations
 
-from cpt.prediction_tree cimport PredictionTree, ROOT
+from cpt.prediction_tree cimport PredictionTree, Node, ROOT
 from cpt.alphabet cimport Alphabet
 from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
@@ -14,7 +14,7 @@ cdef class Cpt:
     def __cinit__(self, int split_length=0, int max_level=1):
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
-        self.lookup_table = vector[size_t]()
+        self.lookup_table = vector[Node]()
         self.split_index = -split_length
         self.max_level = max_level
         self.alphabet = Alphabet()
@@ -22,7 +22,7 @@ cdef class Cpt:
     def train(self, sequences):
 
         number_train_sequences = len(sequences)
-        cdef size_t current
+        cdef Node current
         for id_seq, sequence in enumerate(sequences):
             current = ROOT
             for index in map(self.alphabet.add_symbol,
@@ -44,7 +44,7 @@ cdef class Cpt:
         return [self.predict_seq(seq) for seq in sequences]
 
     cdef predict_seq(self, list target_sequence):
-        cdef size_t end_node
+        cdef Node end_node
         cdef int next_transition, level, elt
         cdef tuple sequence
         cdef Scorer score
