@@ -10,8 +10,9 @@ from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 from cython.operator cimport dereference as deref
 
+
 cdef class Cpt:
-    def __cinit__(self, split_length=0, max_level=1):
+    def __cinit__(self, int split_length=0, int max_level=1):
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[size_t]()

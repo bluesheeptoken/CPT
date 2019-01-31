@@ -1,7 +1,7 @@
 #include "PredictionTree.hpp"
 
 PredictionTree::PredictionTree()
-: m_nextNode(1), m_incoming(1, -1), m_parent(1, 0), m_children(1)
+: m_nextNode(1), m_incoming(1, -1), m_parent(1, 0), m_children(1) // -1 is the unknown index
 {}
 
 std::size_t PredictionTree::addChild(std::size_t parent, int element)
