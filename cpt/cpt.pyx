@@ -87,7 +87,7 @@ cdef class Cpt:
         return self.alphabet.get_symbol(score.get_best_prediction())
 
     cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
-        if sequence.size() == 0 or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
+        if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
             return Bitset(self.alphabet.length)
 
         cdef Bitset bitset_temp
