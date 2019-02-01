@@ -44,7 +44,16 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
 
     def predict(self, list sequences):
-        return [self.predict_seq(seq) for seq in sequences]
+        ans = []
+        for sequence in sequences:
+            ans.append(
+                self.alphabet.get_symbol(
+                    self.predict_seq(
+                        [self.alphabet.get_index(symbol) for symbol in sequence]
+                    )
+                )
+            )
+        return ans
 
     cdef predict_seq(self, list target_sequence):
         cdef:
@@ -56,14 +65,13 @@ cdef class Cpt:
 
 
         level = 0
-        target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
 
         while not score.predictable() and level < self.max_level:
 
             # Remove noise
             generated_sequences = \
-                combinations(target_indexes_sequence, len(target_sequence) - level)
+                combinations(target_sequence, len(target_sequence) - level)
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
@@ -85,7 +93,7 @@ cdef class Cpt:
                             next_transition = self.tree.getTransition(end_node)
             level += 1
 
-        return self.alphabet.get_symbol(score.get_best_prediction())
+        return score.get_best_prediction()
 
     cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
