@@ -44,20 +44,22 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
 
     def predict(self, list sequences):
+        cdef vector[int] sequence_indexes
+        cdef Py_ssize_t i
         predictions = []
-        for sequence in sequences:
-            sequence_indexes = [self.alphabet.get_index(symbol) for symbol in sequence]
+        for i in range(len(sequences)):
+            sequence = sequences[i]
+            sequence_indexes = <vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence]
             predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes)))
         return predictions
 
-    cdef predict_seq(self, list target_sequence):
+    cdef int predict_seq(self, vector[int] target_sequence):
         cdef:
             Node end_node
             int next_transition, level, elt
             tuple sequence
             Scorer score
             Bitset bitseq = Bitset(self.alphabet.length)
-
 
         level = 0
         score = Scorer(self.alphabet.length)
