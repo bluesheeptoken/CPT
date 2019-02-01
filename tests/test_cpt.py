@@ -29,5 +29,5 @@ class CptTest(unittest.TestCase):
 
     def test_predict(self):
         # First sequence does not have noise, second has
-        self.assertEqual(self.cpt.predict([['A', 'B'], ['A', 'B', 'G', 'G']]),
+        self.assertEqual(self.cpt.predict([['A', 'B'], ['A', 'B', 'G', 'G']], 0.2),
                          ['C', 'C'])

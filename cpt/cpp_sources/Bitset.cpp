@@ -1,5 +1,7 @@
 #include "Bitset.hpp"
 #include <algorithm>
+#include <bitset>
+
 
 Bitset::Bitset()
 {}
@@ -25,6 +27,14 @@ bool Bitset::operator[](std::size_t index) const
 void Bitset::add(std::size_t index)
 {
     m_data[index/8] |= 1 << index%8;
+}
+
+float Bitset::compute_frequency() const
+{
+    std::size_t occurences = 0;
+    for (std::size_t i = 0; i < m_data.size(); i++)
+        occurences += (std::bitset<8>(m_data[i])).count();
+    return static_cast<float>(occurences) / m_size;
 }
 
 Bitset& Bitset::inter(const Bitset& other)

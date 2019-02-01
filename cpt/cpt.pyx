@@ -44,28 +44,37 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    cpdef predict(self, list sequences):
-        cdef vector[int] sequence_indexes
+    cpdef predict(self, list sequences, float noise_ratio):
+        cdef vector[int] sequence_indexes, least_frequent_items = vector[int]()
         cdef Py_ssize_t i
+
+        # TODO another method to get leastFrequencyItems
         predictions = []
+        for i in range(self.alphabet.length):
+            if self.inverted_index[i].compute_frequency() <= noise_ratio:
+                least_frequent_items.push_back(i)
+
         for i in range(len(sequences)):
             sequence = sequences[i]
             sequence_indexes = <vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence]
-            predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes)))
+            predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes, least_frequent_items)))
         return predictions
 
-    cdef int predict_seq(self, vector[int] target_sequence):
+    cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items):
         cdef:
             Node end_node
             int next_transition, level, elt
             tuple sequence
             Scorer score
             Bitset bitseq = Bitset(self.alphabet.length)
+            size_t old_size = target_sequence.size()
 
-        level = 0
         score = Scorer(self.alphabet.length)
 
+        level = 0
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
+
+
 
         while not score.predictable() and level < self.max_level and 0 < len(target_sequence) - level:
 
