@@ -9,8 +9,8 @@ cdef enum:
     ROOT = 0
 
 cdef extern from "cpp_sources/PredictionTree.hpp":
-    cdef cppclass PredictionTree:
-        PredictionTree() nogil except +
-        Node addChild(Node, int) nogil
-        int getTransition(Node) nogil
-        Node getParent(Node) nogil
+    cdef cppclass PredictionTree nogil:
+        PredictionTree() except +
+        Node addChild(Node, int)
+        int getTransition(Node)
+        Node getParent(Node)

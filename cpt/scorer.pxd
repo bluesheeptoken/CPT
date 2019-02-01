@@ -5,12 +5,12 @@ cdef extern from "cpp_sources/Scorer.cpp":
     pass
 
 
-cdef extern from "cpp_sources/Scorer.hpp":
+cdef extern from "cpp_sources/Scorer.hpp" nogil:
     cdef cppclass Scorer:
-        Scorer() nogil except +
-        Scorer(size_t) nogil except +
+        Scorer() except +
+        Scorer(size_t) except +
 
-        int get_score(size_t) nogil
-        void update(size_t) nogil
-        bool predictable() nogil
-        int get_best_prediction() nogil
+        int get_score(size_t)
+        void update(size_t)
+        bool predictable()
+        int get_best_prediction()
