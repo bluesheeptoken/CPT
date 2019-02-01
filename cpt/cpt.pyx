@@ -47,11 +47,12 @@ cdef class Cpt:
         return [self.predict_seq(seq) for seq in sequences]
 
     cdef predict_seq(self, list target_sequence):
-        cdef Node end_node
-        cdef int next_transition, level, elt
-        cdef tuple sequence
-        cdef Scorer score
-        cdef Bitset bitseq = Bitset(self.alphabet.length)
+        cdef:
+            Node end_node
+            int next_transition, level, elt
+            tuple sequence
+            Scorer score
+            Bitset bitseq = Bitset(self.alphabet.length)
 
 
         level = 0
