@@ -43,7 +43,7 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    def predict(self, list sequences):
+    cpdef predict(self, list sequences):
         cdef vector[int] sequence_indexes
         cdef Py_ssize_t i
         predictions = []
@@ -64,7 +64,7 @@ cdef class Cpt:
         level = 0
         score = Scorer(self.alphabet.length)
 
-        while not score.predictable() and level < self.max_level:
+        while not score.predictable() and level < self.max_level and 0 < len(target_sequence) - level:
 
             # Remove noise
             generated_sequences = \

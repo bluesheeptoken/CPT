@@ -12,6 +12,7 @@ cdef class Cpt:
 
         int predict_seq(self, vector[int] target_sequence)
         Bitset _find_similar_sequences(self, vector[int] sequence) nogil
+        cpdef predict(self, list sequences)
 
     cdef readonly:
         int split_index
