@@ -13,4 +13,4 @@ cdef class Cpt:
     cdef public Alphabet alphabet
 
     cdef predict_seq(self, list target_sequence)
-    cdef Bitset _find_similar_sequences(self, sequence)
+    cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil

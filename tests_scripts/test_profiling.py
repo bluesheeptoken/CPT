@@ -29,4 +29,4 @@ class ProfilingTest(unittest.TestCase):
             with tempfile.NamedTemporaryFile() as file:
                 profiling.profile('predict', data.name, file.name)
                 profile = pstats.Stats(file.name)
-                self.assertTrue(check_called_method(profile, '_find_similar_sequences'))
+                self.assertTrue(check_called_method(profile, 'get_symbol'))

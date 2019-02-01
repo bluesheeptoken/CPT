@@ -10,6 +10,9 @@ from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 
 
+cdef extern from "<algorithm>" namespace "std" nogil:
+    Iter find[Iter](Iter first, Iter last, int val)
+
 cdef class Cpt:
     def __cinit__(self, int split_length=0, int max_level=1):
         self.tree = PredictionTree()
@@ -68,7 +71,7 @@ cdef class Cpt:
                 for elt in sequence:
                     if elt != NOT_AN_INDEX:
                         bitseq.add(elt)
-                similar_sequences = self._find_similar_sequences(sequence)
+                similar_sequences = self._find_similar_sequences(<vector[int]>sequence)
 
                 for similar_sequence_id in range(similar_sequences.size()):
                     if similar_sequences[similar_sequence_id]:
@@ -83,15 +86,15 @@ cdef class Cpt:
 
         return self.alphabet.get_symbol(score.get_best_prediction())
 
-    cdef Bitset _find_similar_sequences(self, sequence):
-        if not sequence or NOT_AN_INDEX in sequence:
+    cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
+        if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
             return Bitset(self.alphabet.length)
 
         cdef Bitset bitset_temp
-        cdef int i
+        cdef size_t i
 
         bitset_temp = Bitset(self.inverted_index[sequence[0]])
-        for i in range(1, len(sequence)):
+        for i in range(1, sequence.size()):
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
         return bitset_temp
