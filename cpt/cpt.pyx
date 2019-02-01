@@ -12,6 +12,7 @@ from cpt.bitset cimport Bitset
 
 cdef extern from "<algorithm>" namespace "std" nogil:
     Iter find[Iter](Iter first, Iter last, int val)
+    Iter remove[Iter](Iter first, Iter last, int val)
 
 cdef class Cpt:
     def __cinit__(self, int split_length=0, int max_level=1):
@@ -63,6 +64,8 @@ cdef class Cpt:
 
         level = 0
         score = Scorer(self.alphabet.length)
+
+        target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
         while not score.predictable() and level < self.max_level and 0 < len(target_sequence) - level:
 
