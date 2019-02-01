@@ -10,8 +10,9 @@ cdef class Cpt:
         vector[Bitset] inverted_index
         vector[size_t] lookup_table
 
-        predict_seq(self, list target_sequence)
+        int predict_seq(self, vector[int] target_sequence)
         Bitset _find_similar_sequences(self, vector[int] sequence) nogil
+        cpdef predict(self, list sequences)
 
     cdef readonly:
         int split_index

@@ -43,10 +43,17 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    def predict(self, list sequences):
-        return [self.predict_seq(seq) for seq in sequences]
+    cpdef predict(self, list sequences):
+        cdef vector[int] sequence_indexes
+        cdef Py_ssize_t i
+        predictions = []
+        for i in range(len(sequences)):
+            sequence = sequences[i]
+            sequence_indexes = <vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence]
+            predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes)))
+        return predictions
 
-    cdef predict_seq(self, list target_sequence):
+    cdef int predict_seq(self, vector[int] target_sequence):
         cdef:
             Node end_node
             int next_transition, level, elt
@@ -54,16 +61,14 @@ cdef class Cpt:
             Scorer score
             Bitset bitseq = Bitset(self.alphabet.length)
 
-
         level = 0
-        target_indexes_sequence = list(map(self.alphabet.get_index, target_sequence))
         score = Scorer(self.alphabet.length)
 
-        while not score.predictable() and level < self.max_level:
+        while not score.predictable() and level < self.max_level and 0 < len(target_sequence) - level:
 
             # Remove noise
             generated_sequences = \
-                combinations(target_indexes_sequence, len(target_sequence) - level)
+                combinations(target_sequence, len(target_sequence) - level)
 
             # For each sequence, add to the corresponding score
             for sequence in generated_sequences:
@@ -85,7 +90,7 @@ cdef class Cpt:
                             next_transition = self.tree.getTransition(end_node)
             level += 1
 
-        return self.alphabet.get_symbol(score.get_best_prediction())
+        return score.get_best_prediction()
 
     cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
