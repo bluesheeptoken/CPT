@@ -44,16 +44,11 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
 
     def predict(self, list sequences):
-        ans = []
+        predictions = []
         for sequence in sequences:
-            ans.append(
-                self.alphabet.get_symbol(
-                    self.predict_seq(
-                        [self.alphabet.get_index(symbol) for symbol in sequence]
-                    )
-                )
-            )
-        return ans
+            sequence_indexes = [self.alphabet.get_index(symbol) for symbol in sequence]
+            predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes)))
+        return predictions
 
     cdef predict_seq(self, list target_sequence):
         cdef:
