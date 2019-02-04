@@ -57,6 +57,7 @@ cdef class Cpt:
         for i in range(self.alphabet.length):
             if self.inverted_index[i].compute_frequency() <= noise_ratio:
                 least_frequent_items.push_back(i)
+        # TODO warn if no noisy items are found
 
         for i in range(len(sequences)):
             sequence = sequences[i]
@@ -98,7 +99,7 @@ cdef class Cpt:
         return score.get_best_prediction()
 
     cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
-        if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
+        if sequence.empty():
             return Bitset(self.alphabet.length)
 
         cdef Bitset bitset_temp
@@ -111,10 +112,15 @@ cdef class Cpt:
         return bitset_temp
 
     cdef Scorer update_score(self, vector[int] target_sequence, Scorer score):
-        cdef Bitset bitseq = Bitset(self.alphabet.length)
+        cdef:
+            Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
+            size_t i, similar_sequence_id
+            bint updated
+            Node end_node
+            int next_transition
 
-        for elt in target_sequence:
-            bitseq.add(elt)
+        for i in range(target_sequence.size()):
+            bitseq.add(target_sequence[i])
         similar_sequences = self._find_similar_sequences(target_sequence)
 
         for similar_sequence_id in range(similar_sequences.size()):
