@@ -1,6 +1,7 @@
 from cpt.prediction_tree cimport PredictionTree
 from cpt.alphabet cimport Alphabet
 from cpt.bitset cimport Bitset
+from cpt.scorer cimport Scorer
 from libcpp.vector cimport vector
 
 
@@ -10,9 +11,11 @@ cdef class Cpt:
         vector[Bitset] inverted_index
         vector[size_t] lookup_table
 
-        int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items)
+        int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR)
         Bitset _find_similar_sequences(self, vector[int] sequence) nogil
-        cpdef predict(self, list sequences, float noise_ratio)
+        Scorer update_score(self, vector[int] target_sequence, Scorer score)
+
+    cpdef predict(self, list sequences, float noise_ratio, int MBR)
 
     cdef readonly:
         int split_index

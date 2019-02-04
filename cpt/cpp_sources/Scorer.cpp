@@ -5,7 +5,7 @@ Scorer::Scorer()
 {}
 
 Scorer::Scorer(std::size_t size)
-: m_data(size)
+: m_update_count(0), m_data(size)
 {}
 
 int Scorer::get_score(std::size_t index) const
@@ -29,4 +29,9 @@ bool Scorer::predictable() const
 int Scorer::get_best_prediction() const
 {
     return std::distance(m_data.begin(), std::max_element(m_data.begin(), m_data.end()));
+}
+
+std::vector<int> Scorer::get_scoring() const
+{
+    return m_data;
 }

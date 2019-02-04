@@ -1,6 +1,7 @@
 # distutils: language = c++
-
+from libcpp.vector cimport vector
 from libcpp cimport bool
+
 cdef extern from "cpp_sources/Scorer.cpp":
     pass
 
@@ -14,3 +15,5 @@ cdef extern from "cpp_sources/Scorer.hpp" nogil:
         void update(size_t)
         bool predictable()
         int get_best_prediction()
+        int m_update_count
+        vector[int] get_scoring()
