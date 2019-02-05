@@ -11,9 +11,9 @@ cdef class Cpt:
         vector[Bitset] inverted_index
         vector[size_t] lookup_table
 
-        int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR)
+        int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil
         Bitset _find_similar_sequences(self, vector[int] sequence) nogil
-        Scorer update_score(self, vector[int] target_sequence, Scorer score)
+        Scorer update_score(self, vector[int] target_sequence, Scorer score) nogil
 
     cpdef predict(self, list sequences, float noise_ratio, int MBR)
 
