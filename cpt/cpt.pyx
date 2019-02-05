@@ -1,8 +1,8 @@
 # distutils: language = c++
+
 from libcpp.vector cimport vector
 from libcpp.queue cimport queue
 from libcpp cimport bool
-from itertools import combinations
 from libcpp.iterator cimport back_inserter
 
 from cpt.prediction_tree cimport PredictionTree, Node, ROOT
@@ -11,20 +11,17 @@ from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 
-ctypedef vector[int] test
-
 cdef extern from "<algorithm>" namespace "std" nogil:
     Iter find[Iter](Iter first, Iter last, int val)
     Iter remove[Iter](Iter first, Iter last, int val)
     Iter2 remove_copy[Iter, Iter2](Iter first, Iter second, Iter2 third, int val)
 
 cdef class Cpt:
-    def __cinit__(self, int split_length=0, int max_level=1):
+    def __cinit__(self, int split_length=0):
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
         self.split_index = -split_length
-        self.max_level = max_level
         self.alphabet = Alphabet()
 
     def train(self, sequences):
@@ -72,7 +69,7 @@ cdef class Cpt:
             Scorer score = Scorer(self.alphabet.length)
             queue[vector[int]] queueVector = queue[vector[int]]()
             vector[int] suffix_without_noise, suffix
-            cdef Py_ssize_t i
+            cdef size_t i
             cdef int noise
 
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())

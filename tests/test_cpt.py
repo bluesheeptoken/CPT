@@ -8,7 +8,7 @@ class CptTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.cpt = Cpt(max_level=3)
+        cls.cpt = Cpt()
 
         cls.sequences = [['A', 'B', 'C'],
                          ['A', 'B'],

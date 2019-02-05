@@ -19,5 +19,4 @@ cdef class Cpt:
 
     cdef readonly:
         int split_index
-        int max_level
         Alphabet alphabet
