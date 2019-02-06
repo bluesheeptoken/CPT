@@ -33,7 +33,7 @@ float Bitset::compute_frequency() const
 {
     std::size_t occurrences = 0;
     for (std::size_t i = 0; i < m_data.size(); i++)
-        occurrences += (std::bitset<8>(m_data[i])).count();
+        occurrences += std::bitset<8>(m_data[i]).count();
     return static_cast<float>(occurrences) / m_size;
 }
 
