@@ -84,7 +84,7 @@ cdef class Cpt:
             for i in range(least_frequent_items.size()):
                 noise = least_frequent_items[i]
                 if find(suffix.begin(), suffix.end(), noise) != suffix.end():
-                    suffix_without_noise = vector[int]()
+                    suffix_without_noise.clear()
                     remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
                     if not suffix_without_noise.empty():
                         queueVector.push(suffix_without_noise)
