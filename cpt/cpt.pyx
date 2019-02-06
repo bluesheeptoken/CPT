@@ -2,7 +2,6 @@
 
 from libcpp.vector cimport vector
 from libcpp.queue cimport queue
-from libcpp cimport bool
 from libcpp.iterator cimport back_inserter
 
 from cpt.prediction_tree cimport PredictionTree, Node, ROOT
