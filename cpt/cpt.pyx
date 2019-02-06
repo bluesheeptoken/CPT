@@ -105,7 +105,7 @@ cdef class Cpt:
 
         return bitset_temp
 
-    cdef int update_score(self, vector[int] target_sequence, Scorer& score) nogil:
+    cdef int update_score(self, vector[int] suffix, Scorer& score) nogil:
         cdef:
             Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
             size_t i, similar_sequence_id
@@ -113,9 +113,9 @@ cdef class Cpt:
             Node end_node
             int next_transition, update_count = 0
 
-        for i in range(target_sequence.size()):
-            bitseq.add(target_sequence[i])
-        similar_sequences = self._find_similar_sequences(target_sequence)
+        for i in range(suffix.size()):
+            bitseq.add(suffix[i])
+        similar_sequences = self._find_similar_sequences(suffix)
 
         for similar_sequence_id in range(similar_sequences.size()):
             if similar_sequences[similar_sequence_id]:
