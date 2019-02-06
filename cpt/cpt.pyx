@@ -46,7 +46,8 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
 
     cpdef predict(self, list sequences, float noise_ratio, int MBR):
-        cdef vector[int] sequence_indexes, least_frequent_items = vector[int]()
+        cdef vector[int] least_frequent_items = vector[int]()
+        cdef vector[vector[int]] sequences_indexes = vector[vector[int]]()
         cdef Py_ssize_t i
         cdef int len_sequences = len(sequences)
         cdef vector[int] int_predictions = vector[int](len_sequences)
@@ -58,9 +59,9 @@ cdef class Cpt:
 
         for i in range(len_sequences):
             sequence = sequences[i]
-            sequence_indexes = <vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence]
+            sequences_indexes.push_back(<vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence])
         for i in range(len_sequences):
-            int_predictions[i] = self.predict_seq(sequence_indexes, least_frequent_items, MBR)
+            int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 

@@ -28,9 +28,8 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.alphabet.symbols, alphabet.symbols)
 
     def test_predict(self):
-        self.assertEqual(self.cpt.predict([['A']], 1.0, 3), ['B'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3), ['B', 'D'])
         self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 2), ['C'])
-        self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 3), ['D'])
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
         # Default value is the first one
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.1, 1), ['A'])
