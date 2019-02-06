@@ -109,7 +109,6 @@ cdef class Cpt:
         cdef:
             Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
             size_t i, similar_sequence_id
-            bint updated
             Node end_node
             int next_transition, update_count = 0
 
@@ -119,9 +118,9 @@ cdef class Cpt:
 
         for similar_sequence_id in range(similar_sequences.size()):
             if similar_sequences[similar_sequence_id]:
-                updated = False
                 end_node = self.lookup_table[similar_sequence_id]
                 next_transition = self.tree.getTransition(end_node)
+                update_count += not bitseq[next_transition]
 
                 while not bitseq[next_transition]:
                     score.update(next_transition)
@@ -129,6 +128,4 @@ cdef class Cpt:
                     end_node = self.tree.getParent(end_node)
                     next_transition = self.tree.getTransition(end_node)
 
-                if updated:
-                    update_count += 1
         return update_count
