@@ -68,26 +68,26 @@ cdef class Cpt:
     cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil:
         cdef:
             Scorer scorer = Scorer(self.alphabet.length)
-            queue[vector[int]] queueVector = queue[vector[int]]()
+            queue[vector[int]] suffixes = queue[vector[int]]()
             vector[int] suffix_without_noise, suffix
             cdef size_t i
             cdef int noise, update_count = 0
 
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
-        queueVector.push(target_sequence)
+        suffixes.push(target_sequence)
         update_count += self.update_score(target_sequence, scorer)
 
-        while update_count < MBR and not queueVector.empty():
-            suffix = queueVector.front()
-            queueVector.pop()
+        while update_count < MBR and not suffixes.empty():
+            suffix = suffixes.front()
+            suffixes.pop()
             for i in range(least_frequent_items.size()):
                 noise = least_frequent_items[i]
                 if find(suffix.begin(), suffix.end(), noise) != suffix.end():
                     suffix_without_noise.clear()
                     remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
                     if not suffix_without_noise.empty():
-                        queueVector.push(suffix_without_noise)
+                        suffixes.push(suffix_without_noise)
                         update_count += self.update_score(suffix_without_noise, scorer)
 
         return scorer.get_best_prediction()
