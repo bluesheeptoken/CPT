@@ -17,10 +17,6 @@ public:
 
     int get_best_prediction() const;
 
-    std::vector<int> get_scoring() const;
-
-    int m_update_count;
-
 private:
     std::vector<int> m_data;
 };

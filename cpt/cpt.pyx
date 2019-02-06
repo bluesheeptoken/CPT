@@ -71,14 +71,14 @@ cdef class Cpt:
             queue[vector[int]] queueVector = queue[vector[int]]()
             vector[int] suffix_without_noise, suffix
             cdef size_t i
-            cdef int noise
+            cdef int noise, update_count = 0
 
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
         queueVector.push(target_sequence)
-        score = self.update_score(target_sequence, score)
+        update_count += self.update_score(target_sequence, score)
 
-        while score.m_update_count < MBR and not queueVector.empty():
+        while update_count < MBR and not queueVector.empty():
             suffix = queueVector.front()
             queueVector.pop()
             for i in range(least_frequent_items.size()):
@@ -88,7 +88,7 @@ cdef class Cpt:
                     remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
                     if not suffix_without_noise.empty():
                         queueVector.push(suffix_without_noise)
-                    score = self.update_score(suffix_without_noise, score)
+                    update_count += self.update_score(suffix_without_noise, score)
 
         return score.get_best_prediction()
 
@@ -105,13 +105,13 @@ cdef class Cpt:
 
         return bitset_temp
 
-    cdef Scorer update_score(self, vector[int] target_sequence, Scorer score) nogil:
+    cdef int update_score(self, vector[int] target_sequence, Scorer& score) nogil:
         cdef:
             Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
             size_t i, similar_sequence_id
             bint updated
             Node end_node
-            int next_transition
+            int next_transition, update_count = 0
 
         for i in range(target_sequence.size()):
             bitseq.add(target_sequence[i])
@@ -130,6 +130,5 @@ cdef class Cpt:
                     next_transition = self.tree.getTransition(end_node)
 
                 if updated:
-                    score.m_update_count += 1
-
-        return score
+                    update_count += 1
+        return update_count
