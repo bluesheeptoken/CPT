@@ -11,8 +11,8 @@ from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 
 cdef extern from "<algorithm>" namespace "std" nogil:
-    It find[It](It first, It last, int val)
-    It remove[It](It first, It last, int val)
+    InputIt find[InputIt](InputIt first, InputIt last, int val)
+    InputIt remove[InputIt](InputIt first, InputIt last, int val)
     OutputIt remove_copy[InputIt, OutputIt](InputIt first, InputIt second, OutputIt third, int val)
 
 cdef class Cpt:
@@ -91,7 +91,7 @@ cdef class Cpt:
 
         return scorer.get_best_prediction()
 
-    cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
+    cdef Bitset find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty():
             return Bitset(self.alphabet.length)
 
@@ -113,7 +113,7 @@ cdef class Cpt:
 
         for i in range(suffix.size()):
             bitseq.add(suffix[i])
-        similar_sequences = self._find_similar_sequences(suffix)
+        similar_sequences = self.find_similar_sequences(suffix)
 
         for similar_sequence_id in range(similar_sequences.size()):
             if similar_sequences[similar_sequence_id]:
@@ -123,7 +123,6 @@ cdef class Cpt:
 
                 while not bitseq[next_transition]:
                     scorer.update(next_transition)
-                    updated = True
                     end_node = self.tree.getParent(end_node)
                     next_transition = self.tree.getTransition(end_node)
 
