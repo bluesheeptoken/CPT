@@ -31,10 +31,10 @@ void Bitset::add(std::size_t index)
 
 float Bitset::compute_frequency() const
 {
-    std::size_t occurences = 0;
+    std::size_t occurrences = 0;
     for (std::size_t i = 0; i < m_data.size(); i++)
-        occurences += (std::bitset<8>(m_data[i])).count();
-    return static_cast<float>(occurences) / m_size;
+        occurrences += (std::bitset<8>(m_data[i])).count();
+    return static_cast<float>(occurrences) / m_size;
 }
 
 Bitset& Bitset::inter(const Bitset& other)
