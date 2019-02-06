@@ -1,7 +1,8 @@
 # distutils: language = c++
+
 from libcpp.vector cimport vector
-from libcpp cimport bool
-from itertools import combinations
+from libcpp.queue cimport queue
+from libcpp.iterator cimport back_inserter
 
 from cpt.prediction_tree cimport PredictionTree, Node, ROOT
 from cpt.alphabet cimport Alphabet
@@ -9,17 +10,17 @@ from cpt.alphabet cimport NOT_AN_INDEX
 from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 
-
 cdef extern from "<algorithm>" namespace "std" nogil:
-    Iter find[Iter](Iter first, Iter last, int val)
+    InputIt find[InputIt](InputIt first, InputIt last, int val)
+    InputIt remove[InputIt](InputIt first, InputIt last, int val)
+    OutputIt remove_copy[InputIt, OutputIt](InputIt first, InputIt second, OutputIt third, int val)
 
 cdef class Cpt:
-    def __cinit__(self, int split_length=0, int max_level=1):
+    def __cinit__(self, int split_length=0):
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
         self.split_index = -split_length
-        self.max_level = max_level
         self.alphabet = Alphabet()
 
     def train(self, sequences):
@@ -43,57 +44,55 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    cpdef predict(self, list sequences):
-        cdef vector[int] sequence_indexes
+    cpdef predict(self, list sequences, float noise_ratio, int MBR):
+        cdef vector[int] least_frequent_items = vector[int]()
+        cdef vector[vector[int]] sequences_indexes = vector[vector[int]]()
         cdef Py_ssize_t i
-        predictions = []
-        for i in range(len(sequences)):
+        cdef int len_sequences = len(sequences)
+        cdef vector[int] int_predictions = vector[int](len_sequences)
+
+        for i in range(self.alphabet.length):
+            if self.inverted_index[i].compute_frequency() <= noise_ratio:
+                least_frequent_items.push_back(i)
+        # TODO warn if no noisy items are found
+
+        for i in range(len_sequences):
             sequence = sequences[i]
-            sequence_indexes = <vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence]
-            predictions.append(self.alphabet.get_symbol(self.predict_seq(sequence_indexes)))
-        return predictions
+            sequences_indexes.push_back(<vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence])
+        for i in range(len_sequences):
+            int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
 
-    cdef int predict_seq(self, vector[int] target_sequence):
+        return [self.alphabet.get_symbol(x) for x in int_predictions]
+
+    cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil:
         cdef:
-            Node end_node
-            int next_transition, level, elt
-            tuple sequence
-            Scorer score
-            Bitset bitseq = Bitset(self.alphabet.length)
+            Scorer scorer = Scorer(self.alphabet.length)
+            queue[vector[int]] suffixes = queue[vector[int]]()
+            vector[int] suffix_without_noise, suffix
+            cdef size_t i
+            cdef int noise, update_count = 0
 
-        level = 0
-        score = Scorer(self.alphabet.length)
+        target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
-        while not score.predictable() and level < self.max_level and 0 < len(target_sequence) - level:
+        suffixes.push(target_sequence)
+        update_count += self.update_score(target_sequence, scorer)
 
-            # Remove noise
-            generated_sequences = \
-                combinations(target_sequence, len(target_sequence) - level)
+        while update_count < MBR and not suffixes.empty():
+            suffix = suffixes.front()
+            suffixes.pop()
+            for i in range(least_frequent_items.size()):
+                noise = least_frequent_items[i]
+                if find(suffix.begin(), suffix.end(), noise) != suffix.end():
+                    suffix_without_noise.clear()
+                    remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
+                    if not suffix_without_noise.empty():
+                        suffixes.push(suffix_without_noise)
+                        update_count += self.update_score(suffix_without_noise, scorer)
 
-            # For each sequence, add to the corresponding score
-            for sequence in generated_sequences:
+        return scorer.get_best_prediction()
 
-                bitseq.clear()
-                for elt in sequence:
-                    if elt != NOT_AN_INDEX:
-                        bitseq.add(elt)
-                similar_sequences = self._find_similar_sequences(<vector[int]>sequence)
-
-                for similar_sequence_id in range(similar_sequences.size()):
-                    if similar_sequences[similar_sequence_id]:
-                        end_node = self.lookup_table[similar_sequence_id]
-                        next_transition = self.tree.getTransition(end_node)
-
-                        while not bitseq[next_transition]:
-                            score.update(next_transition)
-                            end_node = self.tree.getParent(end_node)
-                            next_transition = self.tree.getTransition(end_node)
-            level += 1
-
-        return score.get_best_prediction()
-
-    cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
-        if sequence.empty() or find(sequence.begin(), sequence.end(), NOT_AN_INDEX) != sequence.end():
+    cdef Bitset find_similar_sequences(self, vector[int] sequence) nogil:
+        if sequence.empty():
             return Bitset(self.alphabet.length)
 
         cdef Bitset bitset_temp
@@ -104,3 +103,27 @@ cdef class Cpt:
             bitset_temp.inter(self.inverted_index[sequence[i]])
 
         return bitset_temp
+
+    cdef int update_score(self, vector[int] suffix, Scorer& scorer) nogil:
+        cdef:
+            Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
+            size_t i, similar_sequence_id
+            Node end_node
+            int next_transition, update_count = 0
+
+        for i in range(suffix.size()):
+            bitseq.add(suffix[i])
+        similar_sequences = self.find_similar_sequences(suffix)
+
+        for similar_sequence_id in range(similar_sequences.size()):
+            if similar_sequences[similar_sequence_id]:
+                end_node = self.lookup_table[similar_sequence_id]
+                next_transition = self.tree.getTransition(end_node)
+                update_count += not bitseq[next_transition]
+
+                while not bitseq[next_transition]:
+                    scorer.update(next_transition)
+                    end_node = self.tree.getParent(end_node)
+                    next_transition = self.tree.getTransition(end_node)
+
+        return update_count

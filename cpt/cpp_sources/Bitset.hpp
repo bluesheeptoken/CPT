@@ -16,6 +16,8 @@ public:
     bool operator[](std::size_t index) const;
     void add(std::size_t index);
 
+    float compute_frequency() const;
+
     Bitset& inter(const Bitset& other);
 
     void clear();

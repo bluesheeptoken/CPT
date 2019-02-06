@@ -8,12 +8,12 @@ class CptTest(unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
-        cls.cpt = Cpt(max_level=3)
+        cls.cpt = Cpt()
 
         cls.sequences = [['A', 'B', 'C'],
                          ['A', 'B'],
                          ['A', 'B', 'D'],
-                         ['B', 'C'],
+                         ['B', 'C', 'D'],
                          ['B', 'D', 'E']]
 
         cls.cpt.train(cls.sequences)
@@ -28,6 +28,8 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.alphabet.symbols, alphabet.symbols)
 
     def test_predict(self):
-        # First sequence does not have noise, second has
-        self.assertEqual(self.cpt.predict([['A', 'B'], ['A', 'B', 'G', 'G']]),
-                         ['C', 'C'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3), ['B', 'D'])
+        self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 2), ['C'])
+        self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
+        # Default value is the first one
+        self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.1, 1), ['A'])

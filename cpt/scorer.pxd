@@ -1,6 +1,8 @@
 # distutils: language = c++
 
+from libcpp.vector cimport vector
 from libcpp cimport bool
+
 cdef extern from "cpp_sources/Scorer.cpp":
     pass
 

@@ -13,6 +13,6 @@ cdef extern from "cpp_sources/Bitset.hpp" nogil:
         size_t size()
         bool operator[](size_t)
         void add(size_t)
-        bool contains(size_t)
+        float compute_frequency()
         Bitset& inter(Bitset&)
         void clear()
