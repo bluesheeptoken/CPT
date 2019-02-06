@@ -67,7 +67,7 @@ cdef class Cpt:
 
     cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil:
         cdef:
-            Scorer score = Scorer(self.alphabet.length)
+            Scorer scorer = Scorer(self.alphabet.length)
             queue[vector[int]] queueVector = queue[vector[int]]()
             vector[int] suffix_without_noise, suffix
             cdef size_t i
@@ -76,7 +76,7 @@ cdef class Cpt:
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
         queueVector.push(target_sequence)
-        update_count += self.update_score(target_sequence, score)
+        update_count += self.update_score(target_sequence, scorer)
 
         while update_count < MBR and not queueVector.empty():
             suffix = queueVector.front()
@@ -88,9 +88,9 @@ cdef class Cpt:
                     remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
                     if not suffix_without_noise.empty():
                         queueVector.push(suffix_without_noise)
-                        update_count += self.update_score(suffix_without_noise, score)
+                        update_count += self.update_score(suffix_without_noise, scorer)
 
-        return score.get_best_prediction()
+        return scorer.get_best_prediction()
 
     cdef Bitset _find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty():
@@ -105,7 +105,7 @@ cdef class Cpt:
 
         return bitset_temp
 
-    cdef int update_score(self, vector[int] suffix, Scorer& score) nogil:
+    cdef int update_score(self, vector[int] suffix, Scorer& scorer) nogil:
         cdef:
             Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
             size_t i, similar_sequence_id
@@ -123,7 +123,7 @@ cdef class Cpt:
                 update_count += not bitseq[next_transition]
 
                 while not bitseq[next_transition]:
-                    score.update(next_transition)
+                    scorer.update(next_transition)
                     updated = True
                     end_node = self.tree.getParent(end_node)
                     next_transition = self.tree.getTransition(end_node)
