@@ -88,7 +88,7 @@ cdef class Cpt:
                     remove_copy(suffix.begin(), suffix.end(), back_inserter(suffix_without_noise), noise)
                     if not suffix_without_noise.empty():
                         queueVector.push(suffix_without_noise)
-                    update_count += self.update_score(suffix_without_noise, score)
+                        update_count += self.update_score(suffix_without_noise, score)
 
         return score.get_best_prediction()
 
