@@ -12,9 +12,9 @@ from cpt.scorer cimport Scorer
 from cpt.bitset cimport Bitset
 
 cdef extern from "<algorithm>" namespace "std" nogil:
-    Iter find[Iter](Iter first, Iter last, int val)
-    Iter remove[Iter](Iter first, Iter last, int val)
-    Iter2 remove_copy[Iter, Iter2](Iter first, Iter second, Iter2 third, int val)
+    It find[It](It first, It last, int val)
+    It remove[It](It first, It last, int val)
+    OutputIt remove_copy[InputIt, OutputIt](InputIt first, InputIt second, OutputIt third, int val)
 
 cdef class Cpt:
     def __cinit__(self, int split_length=0):
