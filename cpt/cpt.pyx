@@ -3,6 +3,7 @@
 from libcpp.vector cimport vector
 from libcpp.queue cimport queue
 from libcpp.iterator cimport back_inserter
+from cython.parallel import prange
 
 from cpt.prediction_tree cimport PredictionTree, Node, ROOT
 from cpt.alphabet cimport Alphabet
@@ -46,9 +47,9 @@ cdef class Cpt:
 
     cpdef predict(self, list sequences, float noise_ratio, int MBR):
         cdef:
-            vector[int] least_frequent_items = vector[int]()
+            vector[int] least_frequent_items = vector[int](), sequence_indexes
             vector[vector[int]] sequences_indexes = vector[vector[int]]()
-            Py_ssize_t i
+            Py_ssize_t i, j
             int len_sequences = len(sequences)
             vector[int] int_predictions = vector[int](len_sequences)
 
@@ -58,8 +59,12 @@ cdef class Cpt:
 
         for i in range(len_sequences):
             sequence = sequences[i]
-            sequences_indexes.push_back(<vector[int]>[self.alphabet.get_index(symbol) for symbol in sequence])
-        for i in range(len_sequences):
+            sequence_indexes = vector[int]()
+            for j in range(len(sequence)):
+                sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
+            sequences_indexes.push_back(sequence_indexes)
+
+        for i in prange(len_sequences, nogil=True):
             int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
