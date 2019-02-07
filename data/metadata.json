@@ -5,9 +5,9 @@
     "sequence_avg_length": 41.44048906602454
   },
   "full_santander": {
-    "alphabet_length": 12198,
-    "number_sequences": 956645,
-    "sequence_avg_length": 14.265802884037443
+    "alphabet_length": 12182,
+    "number_sequences": 929615,
+    "sequence_avg_length": 14.51284133754296
   },
   "partial_fifa": {
     "alphabet_length": 3380,
