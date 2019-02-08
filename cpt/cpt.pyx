@@ -67,7 +67,7 @@ cdef class Cpt:
                     sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
                 sequences_indexes.push_back(sequence_indexes)
 
-            for i in prange(len_sequences, nogil=True, schedule='guided'):
+            for i in prange(len_sequences, nogil=True, schedule='dynamic'):
                 int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
 
         else:
