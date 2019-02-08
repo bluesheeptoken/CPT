@@ -29,6 +29,7 @@ class CptTest(unittest.TestCase):
 
     def test_predict(self):
         self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3), ['B', 'D'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3, False), ['B', 'D'])
         self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 2), ['C'])
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
         # Default value is the first one
