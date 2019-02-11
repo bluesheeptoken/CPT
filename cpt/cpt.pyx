@@ -54,7 +54,6 @@ cdef class Cpt:
         for i in range(self.alphabet.length):
             if self.inverted_index[i].compute_frequency() <= noise_ratio:
                 least_frequent_items.push_back(i)
-        # TODO warn if no noisy items are found
 
         for i in range(len_sequences):
             sequence = sequences[i]
