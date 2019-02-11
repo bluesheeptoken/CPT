@@ -45,11 +45,12 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
 
     cpdef predict(self, list sequences, float noise_ratio, int MBR):
-        cdef vector[int] least_frequent_items = vector[int]()
-        cdef vector[vector[int]] sequences_indexes = vector[vector[int]]()
-        cdef Py_ssize_t i
-        cdef int len_sequences = len(sequences)
-        cdef vector[int] int_predictions = vector[int](len_sequences)
+        cdef:
+            vector[int] least_frequent_items = vector[int]()
+            vector[vector[int]] sequences_indexes = vector[vector[int]]()
+            Py_ssize_t i
+            int len_sequences = len(sequences)
+            vector[int] int_predictions = vector[int](len_sequences)
 
         for i in range(self.alphabet.length):
             if self.inverted_index[i].compute_frequency() <= noise_ratio:
@@ -68,8 +69,8 @@ cdef class Cpt:
             Scorer scorer = Scorer(self.alphabet.length)
             queue[vector[int]] suffixes = queue[vector[int]]()
             vector[int] suffix_without_noise, suffix
-            cdef size_t i
-            cdef int noise, update_count = 0
+            size_t i
+            int noise, update_count = 0
 
         target_sequence.erase(remove(target_sequence.begin(), target_sequence.end(), NOT_AN_INDEX), target_sequence.end())
 
