@@ -15,7 +15,7 @@ cdef class Cpt:
         Bitset find_similar_sequences(self, vector[int] sequence) nogil
         int update_score(self, vector[int] suffix, Scorer& score) nogil
 
-    cpdef predict(self, list sequences, float noise_ratio, int MBR)
+    cpdef predict(self, list sequences, float noise_ratio, int MBR, bint multi_threading=*)
 
     cdef readonly:
         int split_index
