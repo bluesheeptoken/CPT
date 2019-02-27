@@ -2,6 +2,7 @@
 #define CPT_BITSET_HPP
 
 #include <cstdint>
+#include <tuple>
 #include <vector>
 
 class Bitset
@@ -10,6 +11,7 @@ public:
     Bitset();
     Bitset(std::size_t size);
     Bitset(const Bitset&);
+    Bitset(std::vector<std::uint8_t> data, std::size_t size);
 
     std::size_t size() const;
 
@@ -21,6 +23,10 @@ public:
     Bitset& inter(const Bitset& other);
 
     void clear();
+
+    std::vector<std::uint8_t> get_data() const { return m_data; };
+
+    std::size_t get_size() const { return m_size; };
 
 private:
     std::vector<std::uint8_t> m_data;

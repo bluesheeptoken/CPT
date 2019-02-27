@@ -4,6 +4,7 @@ from libcpp.vector cimport vector
 from libcpp.queue cimport queue
 from libcpp.iterator cimport back_inserter
 from cython.parallel import prange
+from cpython.object cimport Py_EQ, Py_NE
 
 from cpt.prediction_tree cimport PredictionTree, Node, ROOT
 from cpt.alphabet cimport Alphabet
@@ -23,6 +24,18 @@ cdef class Cpt:
         self.lookup_table = vector[Node]()
         self.split_index = -split_length
         self.alphabet = Alphabet()
+
+    def get_inverted_index(self):
+        return [(x.get_data(), x.get_size()) for x in self.inverted_index]
+
+    def get_prediction_tree(self):
+        return (self.tree.get_next_node(),
+            self.tree.get_incoming(),
+            self.tree.get_parent(),
+            self.tree.get_children())
+
+    def get_lookup_table(self):
+        return <list>self.lookup_table
 
     def train(self, sequences):
 
@@ -143,3 +156,46 @@ cdef class Cpt:
                     next_transition = self.tree.getTransition(end_node)
 
         return update_count
+
+    def __reduce__(self):
+        inverted_index_state = []
+
+        for bitset in self.inverted_index:
+            inverted_index_state.append((bitset.get_data(), bitset.get_size()))
+
+        prediction_tree_state = (self.tree.get_next_node(),
+            self.tree.get_incoming(),
+            self.tree.get_parent(),
+            self.tree.get_children())
+
+        return(rebuild, (self.split_index,
+                         self.alphabet.__getstate__(),
+                         self.lookup_table,
+                         inverted_index_state,
+                         prediction_tree_state))
+
+    def __is_equal__(self, other):
+        return self.get_prediction_tree() == other.get_prediction_tree() and \
+               self.get_inverted_index() == other.get_inverted_index() and \
+               self.get_lookup_table() == other.get_lookup_table() and \
+               self.split_index == other.split_index and \
+               self.alphabet == other.alphabet
+
+    def __richcmp__(self, other, op):
+        if op == Py_EQ:
+            return self.__is_equal__(other)
+        elif op == Py_NE:
+            return not self.__is_equal__(other)
+        else:
+            assert False
+
+
+def rebuild(split_length, alphabet_state, lookup_table_state, inverted_index_states, prediction_tree_state):
+    cpt = Cpt(split_length=split_length)
+    cpt.alphabet = Alphabet()
+    cpt.alphabet.__setstate__(alphabet_state)
+    cpt.lookup_table = lookup_table_state
+    for bitset_state in inverted_index_states:
+        cpt.inverted_index.push_back(Bitset(bitset_state[0], bitset_state[1]))
+    cpt.tree = PredictionTree(prediction_tree_state[0], prediction_tree_state[1], prediction_tree_state[2], prediction_tree_state[3])
+    return cpt

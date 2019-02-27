@@ -1,4 +1,5 @@
 import unittest
+import pickle
 
 from cpt.alphabet import Alphabet
 
@@ -35,3 +36,16 @@ class AlphabetTest(unittest.TestCase):
     def test_add_unknown_symbol(self):
         self.assertEqual(self.alphabet.add_symbol('X'), 3)
         self.assertEqual(self.alphabet.length, 4)
+
+    def test_richcmp(self):
+        self.assertNotEqual(self.alphabet, Alphabet())
+        alphabet = Alphabet()
+        alphabet.add_symbol('C')
+        alphabet.add_symbol('P')
+        alphabet.add_symbol('T')
+        self.assertEqual(self.alphabet, alphabet)
+
+    def test_pickle(self):
+        pickled = pickle.dumps(self.alphabet)
+        unpickled_alphabet = pickle.loads(pickled)
+        self.assertEqual(self.alphabet, unpickled_alphabet)
