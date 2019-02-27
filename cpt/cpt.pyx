@@ -159,7 +159,7 @@ cdef class Cpt:
 
     def __reduce__(self):
         inverted_index_state = []
-        cdef Bitset bitset
+
         for bitset in self.inverted_index:
             inverted_index_state.append((bitset.get_data(), bitset.get_size()))
 
