@@ -1,4 +1,5 @@
 import unittest
+import pickle
 
 from cpt.cpt import Cpt  # pylint: disable=no-name-in-module
 from cpt.alphabet import Alphabet
@@ -32,5 +33,16 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3, False), ['B', 'D'])
         self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 2), ['C'])
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
-        # Default value is the first one
+        # Default value is the first of the alphabet
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.1, 1), ['A'])
+
+    def test_richcmp(self):
+        cpt_wrong_split_index = Cpt(1)
+        cpt_wrong_split_index.train(self.sequences)
+        self.assertNotEqual(self.cpt, cpt_wrong_split_index)
+        self.assertEqual(self.cpt, self.cpt)
+
+    def test_pickle(self):
+        pickled = pickle.dumps(self.cpt)
+        unpickled_cpt = pickle.loads(pickled)
+        self.assertEqual(self.cpt, unpickled_cpt)
