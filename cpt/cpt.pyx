@@ -19,6 +19,8 @@ cdef extern from "<algorithm>" namespace "std" nogil:
 
 cdef class Cpt:
     def __cinit__(self, int split_length=0):
+        if split_length < 0:
+            raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
@@ -65,6 +67,12 @@ cdef class Cpt:
             Py_ssize_t i, j
             int len_sequences = len(sequences)
             vector[int] int_predictions
+
+        if not 0 <= noise_ratio <= 1:
+            raise ValueError('noise_ratio should be between 0 and 1, actual value : {}'.format(noise_ratio))
+
+        if MBR < 0:
+            raise ValueError('MBR should be non-negative, actual value : {}'.format(MBR))
 
         for i in range(self.alphabet.length):
             if self.inverted_index[i].compute_frequency() <= noise_ratio:

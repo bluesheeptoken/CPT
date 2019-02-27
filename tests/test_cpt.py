@@ -19,6 +19,10 @@ class CptTest(unittest.TestCase):
 
         cls.cpt.train(cls.sequences)
 
+    def test_init(self):
+        with self.assertRaises(ValueError):
+            Cpt(-5)
+
     def test_train(self):
         alphabet = Alphabet()
         alphabet.length = 5
@@ -36,6 +40,17 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
         # Default value is the first of the alphabet
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.1, 1), ['A'])
+
+        # Check value raises
+        # noise_ratio should be <= 1.0
+        with self.assertRaises(ValueError):
+            self.cpt.predict([[]], 1.1, 3)
+        # noise ratio should be >= 0
+        with self.assertRaises(ValueError):
+            self.cpt.predict([[]], -0.2, 3)
+        # MBR should be >= 0
+        with self.assertRaises(ValueError):
+            self.cpt.predict([[]], 0.8, -5)
 
     def test_richcmp(self):
         cpt_wrong_split_index = Cpt(1)
