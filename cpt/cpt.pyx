@@ -73,23 +73,22 @@ cdef class Cpt:
         if multi_threading:
             int_predictions = vector[int](len_sequences)
             sequences_indexes = vector[vector[int]]()
-            for i in range(len_sequences):
-                sequence = sequences[i]
-                sequence_indexes = vector[int]()
-                for j in range(len(sequence)):
-                    sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
-                sequences_indexes.push_back(sequence_indexes)
 
+        for i in range(len_sequences):
+            sequence = sequences[i]
+            sequence_indexes = vector[int]()
+            for j in range(len(sequence)):
+                sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
+
+            if multi_threading:
+                sequences_indexes.push_back(sequence_indexes)
+            else:
+                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items, MBR))
+
+
+        if multi_threading:
             for i in prange(len_sequences, nogil=True, schedule='dynamic'):
                 int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
-
-        else:
-            for i in range(len_sequences):
-                sequence = sequences[i]
-                sequence_indexes = vector[int]()
-                for j in range(len(sequence)):
-                    sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
-                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items, MBR))
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
