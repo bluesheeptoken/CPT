@@ -1,3 +1,6 @@
+from cpython.object cimport Py_EQ, Py_NE
+
+
 cdef class Alphabet:
 
     def __cinit__(self):
@@ -23,3 +26,26 @@ cdef class Alphabet:
     def __repr__(self):
         return "{{length: {}, indexes: {}, symbols: {}}}"\
                 .format(self.length, self.indexes, self.symbols)
+
+    def __getstate__(self):
+        return (self.length, self.indexes, self.symbols)
+
+    def __setstate__(self, state):
+        length, indexes, symbols = state
+        self.length = length
+        self.indexes = indexes
+        self.symbols = symbols
+
+    def __is_equal__(self, other):
+        return self.length == other.length and \
+               self.indexes == other.indexes and \
+               self.symbols == other.symbols
+
+    def __richcmp__(self, other, op):
+        if op == Py_EQ:
+            return self.__is_equal__(other)
+        elif op == Py_NE:
+            return not self.__is_equal__(other)
+        else:
+            assert False
+
