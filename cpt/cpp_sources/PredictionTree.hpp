@@ -10,7 +10,7 @@ class PredictionTree
 {
 public:
     PredictionTree();
-    PredictionTree(Node nextNode, std::vector<int> incoming, std::vector<int> parent, std::vector<std::map<int, Node>> children);
+    PredictionTree(Node nextNode, const std::vector<int>& incoming, const std::vector<int>& parent, const std::vector<std::map<int, Node>>& children);
 
     Node addChild(Node parent, int transition);
 
@@ -20,9 +20,9 @@ public:
 
     Node get_next_node() const { return m_nextNode; };
 
-    std::vector<int> get_incoming() const { return m_incoming; };
-    std::vector<int> get_parent() const { return m_parent; };
-    std::vector<std::map<int, Node>> get_children() const { return m_children; };
+    const std::vector<int>& get_incoming() const { return m_incoming; };
+    const std::vector<int>& get_parent() const { return m_parent; };
+    const std::vector<std::map<int, Node>>& get_children() const { return m_children; };
 
 private:
     Node m_nextNode;

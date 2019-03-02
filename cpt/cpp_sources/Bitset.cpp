@@ -14,7 +14,7 @@ Bitset::Bitset(const Bitset& other)
 : m_data(other.m_data), m_size(other.m_size)
 {}
 
-Bitset::Bitset(std::vector<std::uint8_t> data, std::size_t size)
+Bitset::Bitset(const std::vector<std::uint8_t>& data, std::size_t size)
 : m_data(data), m_size(size)
 {}
 

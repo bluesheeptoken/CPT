@@ -11,12 +11,12 @@ cdef extern from "cpp_sources/Bitset.hpp" nogil:
         Bitset() except +
         Bitset(size_t) except +
         Bitset(Bitset&) except +
-        Bitset(vector[unsigned char], size_t) except +
+        Bitset(const vector[unsigned char]&, size_t) except +
         size_t size()
         bool operator[](size_t)
         void add(size_t)
         float compute_frequency()
         Bitset& inter(Bitset&)
         void clear()
-        vector[unsigned char] get_data()
+        const vector[unsigned char]& get_data()
         size_t get_size()
