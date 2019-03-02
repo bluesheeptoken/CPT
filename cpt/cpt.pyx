@@ -166,22 +166,29 @@ cdef class Cpt:
 
         return update_count
 
-    def __reduce__(self):
+    def __getstate__(self):
         inverted_index_state = []
 
         for bitset in self.inverted_index:
             inverted_index_state.append((bitset.get_data(), bitset.get_size()))
 
-        prediction_tree_state = (self.tree.get_next_node(),
-            self.tree.get_incoming(),
-            self.tree.get_parent(),
-            self.tree.get_children())
+        return (self.split_index,
+                self.alphabet,
+                self.lookup_table,
+                inverted_index_state,
+                (self.tree.get_next_node(),
+                self.tree.get_incoming(),
+                self.tree.get_parent(),
+                self.tree.get_children()))
 
-        return(rebuild, (self.split_index,
-                         self.alphabet.__getstate__(),
-                         self.lookup_table,
-                         inverted_index_state,
-                         prediction_tree_state))
+    def __setstate__(self, state):
+        split_index, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state = state
+        self.split_index = split_index
+        self.alphabet = alphabet
+        self.lookup_table = lookup_table_state
+        for bitset_state in inverted_index_state:
+            self.inverted_index.push_back(Bitset(bitset_state[0], bitset_state[1]))
+        self.tree = PredictionTree(prediction_tree_state[0], prediction_tree_state[1], prediction_tree_state[2], prediction_tree_state[3])
 
     def __is_equal__(self, other):
         return self.get_prediction_tree() == other.get_prediction_tree() and \
@@ -197,14 +204,3 @@ cdef class Cpt:
             return not self.__is_equal__(other)
         else:
             assert False
-
-
-def rebuild(split_length, alphabet_state, lookup_table_state, inverted_index_states, prediction_tree_state):
-    cpt = Cpt(split_length=split_length)
-    cpt.alphabet = Alphabet()
-    cpt.alphabet.__setstate__(alphabet_state)
-    cpt.lookup_table = lookup_table_state
-    for bitset_state in inverted_index_states:
-        cpt.inverted_index.push_back(Bitset(bitset_state[0], bitset_state[1]))
-    cpt.tree = PredictionTree(prediction_tree_state[0], prediction_tree_state[1], prediction_tree_state[2], prediction_tree_state[3])
-    return cpt
