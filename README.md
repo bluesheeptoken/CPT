@@ -1,9 +1,17 @@
 # CPT
 
 ## Features
+### Multithreading
+
+The predictions are launched by default with multithreading with OpenMP.
+
+The predictions can also be launched in a single thread with the option `multithread=False` in the `predict` method.
+
+By default the number of threads equals the number of cores, you can control it by setting the following environment variable `OMP_NUM_THREADS`.
+
 ### Pickling
 
-You can pickle the model to save it, and load it later via pickle library
+You can pickle the model to save it, and load it later via pickle library.
 ```python
 from cpt.cpt import Cpt
 import pickle
