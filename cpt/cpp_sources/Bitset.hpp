@@ -11,7 +11,7 @@ public:
     Bitset();
     Bitset(std::size_t size);
     Bitset(const Bitset&);
-    Bitset(std::vector<std::uint8_t> data, std::size_t size);
+    Bitset(const std::vector<std::uint8_t>& data, std::size_t size);
 
     std::size_t size() const;
 
@@ -24,7 +24,7 @@ public:
 
     void clear();
 
-    std::vector<std::uint8_t> get_data() const { return m_data; };
+    const std::vector<std::uint8_t>& get_data() const { return m_data; };
 
     std::size_t get_size() const { return m_size; };
 
