@@ -60,10 +60,10 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    cpdef predict(self, list sequences, float noise_ratio, int MBR, bint multi_threading=True):
+    cpdef predict(self, list sequences, float noise_ratio, int MBR, bint multithreading=True):
         cdef:
             vector[int] least_frequent_items = vector[int](), sequence_indexes
-            vector[vector[int]] sequences_indexes = vector[vector[int]]()
+            vector[vector[int]] sequences_indexes
             Py_ssize_t i, j
             int len_sequences = len(sequences)
             vector[int] int_predictions
@@ -78,25 +78,27 @@ cdef class Cpt:
             if self.inverted_index[i].compute_frequency() <= noise_ratio:
                 least_frequent_items.push_back(i)
 
-        if multi_threading:
+        if multithreading:
             int_predictions = vector[int](len_sequences)
             sequences_indexes = vector[vector[int]]()
+            # Preparation of data
+            for i in range(len_sequences):
+                sequence = sequences[i]
+                sequences_indexes.push_back(vector[int]())
+                for j in range(len(sequence)):
+                    sequences_indexes.back().push_back(self.alphabet.get_index(sequence[j]))
 
-        for i in range(len_sequences):
-            sequence = sequences[i]
-            sequence_indexes = vector[int]()
-            for j in range(len(sequence)):
-                sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
-
-            if multi_threading:
-                sequences_indexes.push_back(sequence_indexes)
-            else:
-                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items, MBR))
-
-
-        if multi_threading:
+            # Predictions
             for i in prange(len_sequences, nogil=True, schedule='dynamic'):
                 int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
+
+        else:
+            for i in range(len_sequences):
+                sequence = sequences[i]
+                sequence_indexes = vector[int]()
+                for j in range(len(sequence)):
+                    sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
+                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items, MBR))
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
