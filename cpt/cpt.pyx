@@ -26,9 +26,10 @@ cdef class Cpt:
         self.lookup_table = vector[Node]()
         self.split_index = -split_length
         self.alphabet = Alphabet()
+        self.number_trained_sequences = 0
 
     def get_inverted_index(self):
-        return [(x.get_data(), x.get_size()) for x in self.inverted_index]
+        return [(x.get_data(), x.size()) for x in self.inverted_index]
 
     def get_prediction_tree(self):
         return (self.tree.get_next_node(),
@@ -41,9 +42,16 @@ cdef class Cpt:
 
     def train(self, sequences):
 
-        number_train_sequences = len(sequences)
+        cdef size_t number_train_sequences = len(sequences)
         cdef Node current
-        for id_seq, sequence in enumerate(sequences):
+
+        # Resize bitsets if this is no the first time it gets resized
+        if self.number_trained_sequences != 0:
+            for i in range(self.inverted_index.size()):
+                self.inverted_index[i].resize(self.number_trained_sequences + number_train_sequences)
+
+        for i, sequence in enumerate(sequences):
+            id_seq = i + self.number_trained_sequences
             current = ROOT
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_index:]):
@@ -53,12 +61,13 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
-                    self.inverted_index.push_back(Bitset(number_train_sequences))
+                    self.inverted_index.push_back(Bitset(number_train_sequences + self.number_trained_sequences))
 
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
+        self.number_trained_sequences = number_train_sequences
 
     cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
         cdef:
@@ -170,7 +179,7 @@ cdef class Cpt:
         inverted_index_state = []
 
         for bitset in self.inverted_index:
-            inverted_index_state.append((bitset.get_data(), bitset.get_size()))
+            inverted_index_state.append((bitset.get_data(), bitset.size()))
 
         return (self.split_index,
                 self.alphabet,

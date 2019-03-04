@@ -62,3 +62,32 @@ class CptTest(unittest.TestCase):
         pickled = pickle.dumps(self.cpt)
         unpickled_cpt = pickle.loads(pickled)
         self.assertEqual(self.cpt, unpickled_cpt)
+
+
+    def test_retrain(self):
+        # The bitset is coded on 8 bits, we need to train with at least 9 sequences to test the resize method
+        model_no_retrain = Cpt()
+        model_no_retrain.train([['C', 'P', 'T', '1'],
+                                ['C', 'P', 'T', '2'],
+                                ['C', 'P', 'T', '3'],
+                                ['C', 'P', 'T', '4'],
+                                ['C', 'P', 'T', '5'],
+                                ['C', 'P', 'T', '6'],
+                                ['C', 'P', 'T', '7'],
+                                ['C', 'P', 'T', '8'],
+                                ['C', 'P', 'T', '9']
+                                ])
+
+        model_with_retrain = Cpt()
+        model_with_retrain.train([['C', 'P', 'T', '1'],
+                                ['C', 'P', 'T', '2'],
+                                ['C', 'P', 'T', '3'],
+                                ['C', 'P', 'T', '4'],
+                                ['C', 'P', 'T', '5'],
+                                ['C', 'P', 'T', '6'],
+                                ['C', 'P', 'T', '7'],
+                                ['C', 'P', 'T', '8']
+                                ])
+        model_with_retrain.train([['C', 'P', 'T', '9']])
+
+        self.assertEqual(model_no_retrain, model_with_retrain)

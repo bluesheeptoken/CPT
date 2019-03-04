@@ -20,3 +20,4 @@ cdef class Cpt:
     cdef readonly:
         int split_index
         Alphabet alphabet
+        size_t number_trained_sequences
