@@ -55,3 +55,9 @@ void Bitset::clear()
 {
     m_data.assign(m_data.size(), 0);
 }
+
+void Bitset::resize(std::size_t size)
+{
+    m_data.resize(size/8 + (size%8 != 0));
+    m_size = size;
+}
