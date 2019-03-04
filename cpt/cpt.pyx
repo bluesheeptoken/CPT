@@ -60,7 +60,7 @@ cdef class Cpt:
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
 
-    cpdef predict(self, list sequences, float noise_ratio, int MBR, bint multithreading=True):
+    cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
         cdef:
             vector[int] least_frequent_items = vector[int](), sequence_indexes
             vector[vector[int]] sequences_indexes
