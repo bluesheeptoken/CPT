@@ -1,6 +1,29 @@
 # CPT
 
+## Simple example
+
+You can test the model with the following code
+
+```python
+from cpt.cpt import Cpt
+model = Cpt()
+
+model.train([['hello', 'world'],
+             ['hello', 'this', 'is', 'me'],
+             ['hello', 'me']
+            ])
+
+model.predict([['hello'], ['hello', 'this']])
+# Output: ['me', 'is']
+```
+
 ## Features
+### Train
+
+The model can be trained with the `train` method.
+
+If needed the model can be retrained with the same methods. It adds new sequences to the model but do not remove the old ones.
+
 ### Multithreading
 
 The predictions are launched by default with multithreading with OpenMP.
@@ -18,7 +41,7 @@ import pickle
 
 
 model = Cpt()
-model.train([['hello', 'world'], ['hello', 'aciciu']])
+model.train([['hello', 'world']])
 
 dumped = pickle.dumps(model)
 
