@@ -42,13 +42,13 @@ cdef class Cpt:
 
     def train(self, sequences):
 
-        cdef size_t number_train_sequences = len(sequences)
+        cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
 
         # Resize bitsets if this is not the first time the model is training
         if self.number_trained_sequences != 0:
             for i in range(self.inverted_index.size()):
-                self.inverted_index[i].resize(self.number_trained_sequences + number_train_sequences)
+                self.inverted_index[i].resize(self.number_trained_sequences + number_sequences_to_train)
 
         for i, sequence in enumerate(sequences):
             id_seq = i + self.number_trained_sequences
@@ -61,13 +61,13 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
-                    self.inverted_index.push_back(Bitset(number_train_sequences + self.number_trained_sequences))
+                    self.inverted_index.push_back(Bitset(self.number_trained_sequences + number_sequences_to_train))
 
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
-        self.number_trained_sequences += number_train_sequences
+        self.number_trained_sequences += number_sequences_to_train
 
     cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
         cdef:
