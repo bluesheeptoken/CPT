@@ -26,9 +26,10 @@ cdef class Cpt:
         self.lookup_table = vector[Node]()
         self.split_index = -split_length
         self.alphabet = Alphabet()
+        self.number_trained_sequences = 0
 
     def get_inverted_index(self):
-        return [(x.get_data(), x.get_size()) for x in self.inverted_index]
+        return [(x.get_data(), x.size()) for x in self.inverted_index]
 
     def get_prediction_tree(self):
         return (self.tree.get_next_node(),
@@ -41,9 +42,16 @@ cdef class Cpt:
 
     def train(self, sequences):
 
-        number_train_sequences = len(sequences)
+        cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
-        for id_seq, sequence in enumerate(sequences):
+
+        # Resize bitsets if this is not the first time the model is training
+        if self.number_trained_sequences != 0:
+            for i in range(self.inverted_index.size()):
+                self.inverted_index[i].resize(self.number_trained_sequences + number_sequences_to_train)
+
+        for i, sequence in enumerate(sequences):
+            id_seq = i + self.number_trained_sequences
             current = ROOT
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_index:]):
@@ -53,12 +61,13 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
-                    self.inverted_index.push_back(Bitset(number_train_sequences))
+                    self.inverted_index.push_back(Bitset(self.number_trained_sequences + number_sequences_to_train))
 
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
+        self.number_trained_sequences += number_sequences_to_train
 
     cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
         cdef:
@@ -170,7 +179,7 @@ cdef class Cpt:
         inverted_index_state = []
 
         for bitset in self.inverted_index:
-            inverted_index_state.append((bitset.get_data(), bitset.get_size()))
+            inverted_index_state.append((bitset.get_data(), bitset.size()))
 
         return (self.split_index,
                 self.alphabet,
@@ -179,23 +188,26 @@ cdef class Cpt:
                 (self.tree.get_next_node(),
                 self.tree.get_incoming(),
                 self.tree.get_parent(),
-                self.tree.get_children()))
+                self.tree.get_children()),
+                self.number_trained_sequences)
 
     def __setstate__(self, state):
-        split_index, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state = state
+        split_index, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state, number_trained_sequences = state
         self.split_index = split_index
         self.alphabet = alphabet
         self.lookup_table = lookup_table_state
         for bitset_state in inverted_index_state:
             self.inverted_index.push_back(Bitset(bitset_state[0], bitset_state[1]))
         self.tree = PredictionTree(prediction_tree_state[0], prediction_tree_state[1], prediction_tree_state[2], prediction_tree_state[3])
+        self.number_trained_sequences = number_trained_sequences
 
     def __is_equal__(self, other):
         return self.get_prediction_tree() == other.get_prediction_tree() and \
                self.get_inverted_index() == other.get_inverted_index() and \
                self.get_lookup_table() == other.get_lookup_table() and \
                self.split_index == other.split_index and \
-               self.alphabet == other.alphabet
+               self.alphabet == other.alphabet and \
+               self.number_trained_sequences == other.number_trained_sequences
 
     def __richcmp__(self, other, op):
         if op == Py_EQ:

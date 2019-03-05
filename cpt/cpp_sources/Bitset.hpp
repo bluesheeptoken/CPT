@@ -24,9 +24,9 @@ public:
 
     void clear();
 
-    const std::vector<std::uint8_t>& get_data() const { return m_data; };
+    void resize(std::size_t size);
 
-    std::size_t get_size() const { return m_size; };
+    const std::vector<std::uint8_t>& get_data() const { return m_data; };
 
 private:
     std::vector<std::uint8_t> m_data;

@@ -18,5 +18,5 @@ cdef extern from "cpp_sources/Bitset.hpp" nogil:
         float compute_frequency()
         Bitset& inter(Bitset&)
         void clear()
+        void resize(size_t)
         const vector[unsigned char]& get_data()
-        size_t get_size()
