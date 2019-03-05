@@ -45,7 +45,7 @@ cdef class Cpt:
         cdef size_t number_train_sequences = len(sequences)
         cdef Node current
 
-        # Resize bitsets if this is no the first time it gets resized
+        # Resize bitsets if this is not the first time the model is training
         if self.number_trained_sequences != 0:
             for i in range(self.inverted_index.size()):
                 self.inverted_index[i].resize(self.number_trained_sequences + number_train_sequences)
