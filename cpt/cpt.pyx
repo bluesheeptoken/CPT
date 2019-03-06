@@ -74,7 +74,7 @@ cdef class Cpt:
 
     cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
         cdef:
-            vector[int] least_frequent_items = vector[int](), sequence_indexes
+            vector[int] least_frequent_items, sequence_indexes
             vector[vector[int]] sequences_indexes
             Py_ssize_t i, j
             int len_sequences = len(sequences)
@@ -86,9 +86,7 @@ cdef class Cpt:
         if MBR < 0:
             raise ValueError('MBR should be non-negative, actual value : {}'.format(MBR))
 
-        for i in range(self.alphabet.length):
-            if self.inverted_index[i].compute_frequency() <= noise_ratio:
-                least_frequent_items.push_back(i)
+        least_frequent_items = self.c_compute_noisy_items(noise_ratio)
 
         if multithreading:
             int_predictions = vector[int](len_sequences)
@@ -140,6 +138,21 @@ cdef class Cpt:
                         update_count += self.update_score(suffix_without_noise, scorer)
 
         return scorer.get_best_prediction()
+
+    def compute_noisy_items(self, noise_ratio):
+        return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
+
+    cdef vector[int] c_compute_noisy_items(self, float noise_ratio) nogil:
+        cdef:
+            int i
+            vector[int] least_frequent_items = vector[int]()
+
+        for i in range(self.alphabet.length):
+            if self.inverted_index[i].compute_frequency() <= noise_ratio:
+                least_frequent_items.push_back(i)
+
+        return least_frequent_items
+
 
     cdef Bitset find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty():
