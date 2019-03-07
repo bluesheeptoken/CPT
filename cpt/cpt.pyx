@@ -28,16 +28,19 @@ cdef class Cpt:
         self.alphabet = Alphabet()
         self.number_trained_sequences = 0
 
-    def get_inverted_index(self):
+    def _get_inverted_index(self):
+        '''Should not be used in python'''
         return [(x.get_data(), x.size()) for x in self.inverted_index]
 
-    def get_prediction_tree(self):
+    def _get_prediction_tree(self):
+        '''Should not be used in python'''
         return (self.tree.get_next_node(),
             self.tree.get_incoming(),
             self.tree.get_parent(),
             self.tree.get_children())
 
-    def get_lookup_table(self):
+    def _get_lookup_table(self):
+        '''Should not be used in python'''
         return <list>self.lookup_table
 
     def train(self, sequences):
@@ -202,9 +205,9 @@ cdef class Cpt:
         self.number_trained_sequences = number_trained_sequences
 
     def __is_equal__(self, other):
-        return self.get_prediction_tree() == other.get_prediction_tree() and \
-               self.get_inverted_index() == other.get_inverted_index() and \
-               self.get_lookup_table() == other.get_lookup_table() and \
+        return self._get_prediction_tree() == other._get_prediction_tree() and \
+               self._get_inverted_index() == other._get_inverted_index() and \
+               self._get_lookup_table() == other._get_lookup_table() and \
                self.split_index == other.split_index and \
                self.alphabet == other.alphabet and \
                self.number_trained_sequences == other.number_trained_sequences
