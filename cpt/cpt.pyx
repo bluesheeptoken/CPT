@@ -153,8 +153,12 @@ cdef class Cpt:
 
         return least_frequent_items
 
+    def find_similar_sequences(self, sequence):
+        cdef vector[int] sequence_index = [self.alphabet.get_index(symbol) for symbol in sequence]
+        similar_sequences_index = self.retrieve_similar_sequences(sequence_index)
+        return [self.retrieve_sequence(index) for index in similar_sequences_index]
 
-    cdef Bitset find_similar_sequences(self, vector[int] sequence) nogil:
+    cdef Bitset c_find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty():
             return Bitset(self.alphabet.length)
 
@@ -176,7 +180,7 @@ cdef class Cpt:
 
         for i in range(suffix.size()):
             bitseq.add(suffix[i])
-        similar_sequences = self.find_similar_sequences(suffix)
+        similar_sequences = self.c_find_similar_sequences(suffix)
 
         for similar_sequence_id in range(similar_sequences.size()):
             if similar_sequences[similar_sequence_id]:
@@ -190,6 +194,22 @@ cdef class Cpt:
                     next_transition = self.tree.getTransition(end_node)
 
         return update_count
+
+    cdef list retrieve_similar_sequences(self, vector[int] sequence_index):
+        cdef Bitset bitset_similar = self.c_find_similar_sequences(sequence_index)
+        return [index for index in range(bitset_similar.size()) if bitset_similar[index]]
+
+    def retrieve_sequence(self, index):
+        sequence = []
+        end_node = self.lookup_table[index]
+        next_transition = self.tree.getTransition(end_node)
+
+        while next_transition != -1:
+            sequence.append(next_transition)
+            end_node = self.tree.getParent(end_node)
+            next_transition = self.tree.getTransition(end_node)
+
+        return [self.alphabet.get_symbol(index) for index in sequence[::-1]]
 
     def __getstate__(self):
         inverted_index_state = []
