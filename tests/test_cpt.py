@@ -93,3 +93,13 @@ class CptTest(unittest.TestCase):
         model_with_retrain.train([['C', 'P', 'T', '9']])
 
         self.assertEqual(model_no_retrain, model_with_retrain)
+
+    def test_compute_noisy_items(self):
+        self.assertEqual(self.cpt.compute_noisy_items(0.2), ['E'])
+
+    def test_retrieve_sequence(self):
+        self.assertEqual(self.cpt.retrieve_sequence(0), ['A', 'B', 'C'])
+
+    def test_find_similar_sequences(self):
+        similar_sequences = [['A', 'B', 'C'], ['A', 'B'], ['A', 'B', 'D']]
+        self.assertEqual(self.cpt.find_similar_sequences(['A', 'B']), similar_sequences)
