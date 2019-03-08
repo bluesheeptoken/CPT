@@ -204,12 +204,12 @@ cdef class Cpt:
         end_node = self.lookup_table[index]
         next_transition = self.tree.getTransition(end_node)
 
-        while next_transition != -1:
+        while next_transition != NOT_AN_INDEX:
             sequence.append(next_transition)
             end_node = self.tree.getParent(end_node)
             next_transition = self.tree.getTransition(end_node)
 
-        return [self.alphabet.get_symbol(index) for index in sequence[::-1]]
+        return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
 
     def __getstate__(self):
         inverted_index_state = []
