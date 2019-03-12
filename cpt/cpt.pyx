@@ -18,6 +18,20 @@ cdef extern from "<algorithm>" namespace "std" nogil:
     OutputIt remove_copy[InputIt, OutputIt](InputIt first, InputIt second, OutputIt third, int val)
 
 cdef class Cpt:
+    # Only python accessible attributes are documented
+    '''
+    Compact Prediction Tree class
+
+    Attributes
+    ----------
+    split_index : int
+        split_index is used to delimit the length of training and predicting sequences
+        default 0
+    alphabet : Alphabet
+        alphabet is used to encode values for Cpt
+    number_trained_sequences : int
+        store the number of sequences used for training
+    '''
     def __cinit__(self, int split_length=0):
         if split_length < 0:
             raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
@@ -29,7 +43,25 @@ cdef class Cpt:
         self.number_trained_sequences = 0
 
     def train(self, sequences):
+        '''Train the model
+        The model can be retrained to add new sequences
+        ``model.train(seq1);model.train(seq2)`` is equivalent to
+        ``model.train(seq1 + seq2)`` with seq1, seq2 list of sequences
 
+        Parameters
+        ----------
+        sequences : list
+            A list of sequences of any hashable type.
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        >>> model.train([['hello', 'world'], ['hello', 'cpt']])
+        '''
         cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
 
@@ -58,6 +90,41 @@ cdef class Cpt:
         self.number_trained_sequences += number_sequences_to_train
 
     cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
+        '''Predict the next element of each sequence of sequences
+
+        Parameters
+        ----------
+        sequences : list
+            List of sequences of any hashable
+        noise_ratio : float
+            threshold of frequency to consider elements as noise
+            default 0 (no noise)
+        MBR : int
+            Number of similar sequences that needs to be found before predicting
+
+        Raises
+        ------
+        ValueError
+            noise_ratio should be between 0 and 1
+            MBR should be non-negative
+
+        Returns
+        -------
+        predictions : list of shape len(sequences)
+            The predicted elements
+
+        Examples
+        --------
+
+        >>> model = Cpt()
+
+        >>> model.train([['hello', 'world'],
+             ['hello', 'this', 'is', 'me'],
+             ['hello', 'me']
+            ])
+
+        >>> model.predict([['hello'], ['hello', 'this']])
+        '''
         cdef:
             vector[int] least_frequent_items, sequence_indexes
             vector[vector[int]] sequences_indexes
@@ -65,8 +132,7 @@ cdef class Cpt:
             int len_sequences = len(sequences)
             vector[int] int_predictions
 
-        if not 0 <= noise_ratio <= 1:
-            raise ValueError('noise_ratio should be between 0 and 1, actual value : {}'.format(noise_ratio))
+        _check_noise_ratio(noise_ratio)
 
         if MBR < 0:
             raise ValueError('MBR should be non-negative, actual value : {}'.format(MBR))
@@ -98,14 +164,58 @@ cdef class Cpt:
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
     def compute_noisy_items(self, noise_ratio):
+        '''Compute noisy elements
+
+        Parameters
+        ----------
+        noise_ratio : float
+            threshold of frequency to consider elements as noise
+
+        Raises
+        ------
+        ValueError
+            noise_ratio should be between 0 and 1
+
+        Returns
+        -------
+        noisy_items : list
+            the noisy items
+        '''
+        _check_noise_ratio(noise_ratio)
         return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
 
     def find_similar_sequences(self, sequence):
+        '''Find similar sequences without noise reduction
+
+        Parameters
+        ----------
+        sequence : list
+
+        Returns
+        -------
+        similar_sequences : list
+            list of similar_sequences
+        '''
         cdef vector[int] sequence_index = [self.alphabet.get_index(symbol) for symbol in sequence]
         similar_sequences_index = self.retrieve_similar_sequences(sequence_index)
         return [self.retrieve_sequence(index) for index in similar_sequences_index]
 
     def retrieve_sequence(self, index):
+        '''Retrieve sequence
+
+        Parameters
+        ----------
+        index : int
+            index of the sequence to retrieve
+
+        Returns
+        -------
+        sequence : list
+        '''
+
+        if index < 0:
+            raise ValueError('index should be non-negative, actual value : {}'.format(index))
+
         sequence = []
         end_node = self.lookup_table[index]
         next_transition = self.tree.getTransition(end_node)
@@ -252,3 +362,7 @@ cdef class Cpt:
             return not self.__is_equal__(other)
         else:
             assert False
+
+def _check_noise_ratio(noise_ratio):
+    if not 0 <= noise_ratio <= 1:
+        raise ValueError('noise_ratio should be between 0 and 1, actual value : {}'.format(noise_ratio))
