@@ -101,6 +101,9 @@ cdef class Cpt:
             default 0 (no noise)
         MBR : int
             minimum number of similar sequences needed to compute predictions
+            default 0 (at least one update)
+        multithreading : bool
+            default True
 
         Raises
         ------
