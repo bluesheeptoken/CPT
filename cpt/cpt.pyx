@@ -30,7 +30,7 @@ cdef class Cpt:
     alphabet : Alphabet
         alphabet is used to encode values for Cpt
     number_trained_sequences : int
-        store the number of sequences used for training
+        the number of sequences used for training
     '''
     def __cinit__(self, int split_length=0):
         if split_length < 0:
@@ -95,12 +95,12 @@ cdef class Cpt:
         Parameters
         ----------
         sequences : list
-            List of sequences of any hashable
+            list of sequences of any hashable
         noise_ratio : float
             threshold of frequency to consider elements as noise
             default 0 (no noise)
         MBR : int
-            Number of similar sequences that needs to be found before predicting
+            minimum number of similar sequences needed to compute predictions
 
         Raises
         ------
@@ -110,7 +110,7 @@ cdef class Cpt:
 
         Returns
         -------
-        predictions : list of shape len(sequences)
+        predictions : list of length ``len(sequences)``
             The predicted elements
 
         Examples
@@ -185,7 +185,7 @@ cdef class Cpt:
         return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
 
     def find_similar_sequences(self, sequence):
-        '''Find similar sequences without noise reduction
+        '''Find similar sequences
 
         Parameters
         ----------
