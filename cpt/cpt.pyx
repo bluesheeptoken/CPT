@@ -28,21 +28,6 @@ cdef class Cpt:
         self.alphabet = Alphabet()
         self.number_trained_sequences = 0
 
-    def _get_inverted_index(self):
-        '''Should not be used in python'''
-        return [(x.get_data(), x.size()) for x in self.inverted_index]
-
-    def _get_prediction_tree(self):
-        '''Should not be used in python'''
-        return (self.tree.get_next_node(),
-            self.tree.get_incoming(),
-            self.tree.get_parent(),
-            self.tree.get_children())
-
-    def _get_lookup_table(self):
-        '''Should not be used in python'''
-        return <list>self.lookup_table
-
     def train(self, sequences):
 
         cdef size_t number_sequences_to_train = len(sequences)
@@ -112,6 +97,26 @@ cdef class Cpt:
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
+    def compute_noisy_items(self, noise_ratio):
+        return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
+
+    def find_similar_sequences(self, sequence):
+        cdef vector[int] sequence_index = [self.alphabet.get_index(symbol) for symbol in sequence]
+        similar_sequences_index = self.retrieve_similar_sequences(sequence_index)
+        return [self.retrieve_sequence(index) for index in similar_sequences_index]
+
+    def retrieve_sequence(self, index):
+        sequence = []
+        end_node = self.lookup_table[index]
+        next_transition = self.tree.getTransition(end_node)
+
+        while next_transition != NOT_AN_INDEX:
+            sequence.append(next_transition)
+            end_node = self.tree.getParent(end_node)
+            next_transition = self.tree.getTransition(end_node)
+
+        return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
+
     cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil:
         cdef:
             Scorer scorer = Scorer(self.alphabet.length)
@@ -139,9 +144,6 @@ cdef class Cpt:
 
         return scorer.get_best_prediction()
 
-    def compute_noisy_items(self, noise_ratio):
-        return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
-
     cdef vector[int] c_compute_noisy_items(self, float noise_ratio) nogil:
         cdef:
             int i
@@ -152,11 +154,6 @@ cdef class Cpt:
                 least_frequent_items.push_back(i)
 
         return least_frequent_items
-
-    def find_similar_sequences(self, sequence):
-        cdef vector[int] sequence_index = [self.alphabet.get_index(symbol) for symbol in sequence]
-        similar_sequences_index = self.retrieve_similar_sequences(sequence_index)
-        return [self.retrieve_sequence(index) for index in similar_sequences_index]
 
     cdef Bitset c_find_similar_sequences(self, vector[int] sequence) nogil:
         if sequence.empty():
@@ -199,17 +196,20 @@ cdef class Cpt:
         cdef Bitset bitset_similar = self.c_find_similar_sequences(sequence_index)
         return [index for index in range(bitset_similar.size()) if bitset_similar[index]]
 
-    def retrieve_sequence(self, index):
-        sequence = []
-        end_node = self.lookup_table[index]
-        next_transition = self.tree.getTransition(end_node)
+    def _get_inverted_index(self):
+        '''Should not be used in python'''
+        return [(x.get_data(), x.size()) for x in self.inverted_index]
 
-        while next_transition != NOT_AN_INDEX:
-            sequence.append(next_transition)
-            end_node = self.tree.getParent(end_node)
-            next_transition = self.tree.getTransition(end_node)
+    def _get_prediction_tree(self):
+        '''Should not be used in python'''
+        return (self.tree.get_next_node(),
+            self.tree.get_incoming(),
+            self.tree.get_parent(),
+            self.tree.get_children())
 
-        return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
+    def _get_lookup_table(self):
+        '''Should not be used in python'''
+        return <list>self.lookup_table
 
     def __getstate__(self):
         inverted_index_state = []
