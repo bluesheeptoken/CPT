@@ -2,6 +2,8 @@
 
 CPT is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
+CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting values in a finite alphabet not already seen in the sequence. (Cf how to tune the "CPT model")
+
 This is an implementation of the following research papers
 
 http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
@@ -91,5 +93,3 @@ unpickled_model = pickle.loads(dumped)
 
 print(model == unpickled_model)
 ```
-
-
