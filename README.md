@@ -93,3 +93,15 @@ unpickled_model = pickle.loads(dumped)
 
 print(model == unpickled_model)
 ```
+
+### Explainability
+
+The CPT class has several methods to explain the predictions.
+
+You can see which elements are considered as `noise` (with a low presence in sequences) with `model.compute_noisy_items(noise_ratio)`
+
+You can retrieve trained sequences with `model.retrieve_sequence(id)`
+
+You can find similar sequences with `find_similar_sequences(sequence)`
+
+You can not yet automatically all similar sequences with the noise reduction technique
