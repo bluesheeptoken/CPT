@@ -25,12 +25,46 @@ model.predict([['hello'], ['hello', 'this']])
 # Output: ['me', 'is']
 ```
 
+## Sklearn Example
+
+CPT is compatible with `sklearn`, you can, for instance, use GridSearch on it.
+```python
+from sklearn.base import BaseEstimator
+from cpt.cpt import Cpt
+
+class SKCpt(Cpt, BaseEstimator):
+    def __init__(self, split_index=0, noise_ratio=0, MBR=0):
+        super().__init__(split_index)
+        self.noise_ratio = noise_ratio
+        self.MBR = MBR
+
+    def predict(self, sequences):
+        return super().predict(sequences, self.noise_ratio, self.MBR)
+
+    def score(self, X):
+        predictions = self.predict(list(map(lambda x: x[self.split_index:-1], X)))
+        score = sum([predictions[i] == X[i][-1] for i in range(len(X))]) / len(X) * 100
+        return score
+
+data = [['hello', 'world'], ['hello', 'cpt']]
+
+
+from sklearn.grid_search import GridSearchCV
+
+tuned_params = {'MBR': [0, 5], 'split_index': [0, 1, 5]}
+
+gs = GridSearchCV(SKCpt(), tuned_params)
+
+gs.fit(data)
+```
+You can test it with more data to have more relevant tuning.
+
 ## Features
 ### Train
 
 The model can be trained with the `train` method.
 
-If needed the model can be retrained with the same methods. It adds new sequences to the model but do not remove the old ones.
+If needed the model can be retrained with the same methods. It adds new sequences to the model and do not remove the old ones.
 
 ### Multithreading
 
@@ -57,3 +91,5 @@ unpickled_model = pickle.loads(dumped)
 
 print(model == unpickled_model)
 ```
+
+
