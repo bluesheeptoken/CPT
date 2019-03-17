@@ -105,3 +105,21 @@ You can retrieve trained sequences with `model.retrieve_sequence(id)`
 You can find similar sequences with `find_similar_sequences(sequence)`
 
 You can not yet automatically all similar sequences with the noise reduction technique
+
+### Tuning
+
+CPT has 3 meta parameters that needs to be tuned
+
+#### MBR
+
+MBR computes the number of minimal similar sequences to be found before predicting a value. The higher is this parameter, the longer the prediction will be. Having more similar sequences might result in a higher accuracy.
+
+#### split_index
+
+split_index is the number of elements per sequence to be stored in the model. (0 results in taking all elements)
+
+split_index needs to be finely tuned. As the model cannot predict an element present in the sequence, giving a too long sequence might result in lower accuracy.
+
+#### noise_ratio
+
+The noise_ratio is necessary to determine which elements are defined as noise and should not be taken into account.
