@@ -17,13 +17,13 @@ class CptTest(unittest.TestCase):
                          ['B', 'C', 'D'],
                          ['B', 'D', 'E']]
 
-        cls.cpt.train(cls.sequences)
+        cls.cpt.fit(cls.sequences)
 
     def test_init(self):
         with self.assertRaises(ValueError):
             Cpt(-5)
 
-    def test_train(self):
+    def test_fit(self):
         alphabet = Alphabet()
         alphabet.length = 5
         alphabet.indexes = {'A': 0, 'B': 1, 'C': 2, 'D': 3, 'E': 4}
@@ -54,7 +54,7 @@ class CptTest(unittest.TestCase):
 
     def test_richcmp(self):
         cpt_wrong_split_index = Cpt(1)
-        cpt_wrong_split_index.train(self.sequences)
+        cpt_wrong_split_index.fit(self.sequences)
         self.assertNotEqual(self.cpt, cpt_wrong_split_index)
         self.assertEqual(self.cpt, self.cpt)
 
@@ -63,34 +63,34 @@ class CptTest(unittest.TestCase):
         unpickled_cpt = pickle.loads(pickled)
         self.assertEqual(self.cpt, unpickled_cpt)
 
-    def test_retrain(self):
+    def test_refit(self):
         '''
         The bitset is coded on 8 bits,
         we need to train with at least 9 sequences to test the resize method
         '''
         model_no_retrain = Cpt()
-        model_no_retrain.train([['C', 'P', 'T', '1'],
+        model_no_retrain.fit([['C', 'P', 'T', '1'],
+                              ['C', 'P', 'T', '2'],
+                              ['C', 'P', 'T', '3'],
+                              ['C', 'P', 'T', '4'],
+                              ['C', 'P', 'T', '5'],
+                              ['C', 'P', 'T', '6'],
+                              ['C', 'P', 'T', '7'],
+                              ['C', 'P', 'T', '8'],
+                              ['C', 'P', 'T', '9']
+                             ])
+
+        model_with_retrain = Cpt()
+        model_with_retrain.fit([['C', 'P', 'T', '1'],
                                 ['C', 'P', 'T', '2'],
                                 ['C', 'P', 'T', '3'],
                                 ['C', 'P', 'T', '4'],
                                 ['C', 'P', 'T', '5'],
                                 ['C', 'P', 'T', '6'],
                                 ['C', 'P', 'T', '7'],
-                                ['C', 'P', 'T', '8'],
-                                ['C', 'P', 'T', '9']
+                                ['C', 'P', 'T', '8']
                                ])
-
-        model_with_retrain = Cpt()
-        model_with_retrain.train([['C', 'P', 'T', '1'],
-                                  ['C', 'P', 'T', '2'],
-                                  ['C', 'P', 'T', '3'],
-                                  ['C', 'P', 'T', '4'],
-                                  ['C', 'P', 'T', '5'],
-                                  ['C', 'P', 'T', '6'],
-                                  ['C', 'P', 'T', '7'],
-                                  ['C', 'P', 'T', '8']
-                                 ])
-        model_with_retrain.train([['C', 'P', 'T', '9']])
+        model_with_retrain.fit([['C', 'P', 'T', '9']])
 
         self.assertEqual(model_no_retrain, model_with_retrain)
 

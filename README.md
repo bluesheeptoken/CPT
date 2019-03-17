@@ -16,10 +16,10 @@ You can test the model with the following code
 from cpt.cpt import Cpt
 model = Cpt()
 
-model.train([['hello', 'world'],
-             ['hello', 'this', 'is', 'me'],
-             ['hello', 'me']
-            ])
+model.fit([['hello', 'world'],
+           ['hello', 'this', 'is', 'me'],
+           ['hello', 'me']
+          ])
 
 model.predict([['hello'], ['hello', 'this']])
 # Output: ['me', 'is']
@@ -49,7 +49,7 @@ import pickle
 
 
 model = Cpt()
-model.train([['hello', 'world']])
+model.fit([['hello', 'world']])
 
 dumped = pickle.dumps(model)
 

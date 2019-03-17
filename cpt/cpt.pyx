@@ -32,21 +32,21 @@ cdef class Cpt:
     number_trained_sequences : int
         the number of sequences used for training
     '''
-    def __cinit__(self, int split_length=0):
-        if split_length < 0:
-            raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
+    def __init__(self, int split_index=0):
+        if split_index < 0:
+            raise ValueError('split_index value should be non-negative, actual value: {}'.format(split_index))
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
-        self.split_index = -split_length
+        self.split_index = -split_index
         self.alphabet = Alphabet()
         self.number_trained_sequences = 0
 
-    def train(self, sequences):
+    def fit(self, sequences):
         '''Train the model
         The model can be retrained to add new sequences
-        ``model.train(seq1);model.train(seq2)`` is equivalent to
-        ``model.train(seq1 + seq2)`` with seq1, seq2 list of sequences
+        ``model.fit(seq1);model.fit(seq2)`` is equivalent to
+        ``model.fit(seq1 + seq2)`` with seq1, seq2 list of sequences
 
         Parameters
         ----------
@@ -60,7 +60,7 @@ cdef class Cpt:
         Examples
         --------
 
-        >>> model.train([['hello', 'world'], ['hello', 'cpt']])
+        >>> model.fit([['hello', 'world'], ['hello', 'cpt']])
         '''
         cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
@@ -121,7 +121,7 @@ cdef class Cpt:
 
         >>> model = Cpt()
 
-        >>> model.train([['hello', 'world'],
+        >>> model.fit([['hello', 'world'],
              ['hello', 'this', 'is', 'me'],
              ['hello', 'me']
             ])
