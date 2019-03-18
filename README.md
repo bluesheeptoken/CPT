@@ -33,6 +33,8 @@ CPT is compatible with `sklearn`, you can, for instance, use GridSearch on it.
 ```python
 from sklearn.base import BaseEstimator
 from cpt.cpt import Cpt
+from sklearn.model_selection import GridSearchCV
+
 
 class SKCpt(Cpt, BaseEstimator):
     def __init__(self, split_index=0, noise_ratio=0, MBR=0):
@@ -44,22 +46,23 @@ class SKCpt(Cpt, BaseEstimator):
         return super().predict(sequences, self.noise_ratio, self.MBR)
 
     def score(self, X):
+        # Choose your own scoring function here
         predictions = self.predict(list(map(lambda x: x[self.split_index:-1], X)))
         score = sum([predictions[i] == X[i][-1] for i in range(len(X))]) / len(X) * 100
         return score
 
-data = [['hello', 'world'], ['hello', 'cpt']]
+data = [['hello', 'world'], ['hello', 'cpt'], ['hello', 'cpt']]
 
-
-from sklearn.grid_search import GridSearchCV
 
 tuned_params = {'MBR': [0, 5], 'split_index': [0, 1, 5]}
 
 gs = GridSearchCV(SKCpt(), tuned_params)
 
 gs.fit(data)
+
+gs.cv_results_
 ```
-You can test it with more data to have more relevant tuning.
+You can test it with more data to have a more relevant tuning.
 
 ## Features
 ### Train
