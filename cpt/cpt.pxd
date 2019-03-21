@@ -19,7 +19,7 @@ cdef class Cpt:
 
     cpdef predict(self, list sequences, float noise_ratio=*, int MBR=*, bint multithreading=*)
 
-    cdef public int split_index
+    cdef public int split_length
 
     cdef readonly:
         Alphabet alphabet

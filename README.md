@@ -1,10 +1,10 @@
 # CPT
 
-CPT is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
+This project is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
-CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting values in a finite alphabet not already seen in the sequence. (Cf how to tune the "CPT model")
+CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT has cannot predict an element already present in this sequence (Cf how to tune the "CPT model")
 
-This is an implementation of the following research papers
+This implementation is based on the following research papers
 
 http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
 
@@ -37,8 +37,8 @@ from sklearn.model_selection import GridSearchCV
 
 
 class SKCpt(Cpt, BaseEstimator):
-    def __init__(self, split_index=0, noise_ratio=0, MBR=0):
-        super().__init__(split_index)
+    def __init__(self, split_length=0, noise_ratio=0, MBR=0):
+        super().__init__(split_length)
         self.noise_ratio = noise_ratio
         self.MBR = MBR
 
@@ -47,14 +47,14 @@ class SKCpt(Cpt, BaseEstimator):
 
     def score(self, X):
         # Choose your own scoring function here
-        predictions = self.predict(list(map(lambda x: x[self.split_index:-1], X)))
+        predictions = self.predict(list(map(lambda x: x[self.split_length:-1], X)))
         score = sum([predictions[i] == X[i][-1] for i in range(len(X))]) / len(X) * 100
         return score
 
 data = [['hello', 'world'], ['hello', 'cpt'], ['hello', 'cpt']]
 
 
-tuned_params = {'MBR': [0, 5], 'split_index': [0, 1, 5]}
+tuned_params = {'MBR': [0, 5], 'split_length': [0, 1, 5]}
 
 gs = GridSearchCV(SKCpt(), tuned_params)
 
@@ -67,9 +67,9 @@ You can test it with more data to have a more relevant tuning.
 ## Features
 ### Train
 
-The model can be trained with the `train` method.
+The model can be trained with the `fit` method.
 
-If needed the model can be retrained with the same methods. It adds new sequences to the model and do not remove the old ones.
+If needed the model can be retrained with the same method. It adds new sequences to the model and do not remove the old ones.
 
 ### Multithreading
 
@@ -107,22 +107,24 @@ You can retrieve trained sequences with `model.retrieve_sequence(id)`
 
 You can find similar sequences with `find_similar_sequences(sequence)`
 
-You can not yet automatically all similar sequences with the noise reduction technique
+You can not yet retrieve automatically all similar sequences with the noise reduction technique.
 
 ### Tuning
 
-CPT has 3 meta parameters that needs to be tuned
+CPT has 3 meta parameters that need to be tuned
 
 #### MBR
 
-MBR computes the number of minimal similar sequences to be found before predicting a value. The higher is this parameter, the longer the prediction will be. Having more similar sequences might result in a higher accuracy.
+MBR indicates the number of similar sequences that need to be found before predicting a value.
 
-#### split_index
+The higher this parameter, the longer the prediction. Having more similar sequences can result in a higher accuracy.
 
-split_index is the number of elements per sequence to be stored in the model. (0 results in taking all elements)
+#### split_length
 
-split_index needs to be finely tuned. As the model cannot predict an element present in the sequence, giving a too long sequence might result in lower accuracy.
+split_length is the number of elements per sequence to be stored in the model. (0 results in taking all elements)
+
+split_length needs to be finely tuned. As the model cannot predict an element present in the sequence, giving a too long sequence might result in lower accuracy.
 
 #### noise_ratio
 
-The noise_ratio is necessary to determine which elements are defined as noise and should not be taken into account.
+The noise_ratio determines which elements are defined as noise and should not be taken into account.

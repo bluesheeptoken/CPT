@@ -53,9 +53,9 @@ class CptTest(unittest.TestCase):
             self.cpt.predict([[]], 0.8, -5)
 
     def test_richcmp(self):
-        cpt_wrong_split_index = Cpt(1)
-        cpt_wrong_split_index.fit(self.sequences)
-        self.assertNotEqual(self.cpt, cpt_wrong_split_index)
+        cpt_wrong_split_length = Cpt(1)
+        cpt_wrong_split_length.fit(self.sequences)
+        self.assertNotEqual(self.cpt, cpt_wrong_split_length)
         self.assertEqual(self.cpt, self.cpt)
 
     def test_pickle(self):
