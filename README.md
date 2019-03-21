@@ -2,7 +2,7 @@
 
 This project is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
-CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT has cannot predict an element already present in this sequence (Cf how to tune the "CPT model")
+CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT cannot predict an element already present in this sequence (Cf how to tune the "CPT model").
 
 This implementation is based on the following research papers
 
@@ -101,11 +101,11 @@ print(model == unpickled_model)
 
 The CPT class has several methods to explain the predictions.
 
-You can see which elements are considered as `noise` (with a low presence in sequences) with `model.compute_noisy_items(noise_ratio)`
+You can see which elements are considered as `noise` (with a low presence in sequences) with `model.compute_noisy_items(noise_ratio)`.
 
-You can retrieve trained sequences with `model.retrieve_sequence(id)`
+You can retrieve trained sequences with `model.retrieve_sequence(id)`.
 
-You can find similar sequences with `find_similar_sequences(sequence)`
+You can find similar sequences with `find_similar_sequences(sequence)`.
 
 You can not yet retrieve automatically all similar sequences with the noise reduction technique.
 
@@ -121,7 +121,7 @@ The higher this parameter, the longer the prediction. Having more similar sequen
 
 #### split_length
 
-split_length is the number of elements per sequence to be stored in the model. (0 results in taking all elements)
+split_length is the number of elements per sequence to be stored in the model. (CHoosing 0 results in taking all elements)
 
 split_length needs to be finely tuned. As the model cannot predict an element present in the sequence, giving a too long sequence might result in lower accuracy.
 
