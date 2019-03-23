@@ -24,29 +24,29 @@ cdef class Cpt:
 
     Attributes
     ----------
-    split_index : int
-        split_index is used to delimit the length of training and predicting sequences
-        default 0
+    split_length : int
+        split_length is used to delimit the length of training sequences
+        default 0 (all elements are considered)
     alphabet : Alphabet
         alphabet is used to encode values for Cpt
     number_trained_sequences : int
         the number of sequences used for training
     '''
-    def __cinit__(self, int split_length=0):
+    def __init__(self, int split_length=0):
         if split_length < 0:
             raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
-        self.split_index = -split_length
+        self.split_length = -split_length
         self.alphabet = Alphabet()
         self.number_trained_sequences = 0
 
-    def train(self, sequences):
+    def fit(self, sequences):
         '''Train the model
         The model can be retrained to add new sequences
-        ``model.train(seq1);model.train(seq2)`` is equivalent to
-        ``model.train(seq1 + seq2)`` with seq1, seq2 list of sequences
+        ``model.fit(seq1);model.fit(seq2)`` is equivalent to
+        ``model.fit(seq1 + seq2)`` with seq1, seq2 list of sequences
 
         Parameters
         ----------
@@ -60,7 +60,7 @@ cdef class Cpt:
         Examples
         --------
 
-        >>> model.train([['hello', 'world'], ['hello', 'cpt']])
+        >>> model.fit([['hello', 'world'], ['hello', 'cpt']])
         '''
         cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
@@ -74,7 +74,7 @@ cdef class Cpt:
             id_seq = i + self.number_trained_sequences
             current = ROOT
             for index in map(self.alphabet.add_symbol,
-                             sequence[self.split_index:]):
+                             sequence[self.split_length:]):
 
                 # Adding to the Prediction Tree
                 current = self.tree.addChild(current, index)
@@ -121,7 +121,7 @@ cdef class Cpt:
 
         >>> model = Cpt()
 
-        >>> model.train([['hello', 'world'],
+        >>> model.fit([['hello', 'world'],
              ['hello', 'this', 'is', 'me'],
              ['hello', 'me']
             ])
@@ -330,7 +330,7 @@ cdef class Cpt:
         for bitset in self.inverted_index:
             inverted_index_state.append((bitset.get_data(), bitset.size()))
 
-        return (self.split_index,
+        return (self.split_length,
                 self.alphabet,
                 self.lookup_table,
                 inverted_index_state,
@@ -341,8 +341,8 @@ cdef class Cpt:
                 self.number_trained_sequences)
 
     def __setstate__(self, state):
-        split_index, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state, number_trained_sequences = state
-        self.split_index = split_index
+        split_length, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state, number_trained_sequences = state
+        self.split_length = split_length
         self.alphabet = alphabet
         self.lookup_table = lookup_table_state
         for bitset_state in inverted_index_state:
@@ -354,7 +354,7 @@ cdef class Cpt:
         return self._get_prediction_tree() == other._get_prediction_tree() and \
                self._get_inverted_index() == other._get_inverted_index() and \
                self._get_lookup_table() == other._get_lookup_table() and \
-               self.split_index == other.split_index and \
+               self.split_length == other.split_length and \
                self.alphabet == other.alphabet and \
                self.number_trained_sequences == other.number_trained_sequences
 
