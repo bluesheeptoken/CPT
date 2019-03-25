@@ -31,6 +31,8 @@ lint:
 	pycodestyle profiling/profiling.py --ignore=E402
 	pylint tests_scripts
 	pycodestyle tests_scripts
+	pylint data/generate_metadata.py
+	pycodestyle data/generate_metadata.py
 
 test: build
 	pytest
