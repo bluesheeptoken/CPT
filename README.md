@@ -77,7 +77,7 @@ The predictions are launched by default with multithreading with OpenMP.
 
 The predictions can also be launched in a single thread with the option `multithread=False` in the `predict` method.
 
-By default the number of threads equals the number of cores, you can control it by setting the following environment variable `OMP_NUM_THREADS`.
+You can control the number of threads by setting the following environment variable `OMP_NUM_THREADS`.
 
 ### Pickling
 
@@ -121,7 +121,7 @@ The higher this parameter, the longer the prediction. Having more similar sequen
 
 #### split_length
 
-split_length is the number of elements per sequence to be stored in the model. (CHoosing 0 results in taking all elements)
+split_length is the number of elements per sequence to be stored in the model. (Choosing 0 results in taking all elements)
 
 split_length needs to be finely tuned. As the model cannot predict an element present in the sequence, giving a too long sequence might result in lower accuracy.
 
