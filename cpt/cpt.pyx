@@ -24,21 +24,26 @@ cdef class Cpt:
 
     Attributes
     ----------
-    split_length : int
+    split_length : int default 0 (all elements are considered)
         split_length is used to delimit the length of training sequences
-        default 0 (all elements are considered)
+    noise_ratio : float default 0 (no noise)
+        threshold of frequency to consider elements as noise
+    MBR : int, default 0 (at least one update)
+        minimum number of similar sequences needed to compute predictions
     alphabet : Alphabet
         alphabet is used to encode values for Cpt
     number_trained_sequences : int
         the number of sequences used for training
     '''
-    def __init__(self, int split_length=0):
+    def __init__(self, int split_length=0, float noise_ratio=0, int MBR=0):
         if split_length < 0:
             raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
         self.split_length = -split_length
+        self.noise_ratio = noise_ratio
+        self.MBR = MBR
         self.alphabet = Alphabet()
         self.number_trained_sequences = 0
 
@@ -89,19 +94,13 @@ cdef class Cpt:
             self.lookup_table.push_back(current)
         self.number_trained_sequences += number_sequences_to_train
 
-    cpdef predict(self, list sequences, float noise_ratio=0, int MBR=0, bint multithreading=True):
+    cpdef predict(self, list sequences, bint multithreading=True):
         '''Predict the next element of each sequence of sequences
 
         Parameters
         ----------
         sequences : list
             list of sequences of any hashable
-        noise_ratio : float
-            threshold of frequency to consider elements as noise
-            default 0 (no noise)
-        MBR : int
-            minimum number of similar sequences needed to compute predictions
-            default 0 (at least one update)
         multithreading : bool
             default True
 
@@ -135,12 +134,12 @@ cdef class Cpt:
             int len_sequences = len(sequences)
             vector[int] int_predictions
 
-        _check_noise_ratio(noise_ratio)
+        _check_noise_ratio(self.noise_ratio)
 
-        if MBR < 0:
-            raise ValueError('MBR should be non-negative, actual value : {}'.format(MBR))
+        if self.MBR < 0:
+            raise ValueError('MBR should be non-negative, actual value : {}'.format(self.MBR))
 
-        least_frequent_items = self.c_compute_noisy_items(noise_ratio)
+        least_frequent_items = self.c_compute_noisy_items(self.noise_ratio)
 
         if multithreading:
             int_predictions = vector[int](len_sequences)
@@ -154,7 +153,7 @@ cdef class Cpt:
 
             # Predictions
             for i in prange(len_sequences, nogil=True, schedule='dynamic'):
-                int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items, MBR)
+                int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items)
 
         else:
             for i in range(len_sequences):
@@ -162,7 +161,7 @@ cdef class Cpt:
                 sequence_indexes = vector[int]()
                 for j in range(len(sequence)):
                     sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
-                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items, MBR))
+                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items))
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
@@ -184,7 +183,7 @@ cdef class Cpt:
         noisy_items : list
             the noisy items
         '''
-        _check_noise_ratio(noise_ratio)
+        _check_noise_ratio(self.noise_ratio)
         return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
 
     def find_similar_sequences(self, sequence):
@@ -230,7 +229,7 @@ cdef class Cpt:
 
         return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
 
-    cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items, int MBR) nogil:
+    cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items) nogil:
         cdef:
             Scorer scorer = Scorer(self.alphabet.length)
             queue[vector[int]] suffixes = queue[vector[int]]()
@@ -243,7 +242,7 @@ cdef class Cpt:
         suffixes.push(target_sequence)
         update_count += self.update_score(target_sequence, scorer)
 
-        while update_count < MBR and not suffixes.empty():
+        while update_count < self.MBR and not suffixes.empty():
             suffix = suffixes.front()
             suffixes.pop()
             for i in range(least_frequent_items.size()):

@@ -33,24 +33,41 @@ class CptTest(unittest.TestCase):
         self.assertEqual(self.cpt.alphabet.symbols, alphabet.symbols)
 
     def test_predict(self):
-        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3), ['B', 'D'])
+        old_noise_ratio = self.cpt.noise_ratio
+        old_MBR = self.cpt.MBR
+
+        self.cpt.noise_ratio = 1
+        self.cpt.MBR = 3
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']]), ['B', 'D'])
         # Test if predictions are the same with multi threading turned off
-        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], 1.0, 3, False), ['B', 'D'])
-        self.assertEqual(self.cpt.predict([['A', 'B']], 1.0, 2), ['C'])
-        self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.2, 1), ['E'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], False), ['B', 'D'])
+
+        self.cpt.MBR = 2
+        self.assertEqual(self.cpt.predict([['A', 'B']]), ['C'])
+
+        self.cpt.noise_ratio = 0.2
+        self.cpt.MBR = 1
+        self.assertEqual(self.cpt.predict([['B', 'D', 'E']]), ['E'])
         # Default value is the first of the alphabet
-        self.assertEqual(self.cpt.predict([['B', 'D', 'E']], 0.1, 1), ['A'])
+        self.cpt.noise_ratio = 0.1
+        self.assertEqual(self.cpt.predict([['B', 'D', 'E']]), ['A'])
 
         # Check value raises
         # noise_ratio should be <= 1.0
+        self.cpt.noise_ratio = 1.1
         with self.assertRaises(ValueError):
-            self.cpt.predict([[]], 1.1, 3)
+            self.cpt.predict([[]])
         # noise ratio should be >= 0
+        self.cpt.noise_ratio = -0.2
         with self.assertRaises(ValueError):
-            self.cpt.predict([[]], -0.2, 3)
+            self.cpt.predict([[]])
         # MBR should be >= 0
+        self.cpt.MBR = -5
         with self.assertRaises(ValueError):
-            self.cpt.predict([[]], 0.8, -5)
+            self.cpt.predict([[]])
+
+        self.cpt.noise_ratio = old_noise_ratio
+        self.cpt.MBR = old_MBR
 
     def test_richcmp(self):
         cpt_wrong_split_length = Cpt(1)
