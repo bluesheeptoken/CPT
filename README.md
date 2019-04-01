@@ -38,12 +38,7 @@ from sklearn.model_selection import GridSearchCV
 
 class SKCpt(Cpt, BaseEstimator):
     def __init__(self, split_length=0, noise_ratio=0, MBR=0):
-        super().__init__(split_length)
-        self.noise_ratio = noise_ratio
-        self.MBR = MBR
-
-    def predict(self, sequences):
-        return super().predict(sequences, self.noise_ratio, self.MBR)
+        super().__init__(split_length, noise_ratio, MBR)
 
     def score(self, X):
         # Choose your own scoring function here
