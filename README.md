@@ -10,6 +10,12 @@ http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
 
 http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
 
+## Installation
+
+To use this project, you need to install it locally. You will need to compile cython sources.
+
+The wheels will be soon published on Pypi.
+
 ## Simple example
 
 You can test the model with the following code
