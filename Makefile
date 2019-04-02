@@ -36,4 +36,6 @@ lint:
 
 test: build
 	pytest
-	pytest tests_scripts
+
+html: build
+	make -C doc clean html
