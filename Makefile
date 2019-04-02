@@ -13,7 +13,7 @@ endif
 build: cpt/*.pyx
 	python3 setup.py build_ext --inplace ${trace_flag}
 	mkdir -p ${REPORTS_DIR}
-	mv ${SRC_DIR}/*.html ${REPORTS_DIR}
+	mv ${SRC_DIR}/*.html ${REPORTS_DIR} 2>/dev/null
 
 clean:
 	rm -rf ${BUILD_DIR}/
