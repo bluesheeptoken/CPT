@@ -26,4 +26,4 @@ cdef class Cpt:
 
     cdef readonly:
         Alphabet alphabet
-        size_t number_trained_sequences
+        size_t _number_trained_sequences

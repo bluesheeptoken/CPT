@@ -20,24 +20,24 @@ cdef extern from "<algorithm>" namespace "std" nogil:
 cdef class Cpt:
     # Only python accessible attributes are documented
     '''
-    Compact Prediction Tree class
+    Compact Prediction Tree class.
 
     Attributes
     ----------
-    split_length : int default 0 (all elements are considered)
-        split_length is used to delimit the length of training sequences
-    noise_ratio : float default 0 (no noise)
-        threshold of frequency to consider elements as noise
+    split_length : int, default 0 (all elements are considered)
+        The split length is used to delimit the length of training sequences.
+    noise_ratio : float, default 0 (no noise)
+        The threshold of frequency to consider elements as noise.
     MBR : int, default 0 (at least one update)
-        minimum number of similar sequences needed to compute predictions
+        Minimum number of similar sequences needed to compute predictions.
     alphabet : Alphabet
-        alphabet is used to encode values for Cpt
-    number_trained_sequences : int
-        the number of sequences used for training
+        The alphabet is used to encode values for Cpt. ``alphabet`` should not be used directly.
     '''
     def __init__(self, int split_length=0, float noise_ratio=0, int MBR=0):
         if split_length < 0:
             raise ValueError('split_length value should be non-negative, actual value: {}'.format(split_length))
+        _check_noise_ratio(noise_ratio)
+        _check_MBR(MBR)
         self.tree = PredictionTree()
         self.inverted_index = vector[Bitset]()
         self.lookup_table = vector[Node]()
@@ -45,13 +45,14 @@ cdef class Cpt:
         self.noise_ratio = noise_ratio
         self.MBR = MBR
         self.alphabet = Alphabet()
-        self.number_trained_sequences = 0
+        self._number_trained_sequences = 0
 
     def fit(self, sequences):
-        '''Train the model
-        The model can be retrained to add new sequences
+        '''Train the model with a list of sequence.
+
+        The model can be retrained to add new sequences.
         ``model.fit(seq1);model.fit(seq2)`` is equivalent to
-        ``model.fit(seq1 + seq2)`` with seq1, seq2 list of sequences
+        ``model.fit(seq1 + seq2)`` with seq1, seq2 list of sequences.
 
         Parameters
         ----------
@@ -64,19 +65,18 @@ cdef class Cpt:
 
         Examples
         --------
-
         >>> model.fit([['hello', 'world'], ['hello', 'cpt']])
         '''
         cdef size_t number_sequences_to_train = len(sequences)
         cdef Node current
 
         # Resize bitsets if this is not the first time the model is training
-        if self.number_trained_sequences != 0:
+        if self._number_trained_sequences != 0:
             for i in range(self.inverted_index.size()):
-                self.inverted_index[i].resize(self.number_trained_sequences + number_sequences_to_train)
+                self.inverted_index[i].resize(self._number_trained_sequences + number_sequences_to_train)
 
         for i, sequence in enumerate(sequences):
-            id_seq = i + self.number_trained_sequences
+            id_seq = i + self._number_trained_sequences
             current = ROOT
             for index in map(self.alphabet.add_symbol,
                              sequence[self.split_length:]):
@@ -86,34 +86,34 @@ cdef class Cpt:
 
                 # Adding to the Inverted Index
                 if not index < self.inverted_index.size():
-                    self.inverted_index.push_back(Bitset(self.number_trained_sequences + number_sequences_to_train))
+                    self.inverted_index.push_back(Bitset(self._number_trained_sequences + number_sequences_to_train))
 
                 self.inverted_index[index].add(id_seq)
 
             # Add the last node in the lookup_table
             self.lookup_table.push_back(current)
-        self.number_trained_sequences += number_sequences_to_train
+        self._number_trained_sequences += number_sequences_to_train
 
     cpdef predict(self, list sequences, bint multithreading=True):
-        '''Predict the next element of each sequence of sequences
+        '''Predict the next element of each sequence of the parameter ``sequences``.
 
         Parameters
         ----------
         sequences : list
-            list of sequences of any hashable
-        multithreading : bool
-            default True
+            A list of sequences of any hashable type.
+        multithreading : bool, default True
+            True if the multithreading should be used for predictions.
 
         Raises
         ------
         ValueError
-            noise_ratio should be between 0 and 1
-            MBR should be non-negative
+            noise_ratio should be between 0 and 1.
+            MBR should be non-negative.
 
         Returns
         -------
         predictions : list of length ``len(sequences)``
-            The predicted elements
+            The predicted elements.
 
         Examples
         --------
@@ -126,6 +126,7 @@ cdef class Cpt:
             ])
 
         >>> model.predict([['hello'], ['hello', 'this']])
+        ['me', 'is']
         '''
         cdef:
             vector[int] least_frequent_items, sequence_indexes
@@ -136,8 +137,7 @@ cdef class Cpt:
 
         _check_noise_ratio(self.noise_ratio)
 
-        if self.MBR < 0:
-            raise ValueError('MBR should be non-negative, actual value : {}'.format(self.MBR))
+        _check_MBR(self.MBR)
 
         least_frequent_items = self.c_compute_noisy_items(self.noise_ratio)
 
@@ -166,12 +166,15 @@ cdef class Cpt:
         return [self.alphabet.get_symbol(x) for x in int_predictions]
 
     def compute_noisy_items(self, noise_ratio):
-        '''Compute noisy elements
+        '''Compute noisy elements.
+
+        An element is considered as noise if the frequency of sequences
+        in which it appears at least once is below ``noise_ratio``.
 
         Parameters
         ----------
         noise_ratio : float
-            threshold of frequency to consider elements as noise
+            The threshold of frequency to consider elements as noise.
 
         Raises
         ------
@@ -181,13 +184,16 @@ cdef class Cpt:
         Returns
         -------
         noisy_items : list
-            the noisy items
+            The noisy items.
         '''
         _check_noise_ratio(self.noise_ratio)
         return [self.alphabet.get_symbol(x) for x in <list>self.c_compute_noisy_items(noise_ratio)]
 
     def find_similar_sequences(self, sequence):
-        '''Find similar sequences
+        '''Find similar sequences.
+
+        A sequence similar ``X`` of a sequence ``S`` is a sequence
+        in which every element of ``S`` is in ``X``
 
         Parameters
         ----------
@@ -196,23 +202,31 @@ cdef class Cpt:
         Returns
         -------
         similar_sequences : list
-            list of similar_sequences
+            The list of similar_sequences.
         '''
         cdef vector[int] sequence_index = [self.alphabet.get_index(symbol) for symbol in sequence]
         similar_sequences_index = self.retrieve_similar_sequences(sequence_index)
         return [self.retrieve_sequence(index) for index in similar_sequences_index]
 
     def retrieve_sequence(self, index):
-        '''Retrieve sequence
+        '''Retrieve sequence from the training data.
 
         Parameters
         ----------
         index : int
-            index of the sequence to retrieve
+            Index of the sequence to retrieve.
 
         Returns
         -------
         sequence : list
+
+        Examples
+        --------
+
+        >>> model = Cpt()
+        >>> model.fit([['sample', 'data'], ['should', 'not', 'be', 'retrieved']])
+        >>> model.retrieve_sequence(0)
+        ['sample', 'data']
         '''
 
         if index < 0:
@@ -337,7 +351,7 @@ cdef class Cpt:
                 self.tree.get_incoming(),
                 self.tree.get_parent(),
                 self.tree.get_children()),
-                self.number_trained_sequences)
+                self._number_trained_sequences)
 
     def __setstate__(self, state):
         split_length, alphabet, lookup_table_state, inverted_index_state, prediction_tree_state, number_trained_sequences = state
@@ -347,7 +361,7 @@ cdef class Cpt:
         for bitset_state in inverted_index_state:
             self.inverted_index.push_back(Bitset(bitset_state[0], bitset_state[1]))
         self.tree = PredictionTree(prediction_tree_state[0], prediction_tree_state[1], prediction_tree_state[2], prediction_tree_state[3])
-        self.number_trained_sequences = number_trained_sequences
+        self._number_trained_sequences = number_trained_sequences
 
     def __is_equal__(self, other):
         return self._get_prediction_tree() == other._get_prediction_tree() and \
@@ -355,7 +369,7 @@ cdef class Cpt:
                self._get_lookup_table() == other._get_lookup_table() and \
                self.split_length == other.split_length and \
                self.alphabet == other.alphabet and \
-               self.number_trained_sequences == other.number_trained_sequences
+               self._number_trained_sequences == other._number_trained_sequences
 
     def __richcmp__(self, other, op):
         if op == Py_EQ:
@@ -368,3 +382,7 @@ cdef class Cpt:
 def _check_noise_ratio(noise_ratio):
     if not 0 <= noise_ratio <= 1:
         raise ValueError('noise_ratio should be between 0 and 1, actual value : {}'.format(noise_ratio))
+
+def _check_MBR(MBR):
+    if MBR < 0:
+        raise ValueError('MBR should be non-negative, actual value : {}'.format(MBR))
