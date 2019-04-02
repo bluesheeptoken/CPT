@@ -24,7 +24,7 @@ def profile(mode, data_path, profile_path):
     if mode == 'predict':
         cpt.fit(data)
         data = [sequence[-10:] for sequence in data]
-        cProfile.runctx('cpt.predict(data, 0.2, 10)', None, locals(), profile_path)
+        cProfile.runctx('cpt.predict(data)', None, locals(), profile_path)
     else:
         cProfile.runctx('cpt.fit(data)', None, locals(), profile_path)
 
