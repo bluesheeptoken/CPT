@@ -32,7 +32,7 @@ model.fit([['hello', 'world'],
 model.predict([['hello'], ['hello', 'this']])
 # Output: ['me', 'is']
 ```
-For an example with the compatibility with sklearn, you should check the documentation.
+For an example with the compatibility with sklearn, you should check the [documentation][1].
 
 ## Features
 ### Train
@@ -81,4 +81,6 @@ You can not yet retrieve automatically all similar sequences with the noise redu
 
 ### Tuning
 
-CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the documentation.
+CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the [documentation][1].
+
+[1]: https://cpt.readthedocs.io/en/latest/
