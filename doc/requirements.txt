@@ -1,2 +1,2 @@
 numpydoc
-cython>=20
+cython>=0.20
