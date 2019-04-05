@@ -1,2 +1,3 @@
 numpydoc
 cython>=0.20
+sphinx_rtd_theme

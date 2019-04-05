@@ -3,6 +3,7 @@ SRC_DIR=cpt
 TEST_DIR=tests
 REPORTS_DIR=reports
 COVERAGE_DIR=htmlcov
+VIRTUAL_ENV=cpt_documentation
 
 DEBUG=false
 
@@ -23,6 +24,7 @@ clean:
 	rm -f ${SRC_DIR}/*.cpp
 	rm -rf ${REPORTS_DIR}
 	rm -rf ${COVERAGE_DIR}
+	rm -rf ${VIRTUAL_ENV}
 
 lint:
 	pylint ${TEST_DIR}
@@ -37,5 +39,11 @@ lint:
 test: build
 	pytest
 
-html: build
+html:
+	virtualenv ${VIRTUAL_ENV}
+	. ${VIRTUAL_ENV}/bin/activate
+	pip install -r doc/requirements.txt
+	python ./setup.py install --force
 	make -C doc clean html
+	. deactivate ${VIRTUAL_ENV}
+	rm -r ${VIRTUAL_ENV}
