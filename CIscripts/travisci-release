@@ -1,0 +1,21 @@
+#! /usr/bin/env bash
+set -e
+
+umask 022 &&
+chmod -R a+rX . &&
+
+pip install -U pip setuptools "wheel==0.31.1" twine &&
+python setup.py sdist &&
+
+python setup.py build_ext &&
+python setup.py build --executable '/usr/bin/env python' &&
+python    -m compileall build &&
+python -O -m compileall build &&
+python setup.py bdist_wheel &&
+
+# py=$(python -c "import sys; print('.'.join(sys.version.split('.')[:2]))")
+# v=$(echo "$py" | sed 's/\.//') &&
+
+# TWINE_USERNAME / TWINE_PASSWORD / TWINE_REPOSITORY_URL
+# must be set in Travis settings.
+exec twine upload --repository-url https://test.pypi.org/legacy/  --skip-existing dist/*
