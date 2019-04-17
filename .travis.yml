@@ -6,6 +6,8 @@ language: python
 
 python:
   - "3.5"
+  - "3.6"
+  - "3.7"
 
 cache: pip
 
@@ -16,10 +18,6 @@ install:
 script:
   - pytest
 
-# before_cache:
-#   - remove-old-files.py -o 180 ~/.cache/pip
-
-# deploy:
-#   provider: script
-#   script: echo "this is a test" && sh ./CIscripts/travisci-release
-
+deploy:
+  provider: script
+  script: python setup.py sdist && twine upload --repository-url $TWINE_REPOSITORY_URL --skip-existing dist/cpt-*.tar.gz -u $TWINE_USERNAME -p $TWINE_PASSWORD
