@@ -12,9 +12,9 @@ http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.p
 
 ## Installation
 
-To use this project, you need to install it locally. You will need to compile cython sources.
+You can simply use `pip install cpt`.
 
-The wheels will be soon published on Pypi.
+For windows users, the sources are precompiled. For others, the tarball will install all dependencies of cpt.
 
 ## Simple example
 

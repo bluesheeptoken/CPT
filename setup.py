@@ -16,7 +16,7 @@ module = Extension('*',
         extra_compile_args=compile_args,
         extra_link_args=compile_args)
 
-version = "0.0.8"
+version = "1.0.0"
 
 author = "Bluesheeptoken"
 author_email = "louis.fruleux1@gmail.com"
