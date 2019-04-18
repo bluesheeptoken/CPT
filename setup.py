@@ -21,7 +21,7 @@ version = "0.0.8"
 author = "Bluesheeptoken"
 author_email = "louis.fruleux1@gmail.com"
 
-short_description = "Compact Prediction Tree: A Lossless Model for Accurate Sequence Prediction (cython implementation) "
+description = "Compact Prediction Tree: A Lossless Model for Accurate Sequence Prediction (cython implementation) "
 
 license = "MIT"
 
@@ -33,5 +33,5 @@ setup(name="cpt",
       version=version,
       author=author,
       author_email=author_email,
-      short_description=short_description,
+      description=description,
       license=license)
