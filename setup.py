@@ -4,6 +4,8 @@ from distutils.extension import Extension
 from Cython.Build import cythonize
 import sys
 import platform
+from os import path
+
 
 if platform.system() == 'Windows':
     compile_args = ['/openmp']
@@ -16,14 +18,20 @@ module = Extension('*',
         extra_compile_args=compile_args,
         extra_link_args=compile_args)
 
-version = "1.0.0"
+version = "1.0.1"
 
 author = "Bluesheeptoken"
 author_email = "louis.fruleux1@gmail.com"
 
-description = "Compact Prediction Tree: A Lossless Model for Accurate Sequence Prediction (cython implementation) "
+description = "Compact Prediction Tree: A Lossless Model for Accurate Sequence Prediction"
 
 license = "MIT"
+
+this_directory = path.abspath(path.dirname(__file__))
+with open(path.join(this_directory, 'README.md'), encoding='utf-8') as f:
+    long_description = f.read()
+
+url = "https://cpt.readthedocs.io/en/latest/"
 
 setup(name="cpt",
       ext_modules=cythonize(
@@ -34,4 +42,7 @@ setup(name="cpt",
       author=author,
       author_email=author_email,
       description=description,
-      license=license)
+      license=license,
+      long_description=long_description,
+      long_description_content_type='text/markdown',
+      url=url)
