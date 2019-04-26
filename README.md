@@ -81,7 +81,8 @@ You can not yet retrieve automatically all similar sequences with the noise redu
 
 ### Tuning
 
-CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the [documentation][1].
+CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the [documentation][1]. To tune you can use the `model_selection` module from `sklearn`, you can find an example [here][3] on how to.
 
 [1]: https://cpt.readthedocs.io/en/latest/
 [2]: https://github.com/bluesheeptoken/CPT#tuning
+[3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
