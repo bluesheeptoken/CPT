@@ -18,7 +18,7 @@ module = Extension('*',
         extra_compile_args=compile_args,
         extra_link_args=compile_args)
 
-version = "1.0.1"
+version = "1.0.2"
 
 author = "Bluesheeptoken"
 author_email = "louis.fruleux1@gmail.com"
@@ -46,3 +46,4 @@ setup(name="cpt",
       long_description=long_description,
       long_description_content_type='text/markdown',
       url=url)
+

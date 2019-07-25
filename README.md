@@ -14,7 +14,7 @@ http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.p
 
 You can simply use `pip install cpt`.
 
-For windows users, the sources are precompiled. For others, the tarball will install all dependencies of cpt.
+For windows users, the sources are precompiled. For others, you will need to install `cython`.
 
 ## Simple example
 
