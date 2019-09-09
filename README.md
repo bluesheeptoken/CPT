@@ -12,9 +12,9 @@ http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.p
 
 ## Installation
 
-You can simply use `pip install cpt`.
+For windows users, you can simply use `pip install cpt`.
 
-For windows users, the sources are precompiled. For others, you will need to install `cython`.
+For unix users, you can install `cpt` using these sources, you will need `cython`. And then use `python setup.py install`.
 
 ## Simple example
 
