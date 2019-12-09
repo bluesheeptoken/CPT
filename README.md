@@ -16,6 +16,15 @@ For windows users, you can simply use `pip install cpt`.
 
 For unix users, you can install `cpt` using these sources, you will need `cython`. And then use `python setup.py install`.
 
+For Mac user, you can install llvm, libomp and use llvm to compile.
+
+```shell
+brew install llvm # Depending on your OS, you might need the --without-multilib
+brew install libomp
+'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
+CC=/usr/local/opt/llvm/bin/clang++ python setup.py install
+```
+
 ## Simple example
 
 You can test the model with the following code
