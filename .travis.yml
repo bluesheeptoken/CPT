@@ -5,17 +5,46 @@ dist: xenial
 language: python
 
 python:
-  - "3.5"
+  - "3.7"
 
 cache: pip
 
+addons:
+  apt:
+    packages:
+      - patchelf
+
+matrix:
+  include:
+  - os: osx
+    language: generic
+    env: TOXENV=py35
+  - os: osx
+    language: generic
+    env: TOXENV=py36
+  - os: osx
+    language: generic
+    env:
+      - TOXENV=py37
+
+  fast_finish: true
+
+before_install:
+  - export OMP_NUM_THREADS=4
+  - |
+    if [ "$TRAVIS_OS_NAME" == 'osx' ]; then
+      brew install llvm libomp;
+      export CPP=/usr/local/opt/llvm/bin/clang;
+      export PATH="/usr/local/opt/llvm/bin:$PATH";
+    fi
+
 install:
-  - pip install --upgrade "pip < 19.1" -r CI/requirements.txt
-  - python setup.py develop
+  - pip3 install --upgrade "pip < 19.1" -r CI/requirements.txt
+  - python3 setup.py develop
 
 script:
   - pytest
 
 deploy:
   provider: script
-  script: python setup.py sdist && twine upload --repository-url $TWINE_REPOSITORY_URL --skip-existing dist/cpt-*.tar.gz -u $TWINE_USERNAME -p $TWINE_PASSWORD
+  script: sh CI/travis-ci-release.sh
