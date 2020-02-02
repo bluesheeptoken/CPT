@@ -12,18 +12,14 @@ http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.p
 
 ## Installation
 
-For windows users, you can simply use `pip install cpt`.
+You can simply use `pip install cpt`.
 
-For unix users, you can install `cpt` using these sources, you will need `cython`. And then use `python setup.py install`.
+For unix users, no wheels are published (problem with `auditwheel` which cannot repair wheels to "manylinux"), you should install cython then cpt: `pip install cython cpt`.
 
-For Mac user, you can install llvm, libomp and use llvm to compile.
+However unix users can simply install from sources: `pip install cython && python setup.py install`.
 
-```shell
-brew install llvm # Depending on your OS, you might need the --without-multilib
-brew install libomp
-'export PATH="/usr/local/opt/llvm/bin:$PATH"' >> ~/.bash_profile
-CC=/usr/local/opt/llvm/bin/clang++ python setup.py install
-```
+For `osx` users, do not forget to install brew's `llvm` and `libomp`. You can follow the directives of this issue: https://github.com/bluesheeptoken/CPT/issues/68
+
 
 ## Simple example
 
