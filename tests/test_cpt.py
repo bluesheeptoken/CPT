@@ -1,7 +1,7 @@
 import unittest
 import pickle
 
-from cpt.cpt import Cpt  # pylint: disable=no-name-in-module
+from cpt import Cpt  # pylint: disable=no-name-in-module
 from cpt.alphabet import Alphabet
 
 
