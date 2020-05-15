@@ -4,9 +4,6 @@ version: '{branch}-{build}'
 
 cache:
   - '%LOCALAPPDATA%\pip\Cache'
-    # Cache chocolatey-installed packages (PyPy)
-  - C:\ProgramData\chocolatey\bin -> appveyor.yml
-  - C:\ProgramData\chocolatey\lib -> appveyor.yml
 
 # Match travis
 clone_depth: 50
@@ -37,26 +34,32 @@ environment:
     - PYTHON_VERSION: "3.7"
       PYTHON_ARCH: "64"
       PYTHON_HOME: "C:\\Python37-x64"
-
+    - PYTHON_VERSION: "3.8"
+      PYTHON_ARCH: "32"
+      PYTHON_HOME: "C:\\Python38"
+    - PYTHON_VERSION: "3.8"
+      PYTHON_ARCH: "64"
+      PYTHON_HOME: "C:\\Python38-x64"
 install:
   # Ensure we use the right python version
   - "SET PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%"
+  - "SET TOXPYTHON=%PYTHON_HOME%\\python.exe"
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
-  - "python -m pip install --upgrade \"pip < 19.1\" setuptools cython"
+  - "python -m pip install --upgrade pip cython pytest tox ppu"
   - "pip --version"
 
-# No build step - _namemapper extension will be built under tox
-build: false
+build_script:
+  - "%WITH_ENV% python setup.py build_ext --inplace"
 
 test_script:
-  - "echo \"Skipping tests, they are done on travis\""
+  - "%CMD_IN_ENV% pytest"
 
 deploy_script:
   # If tests are successful and we've tested a tag, deploy binary wheel
   # TWINE_USERNAME / TWINE_PASSWORD / TWINE_REPOSITORY_URL
   # must be set in AppVeyor settings.
-  - if "true" == "true" (
+  -  if "%APPVEYOR_REPO_TAG%" == "true" (
       pip install --upgrade twine "wheel==0.31.1" &&
       %CMD_IN_ENV% python setup.py bdist_wheel &&
       twine upload --skip-existing dist\\*.whl --repository-url %TWINE_REPOSITORY_URL% -u %TWINE_USERNAME% -p %TWINE_PASSWORD%
