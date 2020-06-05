@@ -1,5 +1,0 @@
-setuptools
-cython
-wheel==0.31.1
-twine
-pytest
