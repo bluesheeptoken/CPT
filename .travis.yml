@@ -1,32 +1,32 @@
-os: linux
-
-dist: xenial
-
 language: python
-
-python:
-  - "3.7"
-
-cache: pip
-
-addons:
-  apt:
-    packages:
-      - patchelf
 
 matrix:
   include:
-  - os: osx
-    language: generic
-    env: TOXENV=py35
-  - os: osx
-    language: generic
-    env: TOXENV=py36
-  - os: osx
-    language: generic
-    env: TOXENV=py37
+    - sudo: required
+      services:
+        - docker
+    - os: osx
+      language: generic
+      env: TOXENV=py35
+    - os: osx
+      language: generic
+      env: TOXENV=py36
+    - os: osx
+      language: generic
+      env: TOXENV=py37
+    - os: osx
+      language: generic
+      env: TOXENV=py38
 
   fast_finish: true
+
+env:
+  global:
+    - CIBW_BUILD="cp3?-manylinux*"
+    - CIBW_BEFORE_TEST="CC=gcc CXX=g++ python -m pip install pytest cython>=0.20"
+    - CIBW_TEST="pytest cpt/tests"
+    - CIBW_BEFORE_BUILD="python -m pip install cython>=0.20"
+
 
 before_install:
   - export OMP_NUM_THREADS=4
@@ -43,12 +43,27 @@ before_install:
     fi
 
 install:
-  - pip install --upgrade "pip < 19.1" -r CI/requirements.txt
-  - python setup.py develop
+  - |
+    if [ "$TRAVIS_OS_NAME" == 'osx' ]; then
+      pip install --upgrade "pip < 19.1"
+      pip install cython pytest
+      python setup.py develop
+      pytest
+    fi
 
 script:
-  - pytest
+  - |
+    if [ "$TRAVIS_OS_NAME" == 'linux' ]; then
+      python3 -m pip install cibuildwheel
+      python3 -m cibuildwheel --output-dir dist
+      if [[ $TRAVIS_TAG ]]; then
+        python3 -m pip install twine
+        python3 -m twine upload dist/*.whl
+      fi
+    fi
 
 deploy:
   provider: script
   script: sh CI/travis-ci-release.sh
+  on:
+    tags: true

@@ -6,7 +6,7 @@ import os
 # Add cpt to python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
-from cpt.cpt import Cpt  # pylint: disable=wrong-import-position
+from cpt import Cpt  # pylint: disable=wrong-import-position
 
 
 def profile(mode, data_path, profile_path):
