@@ -93,6 +93,17 @@ You can not yet retrieve automatically all similar sequences with the noise redu
 
 CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the [documentation][1]. To tune you can use the `model_selection` module from `sklearn`, you can find an example [here][3] on how to.
 
+## Benchmark
+
+The benchmark has been made on the FIFA dataset, the data can be find on the [`spmf` website][4].
+
+Using multithreading `CPT` has been able to perform around 5000 predictions per second.
+
+Without multithreading, `CPT` predicted around 1650 sequences per second.
+
+Details on the benchmark can be found [here](benchmark).
+
 [1]: https://cpt.readthedocs.io/en/latest/
 [2]: https://github.com/bluesheeptoken/CPT#tuning
 [3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
+[4]: https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
