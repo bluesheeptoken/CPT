@@ -19,13 +19,6 @@ http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.p
 
 You can simply use `pip install cpt`.
 
-For unix users, no wheels are published (problem with `auditwheel` which cannot repair wheels to "manylinux"), you should install cython then cpt: `pip install cython cpt`.
-
-However unix users can simply install from sources: `pip install cython && python setup.py install`.
-
-For `osx` users, do not forget to install brew's `llvm` and `libomp`. You can follow the directives of this issue: https://github.com/bluesheeptoken/CPT/issues/68
-
-
 ## Simple example
 
 You can test the model with the following code
