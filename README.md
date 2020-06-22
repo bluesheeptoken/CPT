@@ -103,7 +103,14 @@ Without multithreading, `CPT` predicted around 1650 sequences per second.
 
 Details on the benchmark can be found [here](benchmark).
 
+## Further reading
+
+A study has been made on how to reduce dataset size, and so training / testing time using PageRank on the dataset.
+
+The study has been published in IJIKM review [here][5]. An overall performance improvement of 10-40% has been observed with this technique on the prediction time without any accuracy loss.
+
 [1]: https://cpt.readthedocs.io/en/latest/
 [2]: https://github.com/bluesheeptoken/CPT#tuning
 [3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
 [4]: https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
+[5]: http://www.ijikm.org/Volume14/IJIKMv14p027-044Da5395.pdf
