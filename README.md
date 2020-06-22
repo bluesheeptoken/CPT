@@ -7,7 +7,7 @@
 
 This project is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
-CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT cannot predict an element already present in this sequence. CPT needs a [tuning][2].
+CPT is a sequence prediction model. It is a highly explainable model specialized in predicting the next element of a sequence over a finite alphabet.
 
 This implementation is based on the following research papers
 
