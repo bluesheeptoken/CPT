@@ -1,5 +1,10 @@
 # CPT
 
+[![Downloads](https://img.shields.io/pypi/dm/CPT)](https://img.shields.io/pypi/dm/CPT)
+[![License](https://img.shields.io/pypi/l/cpt.svg)](https://github.com/bluesheeptoken/CPT/blob/master/LICENSE)
+
+## What is it ?
+
 This project is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
 CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT cannot predict an element already present in this sequence. CPT needs a [tuning][2].
