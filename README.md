@@ -9,11 +9,10 @@ This project is a cython open-source implementation of the Compact Prediction Tr
 
 CPT is a sequence prediction model. It is a highly explainable model specialized in predicting the next element of a sequence over a finite alphabet.
 
-This implementation is based on the following research papers
+This implementation is based on the following research papers:
 
-http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
-
-http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
+- http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
+- http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
 
 ## Installation
 
@@ -21,7 +20,7 @@ You can simply use `pip install cpt`.
 
 ## Simple example
 
-You can test the model with the following code
+You can test the model with the following code:
 
 ```python
 from cpt import Cpt
@@ -88,9 +87,9 @@ CPT has 3 meta parameters that need to be tuned. You can check how to tune them 
 
 ## Benchmark
 
-The benchmark has been made on the FIFA dataset, the data can be find on the [`spmf` website][4].
+The benchmark has been made on the FIFA dataset, the data can be found on the [SPMF website][4].
 
-Using multithreading `CPT` has been able to perform around 5000 predictions per second.
+Using multithreading, `CPT` was able to perform around 5000 predictions per second.
 
 Without multithreading, `CPT` predicted around 1650 sequences per second.
 
