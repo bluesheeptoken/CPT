@@ -7,28 +7,20 @@
 
 This project is a cython open-source implementation of the Compact Prediction Tree algorithm using multithreading.
 
-CPT is a sequence prediction algorithm. It is a highly explainable model and good at predicting, in a finite alphabet, next value of a sequence. However, given a sequence, CPT cannot predict an element already present in this sequence. CPT needs a [tuning][2].
+CPT is a sequence prediction model. It is a highly explainable model specialized in predicting the next element of a sequence over a finite alphabet.
 
-This implementation is based on the following research papers
+This implementation is based on the following research papers:
 
-http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
-
-http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
+- http://www.philippe-fournier-viger.com/ADMA2013_Compact_Prediction_trees.pdf
+- http://www.philippe-fournier-viger.com/spmf/PAKDD2015_Compact_Prediction_tree+.pdf
 
 ## Installation
 
 You can simply use `pip install cpt`.
 
-For unix users, no wheels are published (problem with `auditwheel` which cannot repair wheels to "manylinux"), you should install cython then cpt: `pip install cython cpt`.
-
-However unix users can simply install from sources: `pip install cython && python setup.py install`.
-
-For `osx` users, do not forget to install brew's `llvm` and `libomp`. You can follow the directives of this issue: https://github.com/bluesheeptoken/CPT/issues/68
-
-
 ## Simple example
 
-You can test the model with the following code
+You can test the model with the following code:
 
 ```python
 from cpt import Cpt
@@ -93,6 +85,24 @@ You can not yet retrieve automatically all similar sequences with the noise redu
 
 CPT has 3 meta parameters that need to be tuned. You can check how to tune them in the [documentation][1]. To tune you can use the `model_selection` module from `sklearn`, you can find an example [here][3] on how to.
 
+## Benchmark
+
+The benchmark has been made on the FIFA dataset, the data can be found on the [SPMF website][4].
+
+Using multithreading, `CPT` was able to perform around 5000 predictions per second.
+
+Without multithreading, `CPT` predicted around 1650 sequences per second.
+
+Details on the benchmark can be found [here](benchmark).
+
+## Further reading
+
+A study has been made on how to reduce dataset size, and so training / testing time using PageRank on the dataset.
+
+The study has been published in IJIKM review [here][5]. An overall performance improvement of 10-40% has been observed with this technique on the prediction time without any accuracy loss.
+
 [1]: https://cpt.readthedocs.io/en/latest/
 [2]: https://github.com/bluesheeptoken/CPT#tuning
 [3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
+[4]: https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
+[5]: http://www.ijikm.org/Volume14/IJIKMv14p027-044Da5395.pdf
