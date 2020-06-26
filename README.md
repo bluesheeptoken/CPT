@@ -23,7 +23,7 @@ You can simply use `pip install cpt`.
 You can test the model with the following code:
 
 ```python
-from cpt import Cpt
+from cpt.cpt import Cpt
 model = Cpt()
 
 model.fit([['hello', 'world'],
@@ -55,7 +55,7 @@ You can control the number of threads by setting the following environment varia
 
 You can pickle the model to save it, and load it later via pickle library.
 ```python
-from cpt import Cpt
+from cpt.cpt import Cpt
 import pickle
 
 
