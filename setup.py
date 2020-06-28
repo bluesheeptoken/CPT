@@ -1,4 +1,3 @@
-import setuptools
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
@@ -36,7 +35,7 @@ this_directory = path.abspath(path.dirname(__file__))
 with open(path.join(this_directory, "README.md")) as f:
     long_description = f.read()
 
-url = "https://cpt.readthedocs.io/en/latest/"
+url = "https://github.com/bluesheeptoken/CPT"
 
 setup(
     name="cpt",
