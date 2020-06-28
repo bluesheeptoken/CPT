@@ -8,7 +8,7 @@ You can test the model with the following code
 
 .. code-block:: python3
 
-    from cpt import Cpt
+    from cpt.cpt import Cpt
     model = Cpt()
 
     model.fit([['hello', 'world'],
@@ -28,7 +28,7 @@ This code is also compatible with sklearn tools such as ``Gridsearch``
 .. code-block:: python3
 
     from sklearn.base import BaseEstimator
-    from cpt import Cpt
+    from cpt.cpt import Cpt
     from sklearn.model_selection import GridSearchCV
 
 
