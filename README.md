@@ -101,6 +101,8 @@ A study has been made on how to reduce dataset size, and so training / testing t
 
 The study has been published in IJIKM review [here][5]. An overall performance improvement of 10-40% has been observed with this technique on the prediction time without any accuracy loss.
 
+One of the co-author of `CPT` has also published an algorithm `subseq` for sequence prediction. An implementation can be found [here](https://github.com/bluesheeptoken/subseq)
+
 [1]: https://cpt.readthedocs.io/en/latest/
 [2]: https://github.com/bluesheeptoken/CPT#tuning
 [3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
