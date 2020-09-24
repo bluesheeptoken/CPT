@@ -69,6 +69,18 @@ class CptTest(unittest.TestCase):
         self.cpt.noise_ratio = old_noise_ratio
         self.cpt.MBR = old_MBR
 
+    def test_predict_k(self):
+        old_noise_ratio = self.cpt.noise_ratio
+        old_MBR = self.cpt.MBR
+
+        self.cpt.noise_ratio = 1
+        self.cpt.MBR = 3
+        self.assertEqual(self.cpt.predict_k([['A'], ['A', 'B']], 2), [['B', 'C'], ['D', 'C']])
+        self.assertEqual(self.cpt.predict_k([['A'], ['A', 'B']], 2, False), [['B', 'C'], ['D', 'C']])
+
+        self.cpt.noise_ratio = old_noise_ratio
+        self.cpt.MBR = old_MBR
+
     def test_richcmp(self):
         cpt_wrong_split_length = Cpt(1)
         cpt_wrong_split_length.fit(self.sequences)

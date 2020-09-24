@@ -16,3 +16,4 @@ cdef extern from "cpp_sources/Scorer.hpp" nogil:
         void update(size_t)
         bool predictable()
         int get_best_prediction()
+        vector[int] get_best_k_predictions(size_t)
