@@ -17,6 +17,8 @@ public:
 
     int get_best_prediction() const;
 
+    std::vector<int> get_best_k_predictions(std::size_t k) const;
+
 private:
     std::vector<int> m_data;
 };

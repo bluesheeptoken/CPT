@@ -141,29 +141,92 @@ cdef class Cpt:
 
         least_frequent_items = self.c_compute_noisy_items(self.noise_ratio)
 
-        if multithreading:
-            int_predictions = vector[int](len_sequences)
-            sequences_indexes = vector[vector[int]]()
-            # Preparation of data
-            for i in range(len_sequences):
-                sequence = sequences[i]
-                sequences_indexes.push_back(vector[int]())
-                for j in range(len(sequence)):
-                    sequences_indexes.back().push_back(self.alphabet.get_index(sequence[j]))
+        int_predictions = vector[int](len_sequences)
 
-            # Predictions
+        sequences_indexes = self._prepare_data(sequences)
+
+        if multithreading:
             for i in prange(len_sequences, nogil=True, schedule='dynamic'):
                 int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items)
-
         else:
             for i in range(len_sequences):
-                sequence = sequences[i]
-                sequence_indexes = vector[int]()
-                for j in range(len(sequence)):
-                    sequence_indexes.push_back(self.alphabet.get_index(sequence[j]))
-                int_predictions.push_back(self.predict_seq(sequence_indexes, least_frequent_items))
+                int_predictions[i] = self.predict_seq(sequences_indexes[i], least_frequent_items)
 
         return [self.alphabet.get_symbol(x) for x in int_predictions]
+
+
+    cpdef predict_k(self, list sequences, int k, bint multithreading=True):
+        '''Predict the next elements of each sequence of the parameter ``sequences``, sorted by descending confidence.
+
+        Parameters
+        ----------
+        sequences : list
+            A list of sequences of any hashable type.
+        k: int
+            Number of predictions to make per sequence, ordered by descending confidence.
+        multithreading : bool, default True
+            True if the multithreading should be used for predictions.
+
+
+        Raises
+        ------
+        ValueError
+            noise_ratio should be between 0 and 1.
+            MBR should be non-negative.
+
+        Returns
+        -------
+        predictions : List[List[Any]] of dimension ``len(sequences)`` * k
+            The predicted elements.
+
+        Examples
+        --------
+
+        >>> model = Cpt()
+
+        >>> model.fit([['hello', 'world'],
+             ['hello', 'this', 'is', 'me'],
+             ['hello', 'me']
+            ])
+
+        >>> model.predict_k([['hello']], 2)
+        [['me', 'this']]
+        '''
+        cdef:
+            vector[int] least_frequent_items, sequence_indexes
+            vector[vector[int]] sequences_indexes
+            Py_ssize_t i, j
+            int len_sequences = len(sequences)
+            vector[vector[int]] int_predictions
+
+        _check_noise_ratio(self.noise_ratio)
+
+        _check_MBR(self.MBR)
+
+        least_frequent_items = self.c_compute_noisy_items(self.noise_ratio)
+
+        int_predictions = vector[vector[int]](len_sequences)
+
+        sequences_indexes = self._prepare_data(sequences)
+
+        # Predictions
+        if multithreading:
+            for i in prange(len_sequences, nogil=True, schedule='dynamic'):
+                int_predictions[i] = self.predict_seq_k(sequences_indexes[i], least_frequent_items, k)
+        else:
+            for i in range(len_sequences):
+                int_predictions[i] = self.predict_seq_k(sequences_indexes[i], least_frequent_items, k)
+
+        return [[self.alphabet.get_symbol(y) for y in x] for x in int_predictions]
+
+    cpdef vector[vector[int]] _prepare_data(self, list sequences):
+        cdef vector[vector[int]] sequences_indexes
+        for i in range(len(sequences)):
+            sequence = sequences[i]
+            sequences_indexes.push_back(vector[int]())
+            for j in range(len(sequence)):
+                sequences_indexes.back().push_back(self.alphabet.get_index(sequence[j]))
+        return sequences_indexes
 
     def compute_noisy_items(self, noise_ratio):
         '''Compute noisy elements.
@@ -244,6 +307,12 @@ cdef class Cpt:
         return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
 
     cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items) nogil:
+        return self.make_scorer(target_sequence, least_frequent_items).get_best_prediction()
+
+    cdef vector[int] predict_seq_k(self, vector[int] target_sequence, vector[int] least_frequent_items, int k=1) nogil:
+        return self.make_scorer(target_sequence, least_frequent_items).get_best_k_predictions(k)
+
+    cdef Scorer make_scorer(self, vector[int] target_sequence, vector[int] least_frequent_items) nogil:
         cdef:
             Scorer scorer = Scorer(self.alphabet.length)
             queue[vector[int]] suffixes = queue[vector[int]]()
@@ -267,8 +336,7 @@ cdef class Cpt:
                     if not suffix_without_noise.empty():
                         suffixes.push(suffix_without_noise)
                         update_count += self.update_score(suffix_without_noise, scorer)
-
-        return scorer.get_best_prediction()
+        return scorer
 
     cdef vector[int] c_compute_noisy_items(self, float noise_ratio) nogil:
         cdef:
