@@ -1,6 +1,8 @@
 # distutils: language = c++
 
+from libcpp cimport bool
 from libcpp.vector cimport vector
+from libcpp.set cimport set
 from libcpp.queue cimport queue
 from libcpp.iterator cimport back_inserter
 from cython.parallel import prange
@@ -295,16 +297,7 @@ cdef class Cpt:
         if index < 0:
             raise ValueError('index should be non-negative, actual value : {}'.format(index))
 
-        sequence = []
-        end_node = self.lookup_table[index]
-        next_transition = self.tree.getTransition(end_node)
-
-        while next_transition != NOT_AN_INDEX:
-            sequence.append(next_transition)
-            end_node = self.tree.getParent(end_node)
-            next_transition = self.tree.getTransition(end_node)
-
-        return [self.alphabet.get_symbol(index) for index in reversed(sequence)]
+        return [self.alphabet.get_symbol(i) for i in reversed(<list>self.c_retrieve_reversed_sequence(index))]
 
     cdef int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items) nogil:
         return self.make_scorer(target_sequence, least_frequent_items).get_best_prediction()
@@ -338,6 +331,22 @@ cdef class Cpt:
                         update_count += self.update_score(suffix_without_noise, scorer)
         return scorer
 
+    cdef vector[int] c_retrieve_reversed_sequence(self, int index) nogil:
+        cdef:
+            vector[int] reversed_sequence = vector[int]()
+            int next_transition = 0
+            Node end_node
+
+        end_node = self.lookup_table[index]
+        next_transition = self.tree.getTransition(end_node)
+
+        while next_transition != NOT_AN_INDEX:
+            reversed_sequence.push_back(next_transition)
+            end_node = self.tree.getParent(end_node)
+            next_transition = self.tree.getTransition(end_node)
+
+        return reversed_sequence
+
     cdef vector[int] c_compute_noisy_items(self, float noise_ratio) nogil:
         cdef:
             int i
@@ -364,26 +373,28 @@ cdef class Cpt:
 
     cdef int update_score(self, vector[int] suffix, Scorer& scorer) nogil:
         cdef:
-            Bitset similar_sequences, bitseq = Bitset(self.alphabet.length)
+            Bitset similar_sequences = Bitset(self.alphabet.length)
             size_t i, similar_sequence_id
-            Node end_node
-            int next_transition, update_count = 0
+            int update_count = 0
+            vector[int] reversed_sequence
+            # This is used to update table after we've seen at least once each element of the suffix
+            set[int] to_avoid = set[int]()
 
-        for i in range(suffix.size()):
-            bitseq.add(suffix[i])
         similar_sequences = self.c_find_similar_sequences(suffix)
 
         for similar_sequence_id in range(similar_sequences.size()):
             if similar_sequences[similar_sequence_id]:
-                end_node = self.lookup_table[similar_sequence_id]
-                next_transition = self.tree.getTransition(end_node)
-                update_count += not bitseq[next_transition]
-
-                while not bitseq[next_transition]:
-                    scorer.update(next_transition)
-                    end_node = self.tree.getParent(end_node)
-                    next_transition = self.tree.getTransition(end_node)
-
+                update_count += 1
+                to_avoid.clear()
+                for letter in suffix:
+                    to_avoid.insert(letter)
+                reversed_sequence = self.c_retrieve_reversed_sequence(similar_sequence_id)
+                for i in range(reversed_sequence.size() - 1, -1, -1):
+                    # start updating count table after we've seen at least once every element of suffix
+                    if to_avoid.empty():
+                        scorer.update(reversed_sequence[i])
+                    else:
+                        to_avoid.erase(reversed_sequence[i])
         return update_count
 
     cdef list retrieve_similar_sequences(self, vector[int] sequence_index):

@@ -14,6 +14,7 @@ cdef class Cpt:
         int predict_seq(self, vector[int] target_sequence, vector[int] least_frequent_items) nogil
         vector[int] predict_seq_k(self, vector[int] target_sequence, vector[int] least_frequent_items, int k=*) nogil
         Scorer make_scorer(self, vector[int], vector[int]) nogil
+        vector[int] c_retrieve_reversed_sequence(self, int index) nogil
         vector[int] c_compute_noisy_items(self, float noise_ratio) nogil
         Bitset c_find_similar_sequences(self, vector[int] sequence) nogil
         int update_score(self, vector[int] suffix, Scorer& score) nogil
