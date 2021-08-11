@@ -1,0 +1,89 @@
+name: Test and publish wheels
+on: [push]
+jobs:
+  build_wheels:
+    name: Build wheel for cp${{ matrix.python }}-${{ matrix.os }}
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # Ensure that a wheel builder finishes even if another fails
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest]
+        python: [36, 37, 38, 39]
+        bitness: [32, 64]
+        include:
+          - os: ubuntu-latest
+            bitness: 64
+            platform_id: manylinux_x86_64
+          - os: ubuntu-latest
+            bitness: 32
+            platform_id: manylinux_i686
+
+    steps:
+      - name: Checkout CPT
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Build and test wheels
+        env:
+          CIBW_BEFORE_BUILD: "python -m pip install cython>=0.20"
+          CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
+          CIBW_BEFORE_TEST: "CC=gcc CXX=g++"
+          CIBW_TEST_REQUIRES: pytest
+          CIBW_TEST_COMMAND: "cp -r {project}/tests .; pytest"
+          CIBW_BUILD_VERBOSITY: 1
+
+        run: bash CI/github/build_wheels.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: wheelhouse/*.whl
+
+  # Build the source distribution under Linux
+  build_sdist:
+    name: Source distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout scikit-learn
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+
+      - name: Build source distribution
+        run: bash CI/github/build_source.sh
+
+      - name: Test source distribution
+        run: bash CI/github/test_source.sh
+
+      - name: Store artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: dist
+          path: dist/*.tar.gz
+
+  publish:
+    name: Publish on Pypi if commit is tagged
+    needs: [build_sdist, build_wheels]
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
+    - uses: actions/download-artifact@v2
+    - name: Show artifacts
+      run: ls -R
+      working-directory: dist
+    - name: Publish package to Pypi
+      if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags')
+      uses: pypa/gh-action-pypi-publish@v1.4.2
+      with:
+        user: __token__
+        password: ${{ secrets.TOKEN_PYPI }}
