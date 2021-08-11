@@ -18,6 +18,6 @@ With `FIFA.dat` in the data folder, you can run the benchmark from the root fold
 
 ## Results
 
-Using multithreading, `CPT` made 4869 predictions per second, which is an average of 0.2 ms per prediction.
+Using multithreading, `CPT` made 2435 predictions per second, which is an average of 0.4 ms per prediction.
 
-However, most use cases do not take advantage of multithreading. Without multithreading, `CPT` made 1662 predictions per second, which is an average of 0.6 ms per prediction.
+However, most use cases do not take advantage of multithreading. Without multithreading, `CPT` made 831 predictions per second, which is an average of 1.2 ms per prediction.
