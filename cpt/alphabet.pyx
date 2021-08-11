@@ -1,3 +1,5 @@
+# distutils: language = c++
+
 from cpython.object cimport Py_EQ, Py_NE
 
 
@@ -48,4 +50,3 @@ cdef class Alphabet:
             return not self.__is_equal__(other)
         else:
             assert False
-
