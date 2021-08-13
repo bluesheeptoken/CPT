@@ -18,6 +18,8 @@ This implementation is based on the following research papers:
 
 You can simply use `pip install cpt`.
 
+Due to an ongoing migration. Macos wheels have been disabled for the moment. You can try to install from source with the help of [this ticket](https://github.com/bluesheeptoken/CPT/issues/68). 
+
 ## Simple example
 
 You can test the model with the following code:
