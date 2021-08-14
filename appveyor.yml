@@ -16,12 +16,6 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C CI\\run_with_env.cmd"
 
   matrix:
-    - PYTHON_VERSION: "3.5"
-      PYTHON_ARCH: "32"
-      PYTHON_HOME: "C:\\Python35"
-    - PYTHON_VERSION: "3.5"
-      PYTHON_ARCH: "64"
-      PYTHON_HOME: "C:\\Python35-x64"
     - PYTHON_VERSION: "3.6"
       PYTHON_ARCH: "32"
       PYTHON_HOME: "C:\\Python36"
@@ -40,6 +34,15 @@ environment:
     - PYTHON_VERSION: "3.8"
       PYTHON_ARCH: "64"
       PYTHON_HOME: "C:\\Python38-x64"
+    - PYTHON_VERSION: "3.9"
+      PYTHON_ARCH: "32"
+      PYTHON_HOME: "C:\\Python39"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - PYTHON_VERSION: "3.9"
+      PYTHON_ARCH: "64"
+      PYTHON_HOME: "C:\\Python39-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+
 install:
   # Ensure we use the right python version
   - "SET PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%"
