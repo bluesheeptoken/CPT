@@ -9,7 +9,7 @@ jobs:
       # Ensure that a wheel builder finishes even if another fails
       fail-fast: false
       matrix:
-        os: [ubuntu-latest]
+        os: [ubuntu-latest, macos-latest]
         python: [36, 37, 38, 39]
         bitness: [32, 64]
         include:
@@ -19,6 +19,12 @@ jobs:
           - os: ubuntu-latest
             bitness: 32
             platform_id: manylinux_i686
+          - os: macos-latest
+            bitness: 64
+            platform_id: macosx_x86_64
+        exclude:
+          - os: macos-latest
+            bitness: 32
 
     steps:
       - name: Checkout CPT
@@ -33,7 +39,7 @@ jobs:
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_BEFORE_TEST: "CC=gcc CXX=g++"
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: "cp -r {project}/tests .; pytest"
+          CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
 
         run: bash CI/github/build_wheels.sh
