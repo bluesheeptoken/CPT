@@ -38,15 +38,15 @@ class CptTest(unittest.TestCase):
 
         self.cpt.noise_ratio = 1
         self.cpt.MBR = 3
-        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']]), ['B', 'D'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']]), ['B', 'C'])
         # Test if predictions are the same with multi threading turned off
-        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], False), ['B', 'D'])
+        self.assertEqual(self.cpt.predict([['A'], ['A', 'B']], False), ['B', 'C'])
 
         self.cpt.MBR = 2
         self.assertEqual(self.cpt.predict([['A', 'B']]), ['C'])
 
         self.cpt.noise_ratio = 0.2
-        self.cpt.MBR = 1
+        self.cpt.MBR = 2
         self.assertEqual(self.cpt.predict([['B', 'D', 'E']]), ['E'])
         # Default value is the first of the alphabet
         self.cpt.noise_ratio = 0.1
