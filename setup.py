@@ -10,7 +10,7 @@ from os import path
 if platform.system() == "Windows":
     compile_args = ["/openmp"]
 elif platform.system() == "Darwin":
-    compile_args = ["-fopenmp"]
+    compile_args = ["-Xpreprocessor", "-fopenmp", "-std=c++11"]
 else:
     compile_args = ["-fopenmp", "-std=c++11"]
 
