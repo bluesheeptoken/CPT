@@ -42,6 +42,14 @@ environment:
       PYTHON_ARCH: "64"
       PYTHON_HOME: "C:\\Python39-x64"
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - PYTHON_VERSION: "3.10"
+      PYTHON_ARCH: "32"
+      PYTHON_HOME: "C:\\Python310"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
+    - PYTHON_VERSION: "3.10"
+      PYTHON_ARCH: "64"
+      PYTHON_HOME: "C:\\Python310-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
 
 install:
   # Ensure we use the right python version
