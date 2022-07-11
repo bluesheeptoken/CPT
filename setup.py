@@ -53,5 +53,5 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=url,
-    python_requires=">=3.7, <4",
+    python_requires=">=3.8, <4",
 )

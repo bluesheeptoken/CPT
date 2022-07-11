@@ -16,12 +16,6 @@ environment:
     CMD_IN_ENV: "cmd /E:ON /V:ON /C CI\\run_with_env.cmd"
 
   matrix:
-    - PYTHON_VERSION: "3.7"
-      PYTHON_ARCH: "32"
-      PYTHON_HOME: "C:\\Python37"
-    - PYTHON_VERSION: "3.7"
-      PYTHON_ARCH: "64"
-      PYTHON_HOME: "C:\\Python37-x64"
     - PYTHON_VERSION: "3.8"
       PYTHON_ARCH: "32"
       PYTHON_HOME: "C:\\Python38"
