@@ -108,3 +108,8 @@ One of the co-author of `CPT` has also published an algorithm `subseq` for seque
 [3]: https://cpt.readthedocs.io/en/latest/example.html#sklearn-example
 [4]: https://www.philippe-fournier-viger.com/spmf/index.php?link=datasets.php
 [5]: http://www.ijikm.org/Volume14/IJIKMv14p027-044Da5395.pdf
+
+
+## Support
+
+If you enjoy the project and wish to support me, a [buymeacoffee link](buymeacoffee.com/?via=louisfrule) is available.
