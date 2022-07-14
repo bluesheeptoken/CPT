@@ -112,4 +112,4 @@ One of the co-author of `CPT` has also published an algorithm `subseq` for seque
 
 ## Support
 
-If you enjoy the project and wish to support me, a [buymeacoffee link](buymeacoffee.com/?via=louisfrule) is available.
+If you enjoy the project and wish to support me, a [buymeacoffee link](https://www.buymeacoffee.com/louisfrule) is available.
