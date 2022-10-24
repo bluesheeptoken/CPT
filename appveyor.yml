@@ -40,7 +40,14 @@ environment:
       PYTHON_ARCH: "64"
       PYTHON_HOME: "C:\\Python310-x64"
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2019
-
+    - PYTHON_VERSION: "3.11"
+      PYTHON_ARCH: "32"
+      PYTHON_HOME: "C:\\Python311"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - PYTHON_VERSION: "3.11"
+      PYTHON_ARCH: "64"
+      PYTHON_HOME: "C:\\Python311-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
 install:
   # Ensure we use the right python version
   - "SET PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%"
