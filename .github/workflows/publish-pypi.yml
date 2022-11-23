@@ -45,7 +45,7 @@ jobs:
             python: 311
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
-          
+
           # MacOS x86_64
           - os: macos-latest
             python: 38
@@ -59,21 +59,6 @@ jobs:
           - os: macos-latest
             python: 311
             platform_id: macosx_x86_64
-
-          # MacOS arm64
-          - os: macos-latest
-            python: 38
-            platform_id: macosx_arm64
-          - os: macos-latest
-            python: 39
-            platform_id: macosx_arm64
-          - os: macos-latest
-            python: 310
-            platform_id: macosx_arm64
-          - os: macos-latest
-            python: 311
-            platform_id: macosx_arm64
-
 
     steps:
       - name: Checkout CPT
@@ -95,7 +80,6 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
-          CIBW_TEST_SKIP: "*-macosx_arm64 *-macosx_universal2:arm64" # ARM64 architectures cannot be tested as of CIBW 2.11.1
 
         run: bash CI/github/build_wheels.sh
 

@@ -1,0 +1,72 @@
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
+#   Greatly inspire from numpy builds
+language: python
+group: travis_latest
+os: linux
+dist: focal
+
+env:
+  global:
+    - CIBW_BEFORE_TEST="CC=gcc CXX=g++ python -m pip install pytest cython>=0.20"
+    - CIBW_TEST="pytest cpt/tests"
+    - CIBW_BEFORE_BUILD="python -m pip install cython>=0.20"
+
+# Disable clone depth
+git:
+  depth: false
+
+cache:
+  directories:
+    - $HOME/.cache/pip
+
+jobs:
+  include:
+    - python: "3.8"
+      os: linux
+      arch: arm64
+      virt: vm
+      env:
+        - CIBW_BUILD: cp38-manylinux_aarch64
+      install: python3 -m pip install cibuildwheel==2.9.0
+      script: |
+        cibuildwheel --output-dir wheelhouse
+        ./CI/github/build_wheels.sh
+        source CI/upload_wheels.sh
+        upload_wheels
+    - python: "3.8"
+      os: linux
+      arch: arm64
+      virt: vm
+      env:
+        - CIBW_BUILD: cp39-manylinux_aarch64
+      install: python3 -m pip install cibuildwheel==2.11.2
+      script: |
+        cibuildwheel --output-dir wheelhouse
+        ./CI/github/build_wheels.sh
+        source CI/upload_wheels.sh
+        upload_wheels
+    - python: "3.8"
+      os: linux
+      arch: arm64
+      virt: vm
+      env:
+        - CIBW_BUILD: cp310-manylinux_aarch64
+      install: python3 -m pip install cibuildwheel==2.11.2
+      script: |
+        cibuildwheel --output-dir wheelhouse
+        ./CI/github/build_wheels.sh
+        source CI/upload_wheels.sh
+        upload_wheels
+    - python: "3.8"
+      os: linux
+      arch: arm64
+      virt: vm
+      env:
+        - CIBW_BUILD: cp311-manylinux_aarch64
+      install: python3 -m pip install cibuildwheel==2.11.2
+      script: |
+        cibuildwheel --output-dir wheelhouse
+        ./CI/github/build_wheels.sh
+        source CI/upload_wheels.sh
+        upload_wheels
