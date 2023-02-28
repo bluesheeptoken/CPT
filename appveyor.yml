@@ -68,7 +68,7 @@ deploy_script:
   # TWINE_USERNAME / TWINE_PASSWORD / TWINE_REPOSITORY_URL
   # must be set in AppVeyor settings.
   -  if "%APPVEYOR_REPO_TAG%" == "true" (
-      pip install --upgrade twine "wheel==0.37.1" &&
+      pip install --upgrade twine "wheel==0.38.4" &&
       %CMD_IN_ENV% python setup.py bdist_wheel &&
       twine upload --skip-existing dist\\*.whl --repository-url %TWINE_REPOSITORY_URL% -u %TWINE_USERNAME% -p %TWINE_PASSWORD%
     )
