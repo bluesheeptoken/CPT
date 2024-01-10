@@ -70,3 +70,16 @@ jobs:
         ./CI/github/build_wheels.sh
         source CI/upload_wheels.sh
         upload_wheels
+
+    - python: "3.8"
+      os: linux
+      arch: arm64
+      virt: vm
+      env:
+        - CIBW_BUILD: cp312-manylinux_aarch64
+      install: python3 -m pip install cibuildwheel==2.16.2
+      script: |
+        cibuildwheel --output-dir wheelhouse
+        ./CI/github/build_wheels.sh
+        source CI/upload_wheels.sh
+        upload_wheels

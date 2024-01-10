@@ -67,6 +67,9 @@ jobs:
           - os: macos-latest
             python: 311
             platform_id: macosx_x86_64
+          - os: macos-latest
+            python: 312
+            platform_id: macosx_x86_64
 
     steps:
       - name: Checkout CPT
