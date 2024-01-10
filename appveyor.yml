@@ -48,13 +48,22 @@ environment:
       PYTHON_ARCH: "64"
       PYTHON_HOME: "C:\\Python311-x64"
       APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - PYTHON_VERSION: "3.12"
+      PYTHON_ARCH: "32"
+      PYTHON_HOME: "C:\\Python312"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+    - PYTHON_VERSION: "3.12"
+      PYTHON_ARCH: "64"
+      PYTHON_HOME: "C:\\Python312-x64"
+      APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2022
+
 install:
   # Ensure we use the right python version
   - "SET PATH=%PYTHON_HOME%;%PYTHON_HOME%\\Scripts;%PATH%"
   - "SET TOXPYTHON=%PYTHON_HOME%\\python.exe"
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
-  - "python -m pip install --upgrade pip cython pytest tox ppu"
+  - "python -m pip install --upgrade pip cython pytest tox ppu setuptools"
   - "pip --version"
 
 build_script:
@@ -68,7 +77,7 @@ deploy_script:
   # TWINE_USERNAME / TWINE_PASSWORD / TWINE_REPOSITORY_URL
   # must be set in AppVeyor settings.
   -  if "%APPVEYOR_REPO_TAG%" == "true" (
-      pip install --upgrade twine "wheel==0.38.4" &&
+      pip install --upgrade twine "wheel==0.42.0" &&
       %CMD_IN_ENV% python setup.py bdist_wheel &&
       twine upload --skip-existing dist\\*.whl --repository-url %TWINE_REPOSITORY_URL% -u %TWINE_USERNAME% -p %TWINE_PASSWORD%
     )

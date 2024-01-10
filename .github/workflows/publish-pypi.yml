@@ -27,6 +27,10 @@ jobs:
             python: 311
             platform_id: manylinux_i686
             manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 312
+            platform_id: manylinux_i686
+            manylinux_image: manylinux2014 
 
           # Linux 64 bit manylinux2014
           - os: ubuntu-latest
@@ -45,6 +49,10 @@ jobs:
             python: 311
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 312
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
 
           # MacOS x86_64
           - os: macos-latest
@@ -58,6 +66,9 @@ jobs:
             platform_id: macosx_x86_64
           - os: macos-latest
             python: 311
+            platform_id: macosx_x86_64
+          - os: macos-latest
+            python: 312
             platform_id: macosx_x86_64
 
     steps:
