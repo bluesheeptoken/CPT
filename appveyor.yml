@@ -63,7 +63,7 @@ install:
   - "SET TOXPYTHON=%PYTHON_HOME%\\python.exe"
   - "python --version"
   - "python -c \"import struct; print(struct.calcsize('P') * 8)\""
-  - "python -m pip install --upgrade pip cython pytest tox ppu"
+  - "python -m pip install --upgrade pip cython pytest tox ppu setuptools"
   - "pip --version"
 
 build_script:
