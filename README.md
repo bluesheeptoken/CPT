@@ -1,6 +1,7 @@
 # CPT
 
-[![Downloads](https://img.shields.io/pypi/dm/CPT)](https://pypi.org/project/cpt/)
+[![PyPI version](https://badge.fury.io/py/cpt.svg)](https://badge.fury.io/py/cpt)
+[![Downloads](https://img.shields.io/pypi/dm/CPT)](https://pypistats.org/packages/cpt)
 [![License](https://img.shields.io/pypi/l/cpt.svg)](https://github.com/bluesheeptoken/CPT/blob/master/LICENSE)
 
 ## What is it ?
