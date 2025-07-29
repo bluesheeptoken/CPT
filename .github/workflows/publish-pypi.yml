@@ -13,25 +13,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          # Linux 32 bit manylinux_2_28
-          # TODO(lfr): remove this, noone will use Python on 32 bits anymore.
-          - os: ubuntu-latest
-            python: 310
-            platform_id: manylinux_i686
-            manylinux_image: manylinux_2_28
-          - os: ubuntu-latest
-            python: 311
-            platform_id: manylinux_i686
-            manylinux_image: manylinux_2_28
-          - os: ubuntu-latest
-            python: 312
-            platform_id: manylinux_i686
-            manylinux_image: manylinux_2_28 
-          - os: ubuntu-latest
-            python: 313
-            platform_id: manylinux_i686
-            manylinux_image: manylinux_2_28 
-
           # Linux 64 bit manylinux_2_28
           - os: ubuntu-latest
             python: 310
@@ -51,19 +32,19 @@ jobs:
             manylinux_image: manylinux_2_28
 
           # Linux ARM 64 bit manylinux_2_28
-          - os:  	ubuntu-24.04-arm
+          - os: ubuntu-24.04-arm
             python: 310
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
-          - os:  	ubuntu-24.04-arm
+          - os: ubuntu-24.04-arm
             python: 311
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
-          - os:  	ubuntu-24.04-arm
+          - os: ubuntu-24.04-arm
             python: 312
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
-          - os:  	ubuntu-24.04-arm
+          - os: ubuntu-24.04-arm
             python: 313
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
@@ -93,7 +74,7 @@ jobs:
 
       - name: Build and test wheels
         env:
-          CIBW_BEFORE_BUILD: "python -m pip install cython>=0.20 setuptools"
+          CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip setuptools && python -m pip install 'cython>=0.20'"
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_ARCHS: all
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
