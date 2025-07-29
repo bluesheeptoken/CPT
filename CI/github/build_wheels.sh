@@ -17,4 +17,5 @@ if [[ "$RUNNER_OS" == "macOS" ]]; then
 fi
 
 python -m pip install cibuildwheel==3.1.1
+python -m cibuildwheel --print-build-identifiers
 python -m cibuildwheel --output-dir wheelhouse
