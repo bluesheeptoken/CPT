@@ -16,5 +16,5 @@ if [[ "$RUNNER_OS" == "macOS" ]]; then
     export LDFLAGS="$LDFLAGS -Wl,-rpath,$brew_prefix/opt/libomp/lib -L$brew_prefix/opt/libomp/lib -lomp"
 fi
 
-python -m pip install cibuildwheel==3.1.1
+python -m pip install cibuildwheel==2.23.3
 python -m cibuildwheel --output-dir wheelhouse
