@@ -1,4 +1,3 @@
-import setuptools
 from distutils.core import setup
 from distutils.extension import Extension
 from Cython.Build import cythonize
@@ -21,9 +20,9 @@ module = Extension(
     extra_link_args=compile_args,
 )
 
-version = "1.3.4"
+version = "1.3.5"
 
-author = "Bluesheeptoken"
+author = "Louis Fruleux"
 author_email = "louis.fruleux1@gmail.com"
 
 description = (
@@ -53,5 +52,5 @@ setup(
     long_description=long_description,
     long_description_content_type="text/markdown",
     url=url,
-    python_requires=">=3.8, <4",
+    python_requires=">=3.10, <4",
 )

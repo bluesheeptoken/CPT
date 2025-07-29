@@ -7,82 +7,73 @@ jobs:
 
     strategy:
       # Ensure that a wheel builder finishes even if another fails
+      # for platform_id / manylinux_image, see: https://cibuildwheel.pypa.io/en/stable/options/#build-skip
+      # for os, see: https://docs.github.com/fr/actions/reference/workflows-and-actions/workflow-syntax#choosing-github-hosted-runners
+
       fail-fast: false
       matrix:
         include:
-          # Linux 32 bit manylinux2014
-          - os: ubuntu-latest
-            python: 38
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 39
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
+          # Linux 64 bit manylinux_2_28
           - os: ubuntu-latest
             python: 310
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
           - os: ubuntu-latest
             python: 311
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
           - os: ubuntu-latest
             python: 312
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014 
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 313
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
 
-          # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            python: 38
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 39
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
+          # Linux ARM 64 bit manylinux_2_28
+          - os: ubuntu-24.04-arm
             python: 310
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
             python: 311
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
             python: 312
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
+            python: 313
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
 
           # MacOS x86_64
-          - os: macos-latest
-            python: 38
-            platform_id: macosx_x86_64
-          - os: macos-latest
-            python: 39
-            platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 310
             platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 311
             platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 312
             platform_id: macosx_x86_64
-
+          - os: macos-13
+            python: 313
+            platform_id: macosx_x86_64
     steps:
       - name: Checkout CPT
         uses: actions/checkout@v3
 
       - name: Setup Python
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.13'
 
       - name: Build and test wheels
         env:
-          CIBW_BEFORE_BUILD: "python -m pip install cython>=0.20"
+          CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip"
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_ARCHS: all
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
@@ -91,49 +82,32 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
 
         run: bash CI/github/build_wheels.sh
 
       - name: Store artifacts
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.python }}-${{ matrix.platform_id }} # random unique name per workflow
           path: wheelhouse/*.whl
-
-  # Build the source distribution under Linux
-  build_sdist:
-    name: Source distribution
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout scikit-learn
-        uses: actions/checkout@v2
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-
-      - name: Build source distribution
-        run: bash CI/github/build_source.sh
-
-      - name: Test source distribution
-        run: bash CI/github/test_source.sh
-
-      - name: Store artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dist
-          path: dist/*.tar.gz
 
   publish:
     name: Publish on Pypi if commit is tagged
-    needs: [build_sdist, build_wheels]
+    needs: [build_wheels]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v5
       with:
-        python-version: '3.8'
-    - uses: actions/download-artifact@v2
+        python-version: '3.13'
+    - uses: actions/download-artifact@v4
+      with:
+        path: artifacts
+    - name: Merge artifacts into dist/
+      run: |
+        mkdir -p dist
+        find artifacts -name "*.whl" -exec cp {} dist/ \;
     - name: Show artifacts
       run: ls -R
       working-directory: dist
