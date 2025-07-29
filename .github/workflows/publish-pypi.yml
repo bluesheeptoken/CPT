@@ -108,7 +108,7 @@ jobs:
       - name: Store artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: dist
+          name: dist-${{ matrix.python }}-${{ matrix.platform_id }} # random unique name per workflow
           path: wheelhouse/*.whl
 
   # Build the source distribution under Linux
@@ -144,7 +144,7 @@ jobs:
     - uses: actions/setup-python@v2
       with:
         python-version: '3.13'
-    - uses: actions/download-artifact@v2
+    - uses: actions/download-artifact@v4
     - name: Show artifacts
       run: ls -R
       working-directory: dist
