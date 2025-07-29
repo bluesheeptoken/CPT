@@ -92,37 +92,13 @@ jobs:
           name: dist-${{ matrix.python }}-${{ matrix.platform_id }} # random unique name per workflow
           path: wheelhouse/*.whl
 
-  # Build the source distribution under Linux
-  build_sdist:
-    name: Source distribution
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout scikit-learn
-        uses: actions/checkout@v2
-
-      - name: Setup Python
-        uses: actions/setup-python@v4
-
-      - name: Build source distribution
-        run: bash CI/github/build_source.sh
-
-      - name: Test source distribution
-        run: bash CI/github/test_source.sh
-
-      - name: Store artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: dist
-          path: dist/*.tar.gz
-
   publish:
     name: Publish on Pypi if commit is tagged
-    needs: [build_sdist, build_wheels]
+    needs: [build_wheels]
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-python@v2
+    - uses: actions/checkout@v3
+    - uses: actions/setup-python@v5
       with:
         python-version: '3.13'
     - uses: actions/download-artifact@v4
