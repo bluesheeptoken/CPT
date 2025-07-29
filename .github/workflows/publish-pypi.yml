@@ -12,14 +12,6 @@ jobs:
         include:
           # Linux 32 bit manylinux2014
           - os: ubuntu-latest
-            python: 38
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 39
-            platform_id: manylinux_i686
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
             python: 310
             platform_id: manylinux_i686
             manylinux_image: manylinux2014
@@ -31,16 +23,12 @@ jobs:
             python: 312
             platform_id: manylinux_i686
             manylinux_image: manylinux2014 
+          - os: ubuntu-latest
+            python: 313
+            platform_id: manylinux_i686
+            manylinux_image: manylinux2014 
 
           # Linux 64 bit manylinux2014
-          - os: ubuntu-latest
-            python: 38
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
-          - os: ubuntu-latest
-            python: 39
-            platform_id: manylinux_x86_64
-            manylinux_image: manylinux2014
           - os: ubuntu-latest
             python: 310
             platform_id: manylinux_x86_64
@@ -51,17 +39,15 @@ jobs:
             manylinux_image: manylinux2014
           - os: ubuntu-latest
             python: 312
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux2014
+          - os: ubuntu-latest
+            python: 313
             platform_id: manylinux_x86_64
             manylinux_image: manylinux2014
 
           # MacOS x86_64
           - os: macos-latest
-            python: 38
-            platform_id: macosx_x86_64
-          - os: macos-latest
-            python: 39
-            platform_id: macosx_x86_64
-          - os: macos-latest
             python: 310
             platform_id: macosx_x86_64
           - os: macos-latest
@@ -70,7 +56,9 @@ jobs:
           - os: macos-latest
             python: 312
             platform_id: macosx_x86_64
-
+          - os: macos-latest
+            python: 313
+            platform_id: macosx_x86_64
     steps:
       - name: Checkout CPT
         uses: actions/checkout@v3
@@ -132,7 +120,7 @@ jobs:
     - uses: actions/checkout@v2
     - uses: actions/setup-python@v2
       with:
-        python-version: '3.8'
+        python-version: '3.13'
     - uses: actions/download-artifact@v2
     - name: Show artifacts
       run: ls -R
