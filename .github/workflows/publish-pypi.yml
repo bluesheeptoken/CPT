@@ -70,6 +70,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: '3.11'
+            
+      - name: Check CIBW build-identifiers
+        run: |
+          echo "Python version:"
+          python --version
+          echo "Installed Python interpreters:"
+          ls /opt/python || echo "Not running in manylinux Docker image"
+          
+          echo "Available cibuildwheel build identifiers:"
+          cibuildwheel --print-build-identifiers
 
       - name: Build and test wheels
         env:
