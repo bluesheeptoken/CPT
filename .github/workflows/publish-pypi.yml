@@ -82,6 +82,7 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
+          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
 
         run: bash CI/github/build_wheels.sh
 
