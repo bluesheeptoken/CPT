@@ -74,7 +74,7 @@ jobs:
 
       - name: Build and test wheels
         env:
-          CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip setuptools && python -m pip install 'cython>=0.20'"
+          CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip"
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
           CIBW_ARCHS: all
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
