@@ -49,18 +49,17 @@ jobs:
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
 
-
           # MacOS x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 310
             platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 311
             platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 312
             platform_id: macosx_x86_64
-          - os: macos-latest
+          - os: macos-13
             python: 313
             platform_id: macosx_x86_64
     steps:
