@@ -30,6 +30,18 @@ jobs:
             python: 313
             platform_id: manylinux_x86_64
             manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 313t
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 314t
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 314t
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
 
           # Linux ARM 64 bit manylinux_2_28
           - os: ubuntu-24.04-arm
@@ -46,6 +58,10 @@ jobs:
             manylinux_image: manylinux_2_28
           - os: ubuntu-24.04-arm
             python: 313
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
+            python: 313t
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
           - os: ubuntu-24.04-arm
@@ -70,6 +86,16 @@ jobs:
           - os: macos-13
             python: 313
             platform_id: macosx_x86_64
+          - os: macos-13
+            python: 313t
+            platform_id: macosx_x86_64
+          - os: macos-13
+            python: 314
+            platform_id: macosx_x86_64
+          - os: macos-13
+            python: 314t
+            platform_id: macosx_x86_64
+
     steps:
       - name: Checkout CPT
         uses: actions/checkout@v3
@@ -91,6 +117,7 @@ jobs:
           CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
+          CIBW_ENABLE: cpython-freethreading
 
         run: bash CI/github/build_wheels.sh
 
