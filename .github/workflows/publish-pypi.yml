@@ -62,6 +62,40 @@ jobs:
           - os: macos-13
             python: 313
             platform_id: macosx_x86_64
+          - os: macos-13
+            python: 313t
+            platform_id: macosx_x86_64
+          - os: macos-13
+            python: 314
+            platform_id: macosx_x86_64
+          - os: macos-13
+            python: 314t
+            platform_id: macosx_x86_64
+
+
+          # MacOS x86_64
+          - os: macos-15
+            python: 310
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 311
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 312
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 313
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 313t
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 314
+            platform_id: macosx_arm64
+          - os: macos-15
+            python: 314t
+            platform_id: macosx_arm64
+
     steps:
       - name: Checkout CPT
         uses: actions/checkout@v3
