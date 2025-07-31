@@ -30,6 +30,18 @@ jobs:
             python: 313
             platform_id: manylinux_x86_64
             manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 313t
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 314
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-latest
+            python: 314t
+            platform_id: manylinux_x86_64
+            manylinux_image: manylinux_2_28
 
           # Linux ARM 64 bit manylinux_2_28
           - os: ubuntu-24.04-arm
@@ -46,6 +58,18 @@ jobs:
             manylinux_image: manylinux_2_28
           - os: ubuntu-24.04-arm
             python: 313
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
+            python: 313t
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
+            python: 314
+            platform_id: manylinux_aarch64
+            manylinux_image: manylinux_2_28
+          - os: ubuntu-24.04-arm
+            python: 314t
             platform_id: manylinux_aarch64
             manylinux_image: manylinux_2_28
 
@@ -80,7 +104,7 @@ jobs:
             deployment_target: 13.0
 
 
-          # MacOS x86_64
+          # MacOS ARM
           - os: macos-14
             python: 310
             platform_id: macosx_arm64
