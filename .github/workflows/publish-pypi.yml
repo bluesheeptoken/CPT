@@ -35,7 +35,7 @@ jobs:
             platform_id: manylinux_x86_64
             manylinux_image: manylinux_2_28
           - os: ubuntu-latest
-            python: 314t
+            python: 314
             platform_id: manylinux_x86_64
             manylinux_image: manylinux_2_28
           - os: ubuntu-latest
