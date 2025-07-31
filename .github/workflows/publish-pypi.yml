@@ -53,48 +53,62 @@ jobs:
           - os: macos-13
             python: 310
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 311
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 312
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 313
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 313t
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 314
             platform_id: macosx_x86_64
+            deployment_target: 13.0
           - os: macos-13
             python: 314t
             platform_id: macosx_x86_64
+            deployment_target: 13.0
 
 
           # MacOS x86_64
-          - os: macos-15
+          - os: macos-14
             python: 310
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 311
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 312
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 313
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 313t
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 314
             platform_id: macosx_arm64
-          - os: macos-15
+            deployment_target: 14.0
+          - os: macos-14
             python: 314t
             platform_id: macosx_arm64
+            deployment_target: 14.0
 
     steps:
       - name: Checkout CPT
@@ -116,7 +130,8 @@ jobs:
           CIBW_TEST_REQUIRES: pytest
           CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
-          CIBW_ENVIRONMENT_MACOS: MACOSX_DEPLOYMENT_TARGET=13.0
+          CIBW_ENVIRONMENT_MACOS: ${{ format('MACOSX_DEPLOYMENT_TARGET={0}', matrix.deployment_target) }}
+          CIBW_ENABLE: cpython-freethreading
 
         run: bash CI/github/build_wheels.sh
 
