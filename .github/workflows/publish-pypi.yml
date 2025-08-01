@@ -170,7 +170,7 @@ jobs:
       # Maybe fix `from .cpt import cpt`, so we can test wherever the built wheel is?
       - name: Prepare test command for Windows
         if: matrix.os == 'windows-latest'
-        run: echo 'CIBW_TEST_COMMAND=cmd /c "mkdir tmp_for_test && xcopy /E /I {project}\\tests tmp_for_test\\tests && pytest tmp_for_test/tests"' >> $GITHUB_ENV
+        run: echo 'CIBW_TEST_COMMAND=cmd /c "mkdir tmp_for_test && xcopy /E /I CPT\\tests tmp_for_test\\tests && pytest tmp_for_test/tests"' >> $GITHUB_ENV
 
       - name: Prepare test command for Unix-like
         if: matrix.os != 'windows-latest'
