@@ -20,7 +20,7 @@ module = Extension(
     extra_link_args=compile_args,
 )
 
-version = "1.3.5"
+version = "1.3.6"
 
 author = "Louis Fruleux"
 author_email = "louis.fruleux1@gmail.com"
