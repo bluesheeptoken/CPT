@@ -13,6 +13,52 @@ jobs:
       fail-fast: false
       matrix:
         include:
+          # Windows 64 bits
+          - os: windows-latest
+            python: 310
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 311
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 312
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 313
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 313t
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 314
+            platform_id: win_amd64
+          - os: windows-latest
+            python: 314t
+            platform_id: win_amd64
+
+          # Windows ARM
+          - os: windows-11-arm
+            python: 310
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 311
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 312
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 313
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 313t
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 314
+            platform_id: win_arm64
+          - os: windows-11-arm
+            python: 314t
+            platform_id: win_arm64
+
           # Linux 64 bit manylinux_2_28
           - os: ubuntu-latest
             python: 310
@@ -143,6 +189,16 @@ jobs:
         with:
           python-version: '3.13'
 
+      # We need to copy the tests in a new dir, because we are above CPT, not in the folder CPT.
+      # Maybe fix `from .cpt import cpt`, so we can test wherever the built wheel is?
+      - name: Prepare test command for Windows
+        if: matrix.os == 'windows-latest'
+        run: echo 'CIBW_TEST_COMMAND=cmd /c "mkdir tmp_for_test && xcopy /E /I {project}\\tests tmp_for_test\\tests && pytest tmp_for_test/tests"' >> $GITHUB_ENV
+
+      - name: Prepare test command for Unix-like
+        if: matrix.os != 'windows-latest'
+        run: echo 'CIBW_TEST_COMMAND=bash -c "mkdir -p tmp_for_test && cp -r {project}/tests tmp_for_test && pytest tmp_for_test/tests"' >> $GITHUB_ENV
+
       - name: Build and test wheels
         env:
           CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip"
@@ -150,9 +206,8 @@ jobs:
           CIBW_ARCHS: all
           CIBW_MANYLINUX_X86_64_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
-          CIBW_BEFORE_TEST: "CC=gcc CXX=g++"
+          CIBW_BEFORE_TEST: ${{ matrix.os != 'windows-latest' && 'CC=gcc CXX=g++' || '' }}
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: "mkdir tmp_for_test; cp -r {project}/tests tmp_for_test; pytest tmp_for_test/tests"
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT_MACOS: ${{ format('MACOSX_DEPLOYMENT_TARGET={0}', matrix.deployment_target) }}
           CIBW_ENABLE: cpython-freethreading
