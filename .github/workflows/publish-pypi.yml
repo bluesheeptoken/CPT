@@ -103,7 +103,6 @@ jobs:
             platform_id: macosx_x86_64
             deployment_target: 13.0
 
-
           # MacOS ARM
           - os: macos-14
             python: 310
@@ -138,12 +137,14 @@ jobs:
       - name: Checkout CPT
         uses: actions/checkout@v3
 
-      - name: Setup Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.13'
+      - name: macOS OpenMP setup
+        if: runner.os == 'macOS'
+        run: bash CI/github/setup_macos_runner.sh
 
-      - name: Build and test wheels
+      - name: Build wheels
+        uses: pypa/cibuildwheel@v3.1.2
+        with:
+          output-dir: wheelhouse
         env:
           CIBW_BEFORE_BUILD: "python -m pip install --upgrade pip"
           CIBW_BUILD: cp${{ matrix.python }}-${{ matrix.platform_id }}
@@ -156,8 +157,6 @@ jobs:
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT_MACOS: ${{ format('MACOSX_DEPLOYMENT_TARGET={0}', matrix.deployment_target) }}
           CIBW_ENABLE: cpython-freethreading
-
-        run: bash CI/github/build_wheels.sh
 
       - name: Store artifacts
         uses: actions/upload-artifact@v4
