@@ -175,7 +175,8 @@ jobs:
           CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BEFORE_TEST: ${{ matrix.os != 'windows-latest' && 'CC=gcc CXX=g++' || '' }}
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest {project}\\tests
+          # Commands needed because we are not in CPT, and the wheel is produced in the current directoy. Maybe fix `from .cpt import cpt`?
+          CIBW_TEST_COMMAND:  ${{ matrix.os == 'windows-latest' && 'cmd /c "mkdir tmp_for_test && xcopy /E /I tests tmp_for_test\\tests && pytest tmp_for_test/tests"' || 'bash -c \"mkdir -p tmp_for_test && cp -r tests tmp_for_test && pytest tmp_for_test/tests\"' }}
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT_MACOS: ${{ format('MACOSX_DEPLOYMENT_TARGET={0}', matrix.deployment_target) }}
           CIBW_ENABLE: cpython-freethreading
