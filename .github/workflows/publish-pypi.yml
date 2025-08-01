@@ -175,7 +175,7 @@ jobs:
           CIBW_MANYLINUX_I686_IMAGE: ${{ matrix.manylinux_image }}
           CIBW_BEFORE_TEST: ${{ matrix.os != 'windows-latest' && 'CC=gcc CXX=g++' || '' }}
           CIBW_TEST_REQUIRES: pytest
-          CIBW_TEST_COMMAND: pytest tests
+          CIBW_TEST_COMMAND: pytest {project}\\tests
           CIBW_BUILD_VERBOSITY: 1
           CIBW_ENVIRONMENT_MACOS: ${{ format('MACOSX_DEPLOYMENT_TARGET={0}', matrix.deployment_target) }}
           CIBW_ENABLE: cpython-freethreading
